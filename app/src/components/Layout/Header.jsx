@@ -30,22 +30,25 @@ import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 const userData = { email: "demo@correo.com" };
 
 const navItems = [
-  { title: "Películas", href: "/movie", icon: <Film className="h-4 w-4" /> },
+  
+  { title: "Listado de Tecnicos", 
+    href: "/tecnico/table",
+    icon: <Film className="h-4 w-4" /> },
   {
-    title: "Catálogo de Películas",
-    href: "/movie/",
+    title: "Listado de Categorias",
+    href: "/categoria/table",
     icon: <BookOpen className="h-4 w-4" />,
   },
   {
-    title: "Filtrar Películas",
-    href: "/movie/filter",
+    title: "Listado de Tickets",
+    href: "/ticket/table",
     icon: <Filter className="h-4 w-4" />,
   },
 ];
 
 const mantItems = [
   {
-    title: "Mantenimiento Películas",
+    title: "Asignacion",
     href: "movie/table",
     icon: <Wrench className="h-4 w-4" />,
   },
@@ -87,7 +90,7 @@ export default function Header() {
             {/* Películas */}
             <MenubarMenu>
               <MenubarTrigger className="text-white font-medium flex items-center gap-1 hover:text-secondary transition">
-                <Film className="h-4 w-4" /> Películas
+                <Film className="h-4 w-4" /> Listados
                 <ChevronDown className="h-3 w-3" />
               </MenubarTrigger>
               <MenubarContent className="bg-primary/0 backdrop-blur-md border-white/10">

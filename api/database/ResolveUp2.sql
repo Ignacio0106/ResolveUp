@@ -310,6 +310,34 @@ INSERT INTO TecnicoEspecialidad (idTecnico, idEspecialidad) VALUES
 (1, 3), -- María: Técnico en reparación de equipos
 (2, 4); -- Luis: Administrador de redes
 
+
+-- 🔹 Usuarios adicionales (Técnicos)
+INSERT INTO Usuario (nombre, correo, contraseña, idRol) VALUES
+('Marcos Pérez', 'marcos.perez@email.com', '1234', 2),
+('Laura Gómez', 'laura.gomez@email.com', '1234', 2),
+('Javier Torres', 'javier.torres@email.com', '1234', 2),
+('Camila Rojas', 'camila.rojas@email.com', '1234', 2),
+('Fernando Castillo', 'fernando.castillo@email.com', '1234', 2),
+('Isabella Fernández', 'isabella.fernandez@email.com', '1234', 2);
+
+-- 🔹 Técnicos vinculados a los nuevos usuarios
+INSERT INTO Tecnicos (idUsuario, disponibilidad, cargaTrabajo) VALUES
+(5, 1, 0), -- Marcos
+(6, 1, 0), -- Laura
+(7, 1, 0), -- Javier
+(8, 1, 0), -- Camila
+(9, 1, 0), -- Fernando
+(10, 1, 0); -- Isabella
+
+-- 🔹 Técnicos - Especialidad
+INSERT INTO TecnicoEspecialidad (idTecnico, idEspecialidad) VALUES
+(3, 1), -- Marcos: Soporte a sistemas educativos
+(4, 3), -- Laura: Técnico en reparación de equipos
+(5, 4), -- Javier: Administrador de redes
+(6, 5), -- Camila: Especialista en ciberseguridad
+(7, 2), -- Fernando: Administración de sistemas
+(8, 1); -- Isabella: Soporte a sistemas educativos
+
 -- ================= TRIGGERS   =================
 
 
