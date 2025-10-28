@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { User, Check, X, ArrowLeft } from "lucide-react";
 import { LoadingGrid } from '../ui/custom/LoadingGrid';
 import { EmptyState } from '../ui/custom/EmptyState';
+import {ChevronRight } from "lucide-react";
+
 
 export function DetailTecnico() {
     const navigate = useNavigate();
@@ -40,49 +42,75 @@ export function DetailTecnico() {
     if (!tecnico) return <EmptyState message="No se encontró información del técnico." />;
 
     return (
-        <div className="max-w-4xl mx-auto py-12 px-4">
-            <div className="flex flex-col gap-6">
-                <h1 className="text-4xl font-bold">{tecnico.nombreUsuario}</h1>
+      <div className="max-w-4xl mx-auto py-12 px-4">
+  <div className="flex flex-col gap-8">
+    {/* Nombre del técnico */}
+    <h1 className="text-4xl font-bold text-center">{tecnico.nombreUsuario}</h1>
 
-                <Card>
-                    <CardContent className="p-6 space-y-4">
-                        <div className="flex items-center gap-4">
-                            <User className="h-5 w-5 text-primary" />
-                            <span className="font-semibold">Correo:</span>
-                            <p className="text-muted-foreground">{tecnico.correoUsuario}</p>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <span className="font-semibold">Disponibilidad:</span>
-                            {tecnico.disponibilidad === "1" ? (
-                                <Check className="text-green-600" />
-                            ) : (
-                                <X className="text-red-600" />
-                            )}
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <span className="font-semibold">Carga de trabajo:</span>
-                            <p className="text-muted-foreground">{tecnico.cargaTrabajo}</p>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <span className="font-semibold">Especialidades:</span>
-                            <p className="text-muted-foreground">{tecnico.especialidades}</p>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <span className="font-semibold">ID Técnico:</span>
-                            <p className="text-muted-foreground">{tecnico.idTecnico}</p>
-                        </div>
-                    </CardContent>
-                </Card>
+    {/* Card principal */}
+    <Card className="shadow-lg border border-gray-200">
+      <CardContent className="p-6 grid gap-6 md:grid-cols-2">
 
-                <Button
-                    type="button"
-                    onClick={() => navigate(-1)}
-                    className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6"
-                >
-                    <ArrowLeft className="w-4 h-4" />
-                    Regresar
-                </Button>
-            </div>
+        {/* Columna izquierda: correo y disponibilidad */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <User className="h-5 w-5 text-primary" />
+            <span className="font-semibold">Correo:</span>
+            <span className="text-muted-foreground">{tecnico.correoUsuario}</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="font-semibold">Disponibilidad:</span>
+            {tecnico.disponibilidad === "1" ? (
+              <Check className="text-green-600" />
+            ) : (
+              <X className="text-red-600" />
+            )}
+          </div>
         </div>
+
+        {/* Columna derecha: carga de trabajo y especialidades */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <span className="font-semibold">Carga de trabajo:</span>
+            <span className="text-muted-foreground">{tecnico.cargaTrabajo}</span>
+          </div>
+
+          {tecnico.especialidades && tecnico.especialidades.length > 0 && (
+            <div className="space-y-2">
+              <span className="font-semibold mb-2 block">Especialidades:</span>
+              <div className="flex flex-wrap gap-2">
+                {tecnico.especialidades.map((esp) => (
+                  <Badge
+                    key={esp.idEspecialidad}
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    <ChevronRight className="h-3 w-3" />
+                    {esp.nombre}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+      </CardContent>
+    </Card>
+
+    {/* Botón Regresar */}
+    <div className="flex justify-center">
+      <Button
+        type="button"
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Regresar
+      </Button>
+    </div>
+  </div>
+</div>
+
     );
 }

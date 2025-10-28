@@ -179,9 +179,79 @@ class TicketModel
     }
 }
 
-    public function listadoDetalle() {
+//     public function listadoDetalle() {
+//     try {
+//         // Consulta SQL que devuelve todos los tickets
+//         $vSQL = "
+//             SELECT 
+//                 t.id AS idTicket,
+//                 t.titulo,
+//                 t.descripcion,
+//                 t.fechaCreacion,
+//                 u.nombre AS usuarioSolicitante,
+//                 CASE 
+//                     WHEN u.idRol = 1 THEN 'Administrador'
+//                     WHEN u.idRol = 2 THEN 'Cliente'  -- Rol del creador
+//                     WHEN u.idRol = 3 THEN 'Cliente'
+//                     ELSE 'Desconocido'
+//                 END AS rolUsuario,
+//                 CONCAT('http://localhost:81/Proyecto/api/ticket/get/', t.id) AS enlace
+//             FROM Tickets t
+//             JOIN Usuario u ON t.idUsuario = u.id
+//             ORDER BY t.fechaCreacion DESC
+//         ";
+
+//         $resultado = $this->enlace->ExecuteSQL($vSQL);
+
+//         return [
+//             "success" => true,
+//             "status" => 200,
+//             "message" => "Tickets encontrados",
+//             "data" => $resultado
+//         ];
+
+//     } catch (Exception $e) {
+//         handleException($e);
+//     }
+// }
+
+public function listadoDetalle($idUsuario) {
     try {
-        // Consulta SQL que devuelve todos los tickets
+        // Obtener el rol del usuario
+        $vSQLRol = "SELECT idRol, nombre FROM Usuario WHERE id = $idUsuario";
+        $rolResultado = $this->enlace->ExecuteSQL($vSQLRol);
+
+        if (empty($rolResultado)) {
+            return [
+                "success" => false,
+                "status" => 404,
+                "message" => "Usuario no encontrado",
+                "data" => null
+            ];
+        }
+
+        $rolUsuario = $rolResultado[0]->idRol;
+        $nombreUsuario = $rolResultado[0]->nombre;
+
+        // Construir WHERE según rol
+        $where = "";
+        if ($rolUsuario == 1) {
+            // Admin: todos los tickets
+            $where = "1=1";
+        } elseif ($rolUsuario == 3) {
+            // Cliente: solo sus tickets
+            $where = "t.idUsuario = $idUsuario";
+        } elseif ($rolUsuario == 2) {
+            // Técnico: solo tickets asignados
+            $where = "EXISTS (
+                SELECT 1
+                FROM Asignacion a
+                JOIN Tecnicos tec ON a.idTecnico = tec.id
+                WHERE a.idTicket = t.id AND tec.idUsuario = $idUsuario
+            )";
+        }
+
+        // SQL principal
         $vSQL = "
             SELECT 
                 t.id AS idTicket,
@@ -189,15 +259,12 @@ class TicketModel
                 t.descripcion,
                 t.fechaCreacion,
                 u.nombre AS usuarioSolicitante,
-                CASE 
-                    WHEN u.idRol = 1 THEN 'Administrador'
-                    WHEN u.idRol = 2 THEN 'Cliente'  -- Rol del creador
-                    WHEN u.idRol = 3 THEN 'Cliente'
-                    ELSE 'Desconocido'
-                END AS rolUsuario,
+                r.nombre AS rolUsuario,
                 CONCAT('http://localhost:81/Proyecto/api/ticket/get/', t.id) AS enlace
             FROM Tickets t
             JOIN Usuario u ON t.idUsuario = u.id
+            JOIN Rol r ON u.idRol = r.id
+            WHERE $where
             ORDER BY t.fechaCreacion DESC
         ";
 
@@ -207,13 +274,23 @@ class TicketModel
             "success" => true,
             "status" => 200,
             "message" => "Tickets encontrados",
+            "usuario" => $nombreUsuario,
+            "rol" => $rolUsuario == 1 ? "Administrador" : ($rolUsuario == 2 ? "Técnico" : "Cliente"),
             "data" => $resultado
         ];
 
     } catch (Exception $e) {
-        handleException($e);
+        return [
+            "success" => false,
+            "status" => 500,
+            "message" => "Error: " . $e->getMessage(),
+            "data" => null
+        ];
     }
 }
+
+
+
 
 
 }

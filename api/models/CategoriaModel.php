@@ -63,29 +63,40 @@ class CategoriaModel
     public function get($id)
     {
         try {
-            //Consulta sql
-			$vSql = "SELECT 
-                    c.id AS idCategoria,
-                    c.nombre AS nombreCategoria,
-                    s.tiempoRespuesta AS tiempoMaxRespuesta,
-                    s.tiempoResolucion AS tiempoMaxResolucion,
-                    GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ', ') AS especialidades,
-                    GROUP_CONCAT(DISTINCT et.nombre SEPARATOR ', ') AS etiquetas
-                 FROM Categoria c
-                 LEFT JOIN SLA s ON c.idSLA = s.id
-                 LEFT JOIN CategoriaEspecialidad ce ON c.id = ce.idCategoria
-                 LEFT JOIN Especialidad e ON ce.idEspecialidad = e.id
-                 LEFT JOIN CategoriaEtiqueta cet ON c.id = cet.idCategoria
-                 LEFT JOIN Etiqueta et ON cet.idEtiqueta = et.id
-                 WHERE c.id = $id
-                 GROUP BY c.id, c.nombre, s.tiempoRespuesta, s.tiempoResolucion;";
-            //Ejecutar la consulta
-			$vResultado = $this->enlace->ExecuteSQL ( $vSql);
-			// Retornar el objeto
-			return $vResultado[0];
-		} catch (Exception $e) {
-            handleException($e);
-        }
+        // Consulta principal de la categoría
+        $vSqlCategoria = "SELECT 
+            c.id AS idCategoria,
+            c.nombre AS nombreCategoria,
+            s.tiempoRespuesta AS tiempoMaxRespuesta,
+            s.tiempoResolucion AS tiempoMaxResolucion
+        FROM Categoria c
+        LEFT JOIN SLA s ON c.idSLA = s.id
+        WHERE c.id = $id;";
+        $vResultadoCategoria = $this->enlace->ExecuteSQL($vSqlCategoria);
+        $categoria = $vResultadoCategoria[0];
+
+        // Obtener especialidades
+        $vSqlEsp = "SELECT 
+            e.id AS idEspecialidad,
+            e.nombre AS nombre
+        FROM CategoriaEspecialidad ce
+        JOIN Especialidad e ON ce.idEspecialidad = e.id
+        WHERE ce.idCategoria = $id;";
+        $categoria->especialidades = $this->enlace->ExecuteSQL($vSqlEsp);
+
+        // Obtener etiquetas
+        $vSqlEtiq = "SELECT 
+            et.id AS idEtiqueta,
+            et.nombre AS nombre
+        FROM CategoriaEtiqueta cet
+        JOIN Etiqueta et ON cet.idEtiqueta = et.id
+        WHERE cet.idCategoria = $id;";
+        $categoria->etiquetas = $this->enlace->ExecuteSQL($vSqlEtiq);
+
+        return $categoria;
+    } catch (Exception $e) {
+        handleException($e);
+    }
     }
     /*Peliculas de un actor*/
     public function moviesByActor($id)

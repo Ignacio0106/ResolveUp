@@ -31,6 +31,20 @@ const userData = { email: "demo@correo.com" };
 
 const navItems = [
   
+   { title: "Películas", href: "/movie", icon: <Film className="h-4 w-4" /> },
+  {
+    title: "Catálogo de Películas",
+    href: "/movie/",
+    icon: <BookOpen className="h-4 w-4" />,
+  },
+  {
+    title: "Filtrar Películas",
+    href: "/movie/filter",
+    icon: <Filter className="h-4 w-4" />,
+  },
+];
+
+const mantItems = [
   { title: "Listado de Tecnicos", 
     href: "/tecnico/table",
     icon: <Film className="h-4 w-4" /> },
@@ -39,19 +53,12 @@ const navItems = [
     href: "/categoria/table",
     icon: <BookOpen className="h-4 w-4" />,
   },
-  {
-    title: "Listado de Tickets",
-    href: "/ticket/table",
-    icon: <Filter className="h-4 w-4" />,
-  },
-];
+ {
+  title: "Listado de Tickets",
+  href: "/ticket/table/1", // ID del usuario que quieras probar
+  icon: <Filter className="h-4 w-4" />,
+},
 
-const mantItems = [
-  {
-    title: "Asignacion",
-    href: "movie/table",
-    icon: <Wrench className="h-4 w-4" />,
-  },
 ];
 
 const userItems = [

@@ -33,6 +33,7 @@ export default function TableCategorias() {
     const [error, setError] = useState("");
     const [loaded, setLoaded] = useState(false);
     const navigate = useNavigate();
+    
 
     useEffect(() => {
         const fetchData = async () => {
