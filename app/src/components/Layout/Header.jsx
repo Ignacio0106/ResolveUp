@@ -15,6 +15,7 @@ import {
   ChevronDown,
   Clapperboard,
   User,
+  LaptopMinimalCheck,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -58,7 +59,11 @@ const mantItems = [
   href: "/ticket/table/1", // ID del usuario que quieras probar
   icon: <Filter className="h-4 w-4" />,
 },
-
+ {
+  title: "Asignaciones",
+  href: "/asignaciones/table/1",
+  icon: <Filter className="h-4 w-4" />,
+},
 ];
 
 const userItems = [
@@ -87,8 +92,8 @@ export default function Header() {
           to="/"
           className="flex items-center gap-2 text-xl font-semibold tracking-wide hover:opacity-90 transition"
         >
-          <Clapperboard className="h-6 w-6" />
-          <span className="hidden sm:inline">MoviesApp</span>
+          <LaptopMinimalCheck className="h-6 w-6" />
+          <span className="hidden sm:inline">ResolveUp</span>
         </Link>
 
         {/* -------- Menú escritorio -------- */}
@@ -180,7 +185,7 @@ export default function Header() {
               <nav className="mt-8 px-4 space-y-6">
                 <div>
                   <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
-                    <Clapperboard /> MoviesApp
+                    <LaptopMinimalCheck /> ResolveUp
                   </Link>
                 </div>
 

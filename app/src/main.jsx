@@ -6,13 +6,13 @@ import { Layout } from './components/Layout/Layout'
 import { Home } from './components/Home/Home'
 import { RouterProvider } from 'react-router'
 import { PageNotFound } from './components/Home/PageNotFound'
-import TableMovies from './components/Tecnico/TableTecnico'
 import { DetailTecnico } from './components/Tecnico/DetailTecnico'
 import TableCategorias from './components/Categoria/TableCategoria'
 import { DetailCategoria } from './components/Categoria/DetailCategoria'
-import { DetailTicket } from './components/Tickets/DetailTicket'
 import TableTicket from './components/Tickets/TableTicket'
-
+import { DetailTicket } from './components/Tickets/DetailTicket'
+import TableTecnico from './components/Tecnico/TableTecnico'
+import { TableAsignacion } from './components/Asignacion/TableAsignacion'
 //Crear las rutas
 const rutas=createBrowserRouter([
   {
@@ -22,7 +22,7 @@ const rutas=createBrowserRouter([
     {index:true, element:<Home />},
     //Pagina no encontrada o Ruta comodin
     {path:'*', element:<PageNotFound/>},
-    { path: "tecnico/table", element: <TableMovies /> },   // lista peliculas ADMIN 
+    { path: "tecnico/table", element: <TableTecnico /> },   // lista peliculas ADMIN 
     { path: "tecnico/detail/:id", element: <DetailTecnico /> }, // detalle técnico
 
      { path: "categoria/table", element: <TableCategorias /> }, // lista categorías
@@ -30,6 +30,9 @@ const rutas=createBrowserRouter([
 
       { path: "ticket/table/:id", element: <TableTicket /> }, // lista tickets
       { path: "ticket/detail/:id", element: <DetailTicket /> }, // detalle ticket
+
+      { path: "asignaciones/table/:id", element: <TableAsignacion /> }, // lista asignaciones
+      { path: "asignaciones/detail/:id", element: <DetailTicket /> }, // detalle ticket
     ]
   }
 ])

@@ -29,7 +29,7 @@ const movieColumns = [
     { key: "actions", label: "Acciones" },
 ];
 
-export default function TableMovies() {
+export default function TableTecnico() {
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
     const [loaded, setLoaded] = useState(false);

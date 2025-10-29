@@ -24,11 +24,14 @@ require_once "models/TecnicoModel.php";
 require_once "models/GenreModel.php";
 require_once "models/CategoriaModel.php";
 require_once "models/ImageModel.php";
+require_once "models/AsignacionModel.php";
+require_once "models/UsuarioModel.php";
 
 /***--- Agregar todos los controladores*/
 require_once "controllers/CategoriaController.php";
 require_once "controllers/TecnicoController.php";
 require_once "controllers/TicketController.php";
+require_once "controllers/AsignacionController.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";

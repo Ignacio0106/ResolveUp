@@ -6,7 +6,8 @@ export function Footer() {
 center justify-center px-4 py-3 shadow-md"> 
       <div className="w-full max-w-7xl text-center"> 
         <p className="text-sm font-medium">ISW-613</p> 
-        <p className="text-xs text-muted">{new Date().getFullYear()}</p> 
+        <p>ResolveUp</p>
+        <p className="text-xs text-muted">&copy; {new Date().getFullYear()} Todo los derechos reservados</p>
       </div> 
     </footer> 
   ); 
