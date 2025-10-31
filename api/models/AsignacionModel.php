@@ -34,30 +34,57 @@ class AsignacionModel
     //
     public function get($id)
     {
-        try {
-        // Consulta principal de la categoría
-        $vSqlCategoria = "SELECT *
+        $tecnicoM = new TecnicoModel();
+        $metodoM = new MetodoModel();
+        $reglaM = new ReglaModel();
+        $ticketM = new TicketModel();
+
+        $vSql = "SELECT *
         FROM asignacion a
         WHERE a.id = $id;";
-        $vResultadoCategoria = $this->enlace->ExecuteSQL($vSqlCategoria);
-        $asignacion = $vResultadoCategoria[0];
+        $vResultado = $this->enlace->executeSQL($vSql);
+        if (!empty($vResultado)) {
+            $vResultado = $vResultado[0];
+            $vResultado->tecnico = $tecnicoM->get(($vResultado->idTecnico));
 
-        return $asignacion;
-    } catch (Exception $e) {
-        handleException($e);
-    }
+            $vResultado->metodo = $metodoM->get(($vResultado->idMetodo));
+
+            //$vResultado->regla = $reglaM->get(($vResultado->idRegla));
+
+            $vResultado->ticket = $ticketM->get(($vResultado->idTicket));
+        }
+
+        //Retornar la respuesta
+        return $vResultado;
     }
     /*Asignaciones de un tecnico*/
-    public function getByTecnico($id)
+    public function getByUsuario($id)
     {
-        //Consulta SQL
-        $vSQL = "SELECT a.id, a.fecha, ti.id AS idTicket, c.nombre AS categoria, et.nombre AS estado, tiempoRestanteResolucion FROM asignacion a
-inner join tecnicos t ON t.id = a.idTecnico
-inner join usuario u ON u.id = t.idUsuario
-inner join tickets ti ON ti.id = a.idTicket
-inner join estadoticket et ON et.id = ti.estadoId
-inner join categoria c ON c.id = ti.idCategoria
-where a.idTecnico=$id";
+        $usuario = new UsuarioModel();
+
+        if($usuario->get($id)){
+            if($usuario->get($id)->idRol==1){
+            //Consulta SQL
+            $vSQL = "SELECT a.id, a.fecha, ti.id AS idTicket, c.nombre AS categoria, et.nombre AS estado, tiempoRestanteResolucion, puntajePrioridad, pt.nombre AS prioridad FROM asignacion a
+                inner join tecnicos t ON t.id = a.idTecnico
+                inner join usuario u ON u.id = t.idUsuario
+                inner join tickets ti ON ti.id = a.idTicket
+                inner join estadoticket et ON et.id = ti.estadoId
+                inner join categoria c ON c.id = ti.idCategoria
+                inner join prioridadticket pt ON ti.prioridadId = pt.id";
+
+            } else if($usuario->get($id)->idRol==2){
+            //Consulta SQL
+            $vSQL = "SELECT a.id, a.fecha, ti.id AS idTicket, c.nombre AS categoria, et.nombre AS estado, tiempoRestanteResolucion, puntajePrioridad, pt.nombre AS prioridad FROM asignacion a
+                inner join tecnicos t ON t.id = a.idTecnico
+                inner join usuario u ON u.id = t.idUsuario
+                inner join tickets ti ON ti.id = a.idTicket
+                inner join estadoticket et ON et.id = ti.estadoId
+                inner join categoria c ON c.id = ti.idCategoria
+                inner join prioridadticket pt ON ti.prioridadId = pt.id
+                where u.id = $id";
+            }
+        }
         //Ejecutar la consulta
         $vResultado = $this->enlace->ExecuteSQL($vSQL);
         //Retornar resultado

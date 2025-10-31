@@ -26,6 +26,9 @@ require_once "models/CategoriaModel.php";
 require_once "models/ImageModel.php";
 require_once "models/AsignacionModel.php";
 require_once "models/UsuarioModel.php";
+require_once "models/MetodoModel.php";
+require_once "models/ReglaModel.php";
+require_once "models/EstadoModel.php";
 
 /***--- Agregar todos los controladores*/
 require_once "controllers/CategoriaController.php";

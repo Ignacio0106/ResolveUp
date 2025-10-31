@@ -16,6 +16,7 @@ import {
   Clapperboard,
   User,
   LaptopMinimalCheck,
+  FolderCode,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -61,8 +62,8 @@ const mantItems = [
 },
  {
   title: "Asignaciones",
-  href: "/asignaciones/table/1",
-  icon: <Filter className="h-4 w-4" />,
+  href: "/asignacion/table/1",
+  icon: <FolderCode className="h-4 w-4" />,
 },
 ];
 

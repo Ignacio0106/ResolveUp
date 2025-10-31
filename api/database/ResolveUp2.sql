@@ -384,36 +384,46 @@ INSERT INTO TecnicoEspecialidad (idTecnico, idEspecialidad) VALUES
 (8, 3), -- Técnico en reparación de equipos
 (8, 2); -- Administración de sistemas
 
-
 -- ================= INSERTS TICKETS =================
 INSERT INTO Tickets (titulo, descripcion, fechaCreacion, estadoId, prioridadId, idUsuario, idCategoria)
 VALUES
-('Problema con Aula Virtual', 'No puedo ingresar al aula virtual', NOW(), 1, 1, 4, 1),
-('Problema con Usuarios', 'No puedo agregar nuevos usuarios al sistema', NOW(), 1, 2, 4, 1),
-('Laptop no enciende', 'La laptop se apaga sola al encender', NOW(), 1, 2, 4, 2),
-('Wifi intermitente', 'Se cae la conexión cada 10 minutos', NOW(), 1, 2, 4, 3),
-('Antivirus desactualizado', 'El antivirus muestra errores de actualización', NOW(), 1, 1, 4, 4),
+('Problema con Aula Virtual', 'No puedo ingresar al aula virtual', NOW(), 1, 3, 4, 1),
+('Problema con Usuarios', 'No puedo agregar nuevos usuarios al sistema', NOW(), 3, 2, 4, 1),
+('Laptop no enciende', 'La laptop se apaga sola al encender', NOW(), 4, 2, 4, 2),
+('Wifi intermitente', 'Se cae la conexión cada 10 minutos', NOW(), 4, 2, 4, 3),
+('Antivirus desactualizado', 'El antivirus muestra errores de actualización', NOW(), 5, 1, 4, 4),
 ('Correo no funciona', 'No puedo enviar ni recibir correos', NOW(), 1, 2, 4, 1),
-('Monitor no responde', 'El monitor queda en negro al encender el PC', NOW(), 1, 2, 4, 2),
-('VPN no conecta', 'No se puede establecer conexión VPN desde casa', NOW(), 1, 2, 4, 3),
-('Acceso no autorizado', 'Se detectó acceso no autorizado en la red', NOW(), 1, 1, 4, 4),
-('Proyector falla', 'El proyector no enciende en la sala de reuniones', NOW(), 1, 2, 4, 2),
-('Problema con Aula Virtual', 'No puedo ingresar al aula virtual', NOW(), 1, 2, 4, 1);
+('Monitor no responde', 'El monitor queda en negro al encender el PC', NOW(), 2, 2, 4, 2),
+('VPN no conecta', 'No se puede establecer conexión VPN desde casa', NOW(), 3, 3, 4, 3),
+('Acceso no autorizado', 'Se detectó acceso no autorizado en la red', NOW(), 4, 1, 4, 4),
+('Proyector falla', 'El proyector no enciende en la sala de reuniones', NOW(), 5, 2, 4, 2),
+('Problema con Aula Virtual', 'No puedo ingresar al aula virtual', NOW(), 1, 3, 4, 1);
 
 -- ================= INSERTS ASIGNACIONES =================
-INSERT INTO Asignacion (fecha, descripcion, idMetodo, idTicket, idTecnico)
+INSERT INTO Asignacion (fecha, descripcion, idMetodo, idTicket, idTecnico, tiempoRestanteResolucion, puntajePrioridad)
 VALUES
-(NOW(), 'Asignación manual', 1, 1, 3),
-(NOW(), 'Asignación manual', 1, 2, 3),
-(NOW(), 'Asignación manual', 1, 3, 5),
-(NOW(), 'Asignación manual', 1, 4, 6),
-(NOW(), 'Asignación manual', 1, 5, 7),
-(NOW(), 'Asignación manual', 1, 6, 3),
-(NOW(), 'Asignación manual', 1, 7, 5),
-(NOW(), 'Asignación manual', 1, 8, 6),
-(NOW(), 'Asignación manual', 1, 9, 7),
-(NOW(), 'Asignación manual', 1, 10, 5),
-(NOW(), 'Asignación manual', 1, 11, 3);
+('2025-10-30 09:00:00', 'Asignación manual', 1, 1, 1, 360, 75.25),
+('2025-10-30 09:00:00', 'Asignación manual', 1, 2, 1, 360, 55.25),
+('2025-10-28 09:00:00', 'Asignación manual', 1, 3, 1, 360, 45.25),
+('2025-10-29 09:00:00', 'Asignación manual', 1, 4, 1, 360, 70.25),
+('2025-11-04 09:00:00', 'Asignación manual', 1, 5, 3, 360, 70.25),
+('2025-11-04 09:00:00', 'Asignación manual', 1, 2, 3, 360, 70.25),
+('2025-10-20 09:00:00', 'Asignación manual', 1, 3, 5, 240, 82.50),
+('2025-10-30 09:00:00', 'Asignación manual', 1, 4, 6, 720, 55.00),
+('2025-11-09 09:00:00', 'Asignación manual', 1, 5, 7,  180, 90.00),
+('2025-10-28 09:00:00', 'Asignación manual', 1, 6, 3,  600, 60.10),
+('2025-11-06 09:00:00', 'Asignación manual', 1, 7, 5,  300, 75.80),
+('2025-10-23 09:00:00', 'Asignación manual', 1, 8, 6,  840, 50.00),
+('2025-11-02 09:00:00', 'Asignación manual', 1, 9, 7,  120, 88.40),
+('2025-10-28 09:00:00', 'Asignación manual', 1, 10, 5, 420, 68.90),
+('2025-11-08 09:00:00', 'Asignación manual', 1, 1, 3,  90, 92.30),
+('2025-10-24 09:00:00', 'Asignación manual', 1, 11, 1, 540, 66.50),
+('2025-11-05 09:00:00', 'Asignación manual', 1, 2, 2, 300, 74.20),
+('2025-10-27 09:00:00', 'Asignación manual', 1, 2, 4, 660, 58.75),
+('2025-11-03 09:00:00', 'Asignación manual', 1, 3, 8, 240, 85.60),
+('2025-10-23 09:00:00', 'Asignación manual', 1, 8, 7,  840, 50.00),
+('2025-11-02 09:00:00', 'Asignación manual', 1, 9, 7,  120, 88.40),
+('2025-10-28 09:00:00', 'Asignación manual', 1, 10, 8, 420, 68.90);
 
 -- ================= INSERTS HISTORIAL =================
 INSERT INTO HistorialEstado (idEstadoAnterior, idEstadoNuevo, fecha, idTicket, idUsuario, observaciones)

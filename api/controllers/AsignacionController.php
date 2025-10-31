@@ -36,14 +36,14 @@ class asignacion
         }
     }
     //GET Obtener
-        public function asignacionByTecnico($id)
+    public function asignacionByUsuario($id)
     {
         try {
             $response = new Response();
             //Instancia del modelo
             $asignacionM = new AsignacionModel();
             //Acción del modelo a ejecutar
-            $result = $asignacionM->getByTecnico($id);
+            $result = $asignacionM->getByUsuario($id);
             //Dar respuesta
             $response->toJSON($result);
         } catch (Exception $e) {

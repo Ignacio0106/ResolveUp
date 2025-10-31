@@ -14,14 +14,14 @@ class AsignacionService {
 
   // Obtener detalle de una asignación por ID
   // GET: /asignacion/{id}
-  getDetalleAsignacion(asignacionId) {
-    return axios.get(`${BASE_URL}/${asignacionId}`);
+  getDetalleAsignacion(IdAsignacion) {
+    return axios.get(`${BASE_URL}/${IdAsignacion}`);
   }
 
   // Listar todas las asignaciones
   // GET: /asignacion/DetalleAsignaciones
-  getAsignacionesByTecnico(tecnicoId) {
-    return axios.get(`${BASE_URL}/asignacionByTecnico/${tecnicoId}`);
+  getAsignacionesByUsuario(IdUsuario) {
+    return axios.get(`${BASE_URL}/asignacionByUsuario/${IdUsuario}`) || [];
   }
 
   // Si más adelante quieres crear, actualizar o eliminar, puedes descomentar y usar:
