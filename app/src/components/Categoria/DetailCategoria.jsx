@@ -10,7 +10,6 @@ import { EmptyState } from '../ui/custom/EmptyState';
 import { ChevronRight } from "lucide-react"; 
 import { Badge } from "@/components/ui/badge"; 
 
-
 export function DetailCategoria() {
     const navigate = useNavigate();
     const { id } = useParams();
@@ -42,80 +41,83 @@ export function DetailCategoria() {
     if (!categoria) return <EmptyState message="No se encontró información de la categoría." />;
 
     return (
-        <div className="max-w-4xl mx-auto py-12 px-4">
-  <h1 className="text-4xl font-bold mb-8">{categoria.nombreCategoria}</h1>
-
-  <Card>
-    <CardContent className="p-6">
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* IZQUIERDA: Datos generales */}
-        <div className="space-y-4">
-          <div className="flex gap-2">
-            <span className="font-semibold">ID Categoría:</span>
-            <span className="text-muted-foreground">{categoria.idCategoria}</span>
-          </div>
-          <div className="flex gap-2">
-  <span className="font-semibold">Tiempo máximo de respuesta:</span>
-  <span className="text-muted-foreground">{categoria.tiempoMaxRespuesta} min</span>
-</div>
-<div className="flex gap-2">
-  <span className="font-semibold">Tiempo máximo de resolución:</span>
-  <span className="text-muted-foreground">{categoria.tiempoMaxResolucion} min</span>
-</div>
-
+      <div className="max-w-4xl mx-auto py-12 px-4">
+        <div className="flex items-center gap-3 mb-8">
+          <h1 className="flex text-4xl font-bold items-center justify-center">
+            <p className="text-xl px-3 py-1">
+              {categoria.idCategoria}
+            </p>
+            {categoria.nombreCategoria}</h1>
         </div>
 
-        {/* DERECHA: Especialidades y Etiquetas */}
-        <div className="space-y-6">
-          {categoria.especialidades && categoria.especialidades.length > 0 && (
-            <div>
-              <span className="font-semibold mb-2 block">Especialidades:</span>
-              <div className="flex flex-wrap gap-2">
-                {categoria.especialidades.map((esp) => (
-                  <Badge
-                    key={esp.idEspecialidad}
-                    variant="secondary"
-                    className="flex items-center gap-1"
-                  >
-                    <ChevronRight className="h-3 w-3" />
-                    {esp.nombre}
-                  </Badge>
-                ))}
+        <Card className="shadow-lg">
+          <CardContent className="p-8">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* IZQUIERDA: Datos generales */}
+              <div className="space-y-6">
+                <h2 className="text-xl font-semibold text-primary mb-4">Información General</h2>
+                <div className="space-y-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-medium text-sm text-muted-foreground">TIEMPO MÁXIMO DE RESPUESTA</span>
+                    <span className="text-lg font-semibold">{categoria.tiempoMaxRespuesta} minutos</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-medium text-sm text-muted-foreground">TIEMPO MÁXIMO DE RESOLUCIÓN</span>
+                    <span className="text-lg font-semibold">{categoria.tiempoMaxResolucion} minutos</span>
+                  </div>
+                </div>
               </div>
-            </div>
-          )}
 
-          {categoria.etiquetas && categoria.etiquetas.length > 0 && (
-            <div>
-              <span className="font-semibold mb-2 block">Etiquetas:</span>
-              <div className="flex flex-wrap gap-2">
-                {categoria.etiquetas.map((et) => (
-                  <Badge
-                    key={et.idEtiqueta}
-                    variant="outline"
-                    className="flex items-center gap-1"
-                  >
-                    <ChevronRight className="h-3 w-3" />
-                    {et.nombre}
-                  </Badge>
-                ))}
+              {/* DERECHA: Especialidades y Etiquetas */}
+              <div className="space-y-6">
+                {categoria.especialidades && categoria.especialidades.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary mb-3">Especialidades</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {categoria.especialidades.map((esp) => (
+                        <Badge
+                          key={esp.idEspecialidad}
+                          variant="secondary"
+                          className="flex items-center gap-1 px-3 py-1"
+                        >
+                          <ChevronRight className="h-3 w-3" />
+                          {esp.nombre}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {categoria.etiquetas && categoria.etiquetas.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary mb-3">Etiquetas</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {categoria.etiquetas.map((et) => (
+                        <Badge
+                          key={et.idEtiqueta}
+                          variant="outline"
+                          className="flex items-center gap-1 px-3 py-1"
+                        >
+                          <ChevronRight className="h-3 w-3" />
+                          {et.nombre}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          )}
-        </div>
+          </CardContent>
+        </Card>
+
+        <Button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 bg-accent hover:bg-accent/90 mt-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Regresar
+        </Button>
       </div>
-    </CardContent>
-  </Card>
-
-  <Button
-    type="button"
-    onClick={() => navigate(-1)}
-    className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6"
-  >
-    <ArrowLeft className="w-4 h-4" />
-    Regresar
-  </Button>
-</div>
-
     );
 }

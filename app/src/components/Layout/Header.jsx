@@ -17,6 +17,7 @@ import {
   User,
   LaptopMinimalCheck,
   FolderCode,
+  TicketCheck,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +50,7 @@ const navItems = [
 const mantItems = [
   { title: "Listado de Tecnicos", 
     href: "/tecnico/table",
-    icon: <Film className="h-4 w-4" /> },
+    icon: <User className="h-4 w-4" /> },
   {
     title: "Listado de Categorias",
     href: "/categoria/table",
@@ -58,7 +59,7 @@ const mantItems = [
  {
   title: "Listado de Tickets",
   href: "/ticket/table/1", // ID del usuario que quieras probar
-  icon: <Filter className="h-4 w-4" />,
+  icon: <TicketCheck className="h-4 w-4" />,
 },
  {
   title: "Asignaciones",
