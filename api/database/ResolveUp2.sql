@@ -473,6 +473,18 @@ VALUES
 ('Asignación de Ticket', 'Se le ha asignado el ticket ID 10', NOW(), 1, 5, NULL),
 ('Asignación de Ticket', 'Se le ha asignado el ticket ID 11', NOW(), 1, 3, NULL);
 
+INSERT INTO TicketImagen (ruta, fechaSubida, idTicket, idHistorialEstado)
+VALUES
+('uploads/Problema_con_Usuarios.webp', NOW(), 1, 1),
+('uploads/Laptop_no_enciende.webp', NOW(), 2, 2),
+('uploads/Wifi_intermitente.webp', NOW(), 3, 3),
+('uploads/Antivirus_desactualizado.webp', NOW(), 4, 4),
+('uploads/Correo_no_funciona.webp', NOW(), 5, 5),
+('uploads/Monitor_no_responde.webp', NOW(), 6, 6),
+('uploads/VPN_no_conecta.webp', NOW(), 7, 7),
+('uploads/Acceso_no_autorizado.webp', NOW(), 8, 8),
+('uploads/Proyector_falla.webp', NOW(), 9, 9),
+('uploads/Problema_con_Aula_Virtual.jpg', NOW(), 10, 10);
 
  
 -- ================= TRIGGERS   =================
@@ -563,7 +575,7 @@ BEGIN
     	IF NEW.idTecnico IS NOT NULL THEN
         	UPDATE Tecnicos
         	SET cargaTrabajo = cargaTrabajo + 1
-        	WHERE id = NEW.idTecnico;
+        	WHERE idUsuario = NEW.idTecnico;
     	END IF;
  
     	-- Crear notificación para el técnico

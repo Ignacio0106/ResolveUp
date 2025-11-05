@@ -23,7 +23,7 @@ class TicketModel
         // Instancia del enlace a BD
         $response = [];
 
-        // 1️⃣ Información principal del ticket
+        // Información principal del ticket
         $vSqlTicket = "
             SELECT 
                 t.id AS idTicket,
@@ -51,7 +51,7 @@ class TicketModel
         $ticket = $this->enlace->ExecuteSQL($vSqlTicket);
         $response['ticket'] = $ticket[0] ?? null;
 
-        // 2️⃣ Historial de estados con observaciones e imágenes
+        // Historial de estados con observaciones e imágenes
         $vSqlHistorial = "
             SELECT 
                 h.id AS idHistorial,
@@ -71,7 +71,9 @@ class TicketModel
         $historial = $this->enlace->ExecuteSQL($vSqlHistorial);
         $response['historial'] = $historial;
 
-        // 3️⃣ Valoraciones del ticket
+        // imagenes 
+        
+        //  Valoraciones del ticket
         $vSqlValoraciones = "
             SELECT 
                 pv.descripcion AS puntaje,
@@ -151,7 +153,8 @@ class TicketModel
         $historial = $this->enlace->ExecuteSQL($vSqlHistorial);
         $response['historial'] = $historial;
 
-        // 3️⃣ Valoraciones del ticket
+        //
+        //  Valoraciones del ticket
         $vSqlValoraciones = "
             SELECT 
                 pv.descripcion AS puntaje,
@@ -179,59 +182,33 @@ class TicketModel
     }
 }
 
-//     public function listadoDetalle() {
-//     try {
-//         // Consulta SQL que devuelve todos los tickets
-//         $vSQL = "
-//             SELECT 
-//                 t.id AS idTicket,
-//                 t.titulo,
-//                 t.descripcion,
-//                 t.fechaCreacion,
-//                 u.nombre AS usuarioSolicitante,
-//                 CASE 
-//                     WHEN u.idRol = 1 THEN 'Administrador'
-//                     WHEN u.idRol = 2 THEN 'Cliente'  -- Rol del creador
-//                     WHEN u.idRol = 3 THEN 'Cliente'
-//                     ELSE 'Desconocido'
-//                 END AS rolUsuario,
-//                 CONCAT('http://localhost:81/Proyecto/api/ticket/get/', t.id) AS enlace
-//             FROM Tickets t
-//             JOIN Usuario u ON t.idUsuario = u.id
-//             ORDER BY t.fechaCreacion DESC
-//         ";
 
-//         $resultado = $this->enlace->ExecuteSQL($vSQL);
-
-//         return [
-//             "success" => true,
-//             "status" => 200,
-//             "message" => "Tickets encontrados",
-//             "data" => $resultado
-//         ];
-
-//     } catch (Exception $e) {
-//         handleException($e);
-//     }
-// }
-
-public function listadoDetalle($idUsuario) {
+public function listadoDetalle() {
     try {
+       
+        $idUsuario = 1;
+
         // Obtener el rol del usuario
-        $vSQLRol = "SELECT idRol, nombre FROM Usuario WHERE id = $idUsuario";
-        $rolResultado = $this->enlace->ExecuteSQL($vSQLRol);
+        $vSQLRol = "
+    SELECT u.idRol, r.nombre AS nombreRol, u.nombre AS nombreUsuario
+    FROM Usuario u
+    INNER JOIN Rol r ON u.idRol = r.id
+    WHERE u.id = $idUsuario
+";
+$rolResultado = $this->enlace->ExecuteSQL($vSQLRol);
 
-        if (empty($rolResultado)) {
-            return [
-                "success" => false,
-                "status" => 404,
-                "message" => "Usuario no encontrado",
-                "data" => null
-            ];
-        }
+if (empty($rolResultado)) {
+    return [
+        "success" => false,
+        "status" => 404,
+        "message" => "Usuario no encontrado",
+        "data" => null
+    ];
+}
 
-        $rolUsuario = $rolResultado[0]->idRol;
-        $nombreUsuario = $rolResultado[0]->nombre;
+$rolUsuario = $rolResultado[0]->idRol;
+$nombreUsuario = $rolResultado[0]->nombreUsuario;
+$rol = $rolResultado[0]->nombreRol;
 
         // Construir WHERE según rol
         $where = "";
@@ -260,7 +237,7 @@ public function listadoDetalle($idUsuario) {
                 t.fechaCreacion,
                 u.nombre AS usuarioSolicitante,
                 r.nombre AS rolUsuario,
-                CONCAT('http://localhost:81/Proyecto/api/ticket/get/', t.id) AS enlace
+                CONCAT('http://localhost:81/Proyecto/api/ticket/') AS ruta
             FROM Tickets t
             JOIN Usuario u ON t.idUsuario = u.id
             JOIN Rol r ON u.idRol = r.id
@@ -268,15 +245,15 @@ public function listadoDetalle($idUsuario) {
             ORDER BY t.fechaCreacion DESC
         ";
 
-        $resultado = $this->enlace->ExecuteSQL($vSQL);
+        $result = $this->enlace->ExecuteSQL($vSQL);
 
         return [
             "success" => true,
             "status" => 200,
-            "message" => "Tickets encontrados",
+            "message" => "Listado obtenido correctamente",
             "usuario" => $nombreUsuario,
-            "rol" => $rolUsuario == 1 ? "Administrador" : ($rolUsuario == 2 ? "Técnico" : "Cliente"),
-            "data" => $resultado
+            "rol" => $rol,
+            "data" => $result
         ];
 
     } catch (Exception $e) {
@@ -288,6 +265,7 @@ public function listadoDetalle($idUsuario) {
         ];
     }
 }
+
 
 
 

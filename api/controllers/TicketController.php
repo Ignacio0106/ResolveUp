@@ -53,14 +53,14 @@ class ticket
         }
     }
 
-    public function listadoDetalle($id)
+    public function listadoDetalle()
     {
         try {
             $response = new Response();
             //Instancia del modelo
             $movie = new TicketModel();
             //Acción del modelo a ejecutar
-            $result = $movie->listadoDetalle($id);
+            $result = $movie->listadoDetalle();
             //Dar respuesta
             $response->toJSON($result);
         } catch (Exception $e) {

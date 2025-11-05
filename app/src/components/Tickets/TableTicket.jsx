@@ -30,7 +30,6 @@ const ticketColumns = [
 ];
 
 export default function TableTicket() {
-  const { id } = useParams(); // idUsuario desde la URL
   const [tickets, setTickets] = useState([]);
   const [usuario, setUsuario] = useState("");
   const [rol, setRol] = useState("");
@@ -41,7 +40,7 @@ export default function TableTicket() {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const response = await TicketService.getListadoDetalle(id);
+        const response = await TicketService.getListadoDetalle();
         const responseData = response?.data?.data || {};
         const ticketsArray = responseData.data || [];
 
@@ -55,7 +54,7 @@ export default function TableTicket() {
       }
     };
     fetchTickets();
-  }, [id]);
+  }, []);
 
   if (loading) return <LoadingGrid type="grid" />;
   if (error) return <ErrorAlert title="Error" message={error} />;

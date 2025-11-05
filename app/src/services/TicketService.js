@@ -7,8 +7,8 @@ const BASE_URL = import.meta.env.VITE_BASE_URL + 'ticket';
 class TicketService {
   // Listado detallado de tickets
   // GET: /ticket/listadoDetalle
-  getListadoDetalle(id) {
-    return axios.get(`${BASE_URL}/listadoDetalle/${id}`);
+  getListadoDetalle() {
+    return axios.get(`${BASE_URL}/listadoDetalle`);
   }
 
   // Obtener detalle de un ticket por ID

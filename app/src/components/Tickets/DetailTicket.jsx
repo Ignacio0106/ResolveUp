@@ -115,34 +115,51 @@ export function DetailTicket() {
                     </CardContent>
                 </Card>
 
-                {/* Historial en tabla */}
-                <h2 className="text-2xl font-semibold mt-6 mb-4">Historial</h2>
-                {historial.length === 0 ? (
-                    <EmptyState message="No hay historial disponible." />
-                ) : (
-                    <div className="rounded-md border overflow-x-auto">
-                        <Table>
-                            <TableHeader className="bg-primary/50">
-                                <TableRow>
-                                    <TableHead>Estado Anterior</TableHead>
-                                    <TableHead>Estado Nuevo</TableHead>
-                                    <TableHead>Fecha</TableHead>
-                                    <TableHead>Observaciones</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {historial.map((h) => (
-                                    <TableRow key={h.idHistorial}>
-                                        <TableCell>{h.estadoAnterior}</TableCell>
-                                        <TableCell>{h.estadoNuevo}</TableCell>
-                                        <TableCell>{h.fecha}</TableCell>
-                                        <TableCell>{h.observaciones || "-"}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                )}
+              {/* Historial en tabla */}
+<h2 className="text-2xl font-semibold mt-6 mb-4">Historial</h2>
+{historial.length === 0 ? (
+  <EmptyState message="No hay historial disponible." />
+) : (
+  <div className="rounded-md border overflow-x-auto">
+    <Table>
+      <TableHeader className="bg-primary/50">
+        <TableRow>
+          <TableHead>Estado Anterior</TableHead>
+          <TableHead>Estado Nuevo</TableHead>
+          <TableHead>Fecha</TableHead>
+          <TableHead>Observaciones</TableHead>
+          <TableHead>Imagen</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {historial.map((h) => (
+          <TableRow key={h.idHistorial}>
+            <TableCell>{h.estadoAnterior}</TableCell>
+            <TableCell>{h.estadoNuevo}</TableCell>
+            <TableCell>{h.fecha}</TableCell>
+            <TableCell>{h.observaciones || "-"}</TableCell>
+            <TableCell>
+              {h.imagenes ? (
+                h.imagenes.split(",").map((img, i) => (
+                  <img
+                    key={i}
+                    src={`http://localhost/Proyecto/api/${img}`}
+                    alt="Evidencia"
+                    className="w-20 h-20 object-cover rounded-md border inline-block mr-2"
+                  />
+                ))
+              ) : (
+                <span>-</span>
+              )}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </div>
+)}
+
+
 
                 {/* Valoraciones */}
                 {/* Valoraciones en tabla */}

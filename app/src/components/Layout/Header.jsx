@@ -58,7 +58,7 @@ const mantItems = [
   },
  {
   title: "Listado de Tickets",
-  href: "/ticket/table/1", // ID del usuario que quieras probar
+  href: "/ticket/table", // ID del usuario que quieras probar
   icon: <TicketCheck className="h-4 w-4" />,
 },
  {

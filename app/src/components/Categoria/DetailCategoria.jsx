@@ -58,11 +58,11 @@ export function DetailCategoria() {
                 <h2 className="text-xl font-semibold text-primary mb-4">Información General</h2>
                 <div className="space-y-4">
                   <div className="flex flex-col gap-1">
-                    <span className="font-medium text-sm text-muted-foreground">TIEMPO MÁXIMO DE RESPUESTA</span>
+                    <span className="font-medium text-sm text-muted-foreground">Tiempo máximo de respuesta</span>
                     <span className="text-lg font-semibold">{categoria.tiempoMaxRespuesta} minutos</span>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="font-medium text-sm text-muted-foreground">TIEMPO MÁXIMO DE RESOLUCIÓN</span>
+                    <span className="font-medium text-sm text-muted-foreground">Tiempo máximo de resolución</span>
                     <span className="text-lg font-semibold">{categoria.tiempoMaxResolucion} minutos</span>
                   </div>
                 </div>

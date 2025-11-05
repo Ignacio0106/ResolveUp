@@ -29,7 +29,7 @@ const rutas=createBrowserRouter([
      { path: "categoria/table", element: <TableCategorias /> }, // lista categorías
       { path: "categoria/detail/:id", element: <DetailCategoria /> }, // detalle categoría
 
-      { path: "ticket/table/:id", element: <TableTicket /> }, // lista tickets
+      { path: "ticket/table", element: <TableTicket /> }, // lista tickets
       { path: "ticket/detail/:id", element: <DetailTicket /> }, // detalle ticket
 
       { path: "asignacion/table/:id", element: <TableAsignacion /> }, // lista asignaciones
