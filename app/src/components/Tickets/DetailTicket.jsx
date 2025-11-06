@@ -12,6 +12,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 export function DetailTicket() {
     const navigate = useNavigate();
     const { id } = useParams();
+    const BASE_URL = import.meta.env.VITE_BASE_URL + 'uploads';
     const [ticket, setTicket] = useState(null);
     const [historial, setHistorial] = useState([]);
     const [valoraciones, setValoraciones] = useState([]);
@@ -143,10 +144,17 @@ export function DetailTicket() {
                 h.imagenes.split(",").map((img, i) => (
                   <img
                     key={i}
-                    src={`http://localhost/Proyecto/api/${img}`}
+                    src={`${BASE_URL}/${img}`}
                     alt="Evidencia"
                     className="w-20 h-20 object-cover rounded-md border inline-block mr-2"
                   />
+
+                //   <img
+                //     key={i}
+                //     src={`${BASE_URL}/${h.data.historial.imagenes}`}
+                //     alt="Evidencia"
+                //     className="w-20 h-20 object-cover rounded-md border inline-block mr-2"
+                //   />
                 ))
               ) : (
                 <span>-</span>
