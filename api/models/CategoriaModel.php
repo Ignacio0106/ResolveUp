@@ -99,38 +99,36 @@ class CategoriaModel
     }
     }
     /*Peliculas de un actor*/
-    public function moviesByActor($id)
-    {
-        //Consulta SQL
-        $vSQL = "SELECT m.*, mc.role
-                From movie m, movie_cast mc, actor a
-                where a.id=mc.actor_id and m.id=mc.movie_id
-                and mc.actor_id=$id";
-        //Ejecutar la consulta
-        $vResultado = $this->enlace->ExecuteSQL($vSQL);
-        //Retornar resultado
-        return $vResultado;
-    }
+   public function create($objeto)
+{
+    try {
 
-    /*Crear pelicula*/
-    public function create($objeto)
-    {
-        $sql = "INSERT into movie(title, year, time, lang, director_id)" .
-            " VALUES ('$objeto->title', '$objeto->year', '$objeto->time', '$objeto->lang', $objeto->director_id)";
 
-        $idMovie = $this->enlace->executeSQL_DML_last(($sql)); //Hagarrar el id del insert de la pelicula creada
-        //---Generos---
-        //Crear los generos para asociarlos a la pelicula
-        foreach ($objeto->genres as $item) {
-            $sql = "insert into movie_genre(movie_id, genre_id) values($idMovie, $item)";
-            $vResultadoGenres = $this->enlace->executeSQL_DML($sql);
+        // 2️⃣ Insertar la categoría con el id del SLA recién creado
+        $sqlCategoria = "INSERT INTO Categoria (nombre, idSLA)
+                         VALUES ('$objeto->nombre', $objeto->idSLA)";
+        $idCategoria = $this->enlace->executeSQL_DML_last($sqlCategoria);
+
+        // 3️⃣ Insertar las etiquetas relacionadas
+        foreach ($objeto->etiquetas as $idEtiqueta) {
+            $sql = "INSERT INTO CategoriaEtiqueta (idCategoria, idEtiqueta)
+                    VALUES ($idCategoria, $idEtiqueta)";
+            $this->enlace->executeSQL_DML($sql);
         }
-        //---Actores---
-        foreach ($objeto->actors as $item) {
-            $sql = "insert into movie_cast(movie_id, actor_id, role) values($idMovie, $item->actor_id,'$item->role')";
-            $vResultadoGenres = $this->enlace->executeSQL_DML($sql);
+
+        // 4️⃣ Insertar las especialidades relacionadas
+        foreach ($objeto->especialidades as $idEsp) {
+            $sql = "INSERT INTO CategoriaEspecialidad (idCategoria, idEspecialidad)
+                    VALUES ($idCategoria, $idEsp)";
+            $this->enlace->executeSQL_DML($sql);
         }
-        //---Retornar pelicula creada---
-        return $this->get($idMovie);
+
+        // 5️⃣ Retornar la categoría completa con su SLA
+        return $this->get($idCategoria);
+
+    } catch (Exception $e) {
+        handleException($e);
     }
+}
+
 }

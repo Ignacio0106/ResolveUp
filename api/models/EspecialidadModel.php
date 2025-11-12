@@ -1,0 +1,65 @@
+<?php
+class EspecialidadesModel
+{
+    public $enlace;
+
+    public function __construct()
+    {
+        $this->enlace = new MySqlConnect();
+    }
+
+    // Listar todas las especialidades
+    public function all()
+    {
+        try {
+            $vSql = "SELECT 
+                        e.id, 
+                        e.nombre,
+                        CONCAT('http://localhost:81/Proyecto/api/especialidades/get/', e.id) AS enlaceAlDetalle
+                     FROM Especialidad e
+                     ORDER BY e.id DESC;";
+            return $this->enlace->ExecuteSQL($vSql);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    // Obtener una especialidad por id
+    public function get($id)
+    {
+        try {
+            $vSql = "SELECT id, nombre
+                     FROM Especialidad
+                     WHERE id = $id;";
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado ? $vResultado[0] : null;
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    // Crear una nueva especialidad
+    public function create($objeto)
+    {
+        try {
+            $nombre = $objeto->nombre;
+            $vSql = "INSERT INTO Especialidad (nombre) VALUES ('$nombre')";
+            $this->enlace->ExecuteSQL_DML($vSql);
+            return ["success" => true, "message" => "Especialidad creada correctamente"];
+        } catch (Exception $e) {
+            return ["success" => false, "message" => $e->getMessage()];
+        }
+    }
+
+    // Eliminar una especialidad
+    public function delete($id)
+    {
+        try {
+            $vSql = "DELETE FROM Especialidad WHERE id = $id";
+            $this->enlace->ExecuteSQL_DML($vSql);
+            return ["success" => true, "message" => "Especialidad eliminada correctamente"];
+        } catch (Exception $e) {
+            return ["success" => false, "message" => $e->getMessage()];
+        }
+    }
+}

@@ -14,6 +14,8 @@ import { DetailTicket } from './components/Tickets/DetailTicket'
 import TableTecnico from './components/Tecnico/TableTecnico'
 import { TableAsignacion } from './components/Asignacion/TableAsignacion'
 import { DetailAsignacion } from './components/Asignacion/DetailAsignacion'
+import { CreateUsuario } from './components/Usuario/CreateUsuario'
+import CreateCategoria from './components/Categoria/CreateCategoria'
 //Crear las rutas
 const rutas=createBrowserRouter([
   {
@@ -28,12 +30,15 @@ const rutas=createBrowserRouter([
 
      { path: "categoria/table", element: <TableCategorias /> }, // lista categorías
       { path: "categoria/detail/:id", element: <DetailCategoria /> }, // detalle categoría
+      { path: "categoria/create", element: <CreateCategoria /> },
 
       { path: "ticket/table", element: <TableTicket /> }, // lista tickets
       { path: "ticket/detail/:id", element: <DetailTicket /> }, // detalle ticket
 
       { path: "asignacion/table/:id", element: <TableAsignacion /> }, // lista asignaciones
       { path: "asignacion/detail/:id", element: <DetailAsignacion /> }, // detalle asignación
+
+      { path: "usuario/create", element: <CreateUsuario /> }
     ]
   }
 ])
