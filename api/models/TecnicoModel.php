@@ -90,38 +90,36 @@ class TecnicoModel
     }
 }
 
+public function create($objeto)
+{
+    $sql = "INSERT INTO Usuario (nombre, correo, contraseña, idRol) " .
+           "VALUES ('$objeto->nombre', '$objeto->correo', '$objeto->password', 2)";
 
+    // Obtener id del usuario recién insertado
+    $idUsuario = $this->enlace->executeSQL_DML_last($sql);
 
-    // /*Obtener los actores de una pelicula */
-    // public function getActorMovie($idMovie)
-    // {
-    //     try {
-    //         //Consulta SQL
-    //         $vSQL = "SELECT g.id, g.fname, g.lname, mg.role".
-    //         " FROM actor g, movie_cast mg".
-    //         " where g.id=mg.actor_id and mg.movie_id=$idMovie;";            
-    //         //Ejecutar la consulta
-    //         $vResultado = $this->enlace->executeSQL($vSQL);
-    //         //Retornar el resultado
-    //         return $vResultado;
-    //     } catch (Exception $e) {
-    //         handleException($e);
-    //     }
-    // }
-    
-    // /*Obtener información de un actor específico, incluyendo las películas en las que participa y los roles */
-    // public function getActorMovies($id){
-    //     $movieM= new MovieModel();
-    //     //Consulta SQL
-    //     $vSQL = "Select * From actor where id=$id";
-    //     //Ejecutar la consulta
-    //     $vResultado= $this->enlace->ExecuteSQL($vSQL);
-    //     if(!empty($vResultado)){
-    //         $vResultado = $vResultado[0];
-    //         $vResultado->movies=$movieM->moviesByActor($id);
-    //     }
-    //     //Retornar resultado
-    //     return $vResultado;
-    // }
-    
+    $sql = "INSERT INTO Tecnicos (idUsuario, disponibilidad, cargaTrabajo) " .
+           "VALUES ($idUsuario, $objeto->estado, 0)";
+
+    // Obtener id del técnico
+    $idTecnico = $this->enlace->executeSQL_DML_last($sql);
+
+    // ======================================
+    // 3. Insertar ESPECIALIDADES (varias)
+    // Igual a "genres" en tu ejemplo de movie
+    // ======================================
+
+    foreach ($objeto->especialidades as $idEsp) {
+        $sql = "INSERT INTO TecnicoEspecialidad (idTecnico, idEspecialidad) " .
+               "VALUES ($idTecnico, $idEsp)";
+        $this->enlace->executeSQL_DML($sql);
+    }
+
+    // ======================================
+    // RETORNAR el técnico recién creado
+    // Idéntico a tu ejemplo de movie
+    // ======================================
+    return $this->get($idTecnico);
+}
+
 }

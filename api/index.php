@@ -29,12 +29,21 @@ require_once "models/UsuarioModel.php";
 require_once "models/MetodoModel.php";
 require_once "models/ReglaModel.php";
 require_once "models/EstadoModel.php";
+require_once "models/RoleModel.php";
+require_once "models/EspecialidadModel.php";
+require_once "models/EtiquetaModel.php";
+require_once "models/SlaModel.php";
 
 /***--- Agregar todos los controladores*/
 require_once "controllers/CategoriaController.php";
 require_once "controllers/TecnicoController.php";
 require_once "controllers/TicketController.php";
 require_once "controllers/AsignacionController.php";
+require_once "controllers/UsuarioController.php";
+require_once "controllers/RoleController.php";
+require_once "controllers/EspecialidadController.php";
+require_once "controllers/EtiquetaController.php";
+require_once "controllers/SlaContoller.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";

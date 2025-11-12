@@ -66,6 +66,11 @@ const mantItems = [
   href: "/asignacion/table/1",
   icon: <FolderCode className="h-4 w-4" />,
 },
+ {
+  title: "Crear Usuario",
+  href: "usuario/create",
+  icon: <FolderCode className="h-4 w-4" />,
+},
 ];
 
 const userItems = [
