@@ -269,6 +269,52 @@ $rol = $rolResultado[0]->nombreRol;
 
 
 
+    public function create($objeto)
+    {
+        //Consulta sql
+        $sql = "INSERT INTO Tickets (titulo, descripcion, fechaCreacion, idEstado, idPrioridad, idUsuario, idCategoria)" .
+            " Values ('$objeto->titulo','$objeto->descripcion','$objeto->fechaCreacion','$objeto->idEstado','$objeto->idPrioridad',
+                    '$objeto->idUsuario','$objeto->idCategoria')";
+        //Ejecutar la consulta
+        $this->enlace->executeSQL_DML_last($sql);
+        //Retornar resultado
+        return ["success" => true, "status" => 201, "message" => "Ticket creado"];
+    }
 
+    public function update($objeto)
+    {
+        //Consulta sql
+        $sql = "Update Tickets SET titulo ='$objeto->titulo'," .
+            "descripcion ='$objeto->descripcion',fechaCreacion ='$objeto->fechaCreacion'," .
+            "idEstado='$objeto->idEstado',idPrioridad='$objeto->idPrioridad'," .
+            "idUsuario='$objeto->idUsuario',idCategoria='$objeto->idCategoria'" .
+            " Where id=$objeto->id  ";
+
+        //Ejecutar la consulta
+        $cResults = $this->enlace->executeSQL_DML($sql);
+        //--- Generos ---
+        //Eliminar generos asociados a la pelicula
+        $sql = "Delete from movie_genre where movie_id=$objeto->id";
+        $vResultadoD = $this->enlace->executeSQL_DML($sql); 
+        //Insertar generos
+        foreach ($objeto->genres as $item) {
+            $sql = "Insert into movie_genre(movie_id,genre_id)" .
+                " Values($objeto->id,$item)";
+            $vResultadoG = $this->enlace->executeSQL_DML($sql);
+        }
+        //--- Actores ---
+        //Eliminar actores asociados a la pelicula
+        $sql = "Delete from movie_cast where movie_id=$objeto->id";
+        $vResultadoD = $this->enlace->executeSQL_DML($sql);
+        //Crear actores
+        foreach ($objeto->actors as $item) {
+            $sql = "Insert into movie_cast(movie_id,actor_id,role)" .
+                " Values($objeto->id, $item->actor_id, '$item->role')";
+            $vResultadoA = $this->enlace->executeSQL_DML($sql);
+        }
+
+        //Retornar pelicula
+        return $this->get($objeto->id);
+    }
 
 }
