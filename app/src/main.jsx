@@ -16,6 +16,8 @@ import { TableAsignacion } from './components/Asignacion/TableAsignacion'
 import { DetailAsignacion } from './components/Asignacion/DetailAsignacion'
 import { CreateUsuario } from './components/Usuario/CreateUsuario'
 import CreateCategoria from './components/Categoria/CreateCategoria'
+import CreateTicket from './components/Tickets/CreateTicket'
+import Login from './components/Iniciar/Login'
 //Crear las rutas
 const rutas=createBrowserRouter([
   {
@@ -35,10 +37,14 @@ const rutas=createBrowserRouter([
       { path: "ticket/table", element: <TableTicket /> }, // lista tickets
       { path: "ticket/detail/:id", element: <DetailTicket /> }, // detalle ticket
 
-      { path: "asignacion/table/:id", element: <TableAsignacion /> }, // lista asignaciones
+      { path: "asignacion/table", element: <TableAsignacion /> }, // lista asignaciones
       { path: "asignacion/detail/:id", element: <DetailAsignacion /> }, // detalle asignación
 
-      { path: "usuario/create", element: <CreateUsuario /> }
+      { path: "usuario/create", element: <CreateUsuario /> },
+
+      { path: "ticket/create", element: <CreateTicket /> },
+
+      { path: "iniciar/login", element: <Login /> }
     ]
   }
 ])

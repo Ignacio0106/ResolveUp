@@ -1,16 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import TicketService from '../../services/TicketService';
-import { ErrorAlert } from "../ui/custom/ErrorAlert";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { LoadingGrid } from '../ui/custom/LoadingGrid';
-import { EmptyState } from '../ui/custom/EmptyState';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
 
-export function DetailTicket() {
-    const navigate = useNavigate();
+// UI (shadcn)
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+// Servicios
+import SlaService from "@/services/SlaService";
+import EtiquetaService from "@/services/EtiquetaService";
+import EspecialidadService from "@/services/EspecialidadService";
+import CategoriasService from "@/services/CategoriasService";
+import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
+import { useNavigate, useParams } from "react-router-dom";
+import TicketService from "@/services/TicketService";
+
+// Validación con Yup
+const schema = yup.object().shape({
+  nombre: yup.string().required("El nombre es obligatorio"),
+  idSLA: yup.number().typeError("Debe seleccionar un SLA").required("Debe seleccionar un SLA"),
+  etiquetas: yup.array().min(1, "Seleccione al menos una etiqueta"),
+  especialidades: yup.array().min(1, "Seleccione al menos una especialidad"),
+});
+
+export default function CreateTicket() {
+  const navigate = useNavigate();
     const { id } = useParams();
     const BASE_URL = import.meta.env.VITE_BASE_URL + 'uploads';
     const [ticket, setTicket] = useState(null);
@@ -22,7 +41,7 @@ export function DetailTicket() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await TicketService.getTicketById(id);
+                const response = await TicketService.createTicket();
                 console.log("API Response:", response.data.data);
 
                 if (response.data.success) {

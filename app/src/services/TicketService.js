@@ -16,6 +16,21 @@ class TicketService {
   getTicketById(ticketId) {
     return axios.get(`${BASE_URL}/get/${ticketId}`);
   }
+
+  // Crear un nuevo ticket
+  // POST: /ticket/create
+  createTicket(ticketData) {
+    return axios.post(BASE_URL, JSON.stringify(ticketData));
+  }
+  // Actualizar un ticket existente
+  // PUT: /ticket/update/{id}
+  updateTicket(ticketData) {
+    return axios({
+      method: 'put',
+      url: BASE_URL,
+      data: JSON.stringify(ticketData)
+    });
+  }
 }
 
 export default new TicketService();
