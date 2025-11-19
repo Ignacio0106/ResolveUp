@@ -83,12 +83,10 @@ const navigate = useNavigate();
   cargaTrabajo: 0,
 };
 
-    console.log("📌 Payload FINAL que se enviará al backend:", payload);
 
     try {
       const response = await TecnicoService.createTecncio(payload);
 
-      console.log("📌 Respuesta del backend:", response.data);
 
       if (response.data.success) {
         toast.success("Técnico creado correctamente");
@@ -96,11 +94,11 @@ const navigate = useNavigate();
         reset();
         navigate("/tecnico/table");
       } else {
-        toast.error(response.data.message);
+        toast.error("Técnico no pudo ser creado");
+        
       }
     } catch (err) {
-      toast.error("Error al crear técnico");
-      console.error("❌ Error del submit:", err);
+      toast.error("Error al crear técnico" + err);
     }
   };
 
@@ -158,7 +156,6 @@ const navigate = useNavigate();
               name="especialidades"
               control={control}
               render={({ field }) => {
-                console.log("📌 field.value (especialidades):", field.value);
                 return (
                   <CustomMultiSelect
                     field={field}

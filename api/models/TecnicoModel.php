@@ -84,14 +84,17 @@ class TecnicoModel
 public function createTecnico($objeto)
 {
     try {
-
         $usuarioLogueadoId = 1;
 
         $sqlRol = "SELECT idRol FROM Usuario WHERE id = $usuarioLogueadoId";
         $resRol = $this->enlace->ExecuteSQL($sqlRol);
 
-        if (!$resRol) {
-            throw new Exception("Usuario logueado no existe");
+        if (!is_array($resRol) || count($resRol) === 0) {
+            return [
+                "success" => false,
+                "status" => 404,
+                "message" => "El usuario configurado no existe"
+            ];
         }
 
         $rolLogueado = (int)$resRol[0]->idRol;
@@ -104,7 +107,6 @@ public function createTecnico($objeto)
             ];
         }
 
-
         $nombre = $objeto->nombre;
         $correo = $objeto->correo;
         $password = $objeto->password;
@@ -112,7 +114,6 @@ public function createTecnico($objeto)
         $sql = "INSERT INTO Usuario (nombre, correo, contraseña, idRol)
                 VALUES ('$nombre', '$correo', '$password', 2)";
         $idUsuario = $this->enlace->executeSQL_DML_last($sql);
-
 
         $disponibilidad = isset($objeto->disponibilidad) ? (int)$objeto->disponibilidad : 1;
         $cargaTrabajo = isset($objeto->cargaTrabajo) ? (int)$objeto->cargaTrabajo : 0;
@@ -123,37 +124,32 @@ public function createTecnico($objeto)
 
         $especialidadesInvalidas = [];
 
-
         foreach ($objeto->especialidades as $esp) {
 
             if (is_numeric($esp)) {
                 $idEsp = (int)$esp;
-            }
-            elseif (isset($esp->idEspecialidad)) {
+            } elseif (isset($esp->idEspecialidad)) {
                 $idEsp = (int)$esp->idEspecialidad;
             } else {
                 continue;
             }
 
-
             $sqlVal = "SELECT id FROM Especialidad WHERE id = $idEsp";
             $resVal = $this->enlace->ExecuteSQL($sqlVal);
 
-            if (!$resVal) {
+            if (!is_array($resVal) || count($resVal) === 0) {
                 $especialidadesInvalidas[] = $idEsp;
                 continue;
             }
-
 
             $sqlEsp = "INSERT INTO TecnicoEspecialidad (idTecnico, idEspecialidad)
                        VALUES ($idTecnico, $idEsp)";
             $this->enlace->executeSQL_DML($sqlEsp);
         }
 
-
         $mensaje = "Técnico creado correctamente";
         if (!empty($especialidadesInvalidas)) {
-            $mensaje .= ". Algunas especialidades no se pudieron asignar: " . implode(", ", $especialidadesInvalidas);
+            $mensaje .= ". Especialidades inválidas: " . implode(", ", $especialidadesInvalidas);
         }
 
         return [
@@ -180,6 +176,7 @@ public function createTecnico($objeto)
         ];
     }
 }
+
 
 
 
