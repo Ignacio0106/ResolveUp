@@ -1,42 +1,31 @@
 <?php
 class CategoriaModel
 {
-    //Conectarse a la BD
     public $enlace;
 
     public function __construct()
     {
         $this->enlace = new MySqlConnect();
     }
-    /**
-     * Listar peliculas
-     * @param 
-     * @return $vResultado - Lista de objetos
-     */
+
     public function all()
     {
-        //Consulta SQL
+
         $vSQL = "SELECT t.id, t.nombre,
         CONCAT('http://localhost:81/Proyecto/api/categoria/get/', t.id) AS enlaceAlDetalle
         FROM categoria t
         ORDER BY t.id DESC;";
         
-        //Ejecutar la consulta
+
         $vResultado = $this->enlace->ExecuteSQL($vSQL);
 
-        //Retornar la respuesta
+
         return $vResultado;
     }
-    /**
-     * Obtener una pelicula
-     * @param $id de la pelicula
-     * @return $vresultado - Objeto pelicula
-     */
-    //
+
     public function DetalleCategorias()
     {
         try {
-            //Consulta sql
 			$vSql = "SELECT 
                     c.id AS idCategoria,
                     c.nombre AS nombreCategoria,
@@ -51,9 +40,9 @@ class CategoriaModel
                  LEFT JOIN CategoriaEtiqueta cet ON c.id = cet.idCategoria
                  LEFT JOIN Etiqueta et ON cet.idEtiqueta = et.id
                  GROUP BY c.id, c.nombre, s.tiempoRespuesta, s.tiempoResolucion;";
-            //Ejecutar la consulta
+
 			$vResultado = $this->enlace->ExecuteSQL ( $vSql);
-			// Retornar el objeto
+
 			return $vResultado;
 		} catch (Exception $e) {
             handleException($e);
@@ -63,7 +52,6 @@ class CategoriaModel
     public function get($id)
     {
         try {
-        // Consulta principal de la categoría
         $vSqlCategoria = "SELECT 
             c.id AS idCategoria,
             c.nombre AS nombreCategoria,
@@ -75,7 +63,7 @@ class CategoriaModel
         $vResultadoCategoria = $this->enlace->ExecuteSQL($vSqlCategoria);
         $categoria = $vResultadoCategoria[0];
 
-        // Obtener especialidades
+
         $vSqlEsp = "SELECT 
             e.id AS idEspecialidad,
             e.nombre AS nombre
@@ -84,7 +72,7 @@ class CategoriaModel
         WHERE ce.idCategoria = $id;";
         $categoria->especialidades = $this->enlace->ExecuteSQL($vSqlEsp);
 
-        // Obtener etiquetas
+
         $vSqlEtiq = "SELECT 
             et.id AS idEtiqueta,
             et.nombre AS nombre
@@ -98,37 +86,66 @@ class CategoriaModel
         handleException($e);
     }
     }
-    /*Peliculas de un actor*/
+
    public function create($objeto)
 {
     try {
 
 
-        // 2️⃣ Insertar la categoría con el id del SLA recién creado
+
         $sqlCategoria = "INSERT INTO Categoria (nombre, idSLA)
                          VALUES ('$objeto->nombre', $objeto->idSLA)";
         $idCategoria = $this->enlace->executeSQL_DML_last($sqlCategoria);
 
-        // 3️⃣ Insertar las etiquetas relacionadas
+
         foreach ($objeto->etiquetas as $idEtiqueta) {
             $sql = "INSERT INTO CategoriaEtiqueta (idCategoria, idEtiqueta)
                     VALUES ($idCategoria, $idEtiqueta)";
             $this->enlace->executeSQL_DML($sql);
         }
 
-        // 4️⃣ Insertar las especialidades relacionadas
+
         foreach ($objeto->especialidades as $idEsp) {
             $sql = "INSERT INTO CategoriaEspecialidad (idCategoria, idEspecialidad)
                     VALUES ($idCategoria, $idEsp)";
             $this->enlace->executeSQL_DML($sql);
         }
 
-        // 5️⃣ Retornar la categoría completa con su SLA
+
         return $this->get($idCategoria);
 
     } catch (Exception $e) {
         handleException($e);
     }
 }
+
+public function update($objeto)
+{
+
+    $sql = "UPDATE Categoria SET nombre='$objeto->nombre', idSLA=$objeto->idSLA WHERE id=$objeto->id";
+    $cResults = $this->enlace->executeSQL_DML($sql);
+
+
+    $sql = "DELETE FROM CategoriaEtiqueta WHERE idCategoria=$objeto->id";
+    $vResultadoD = $this->enlace->executeSQL_DML($sql);
+
+    foreach ($objeto->etiquetas as $idEtiqueta) {
+        $sql = "INSERT INTO CategoriaEtiqueta(idCategoria, idEtiqueta) VALUES($objeto->id, $idEtiqueta)";
+        $vResultadoE = $this->enlace->executeSQL_DML($sql);
+    }
+
+
+    $sql = "DELETE FROM CategoriaEspecialidad WHERE idCategoria=$objeto->id";
+    $vResultadoD = $this->enlace->executeSQL_DML($sql);
+
+
+    foreach ($objeto->especialidades as $idEsp) {
+        $sql = "INSERT INTO CategoriaEspecialidad(idCategoria, idEspecialidad) VALUES($objeto->id, $idEsp)";
+        $vResultadoS = $this->enlace->executeSQL_DML($sql);
+    }
+
+    return $this->get($objeto->id);
+}
+
 
 }

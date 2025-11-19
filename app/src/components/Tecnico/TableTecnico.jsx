@@ -66,7 +66,7 @@ export default function TableTecnico() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button asChild variant="outline" size="icon" className="text-primary">
-                                <Link to="/movie/create">
+                                <Link to="/tecnico/create">
                                     <Plus className="h-4 w-4" />
                                 </Link>
                             </Button>
@@ -96,8 +96,14 @@ export default function TableTecnico() {
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
-                                                <Button variant="ghost" size="icon">
-                                                    <Edit className="h-4 w-4 text-primary" />
+                                                <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() =>
+                                                navigate(`/tecnico/update/${row.id}`)
+                                                }
+                                                >
+                                                <Edit className="h-4 w-4 text-primary" />
                                                 </Button>
                                             </TooltipTrigger>
                                             <TooltipContent>Actualizar</TooltipContent>

@@ -25,27 +25,20 @@ class etiquetas
         }
     }
 
-    public function create()
-    {
+    public function create(){
         try {
-            $data = json_decode(file_get_contents("php://input"));
-            $model = new EtiquetasModel();
-            $result = $model->create($data);
-            $response = new Response();
-            $response->toJSON($result);
+             $response = new Response();
+             $request= new Request();
+             //Obtener JSON  de la solicitud
+             $inputJSON=$request->getJSON();
+             //Instancua de modelo
+             $movie = new EtiquetasModel();
+             //Metodo del modelo
+             $result =$movie->create($inputJSON);
+             //Dar respuesta
+             $response->toJSON($result);
         } catch (Exception $e) {
-            handleException($e);
-        }
-    }
-
-    public function delete($id)
-    {
-        try {
-            $model = new EtiquetasModel();
-            $result = $model->delete($id);
-            $response = new Response();
             $response->toJSON($result);
-        } catch (Exception $e) {
             handleException($e);
         }
     }

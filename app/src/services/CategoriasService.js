@@ -13,10 +13,23 @@ class CategoriaService {
     return axios.get(`${BASE_URL}/${categoriaId}`);
   }
 
+      getDetalleCategoriaa(id) {
+    return axios.get(`${BASE_URL}/get/${id}`);
+  }
   create(payload) {
     return axios.post(BASE_URL, payload, {
       headers: { 'Content-Type': 'application/json' }
     });
+  }
+
+
+updateCategoria(Movie) {
+    return axios({
+      method: 'put',
+      url: BASE_URL,
+      data: JSON.stringify(Movie)
+
+    })
   }
 }
 

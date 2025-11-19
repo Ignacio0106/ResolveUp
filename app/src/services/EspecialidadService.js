@@ -11,9 +11,13 @@ class EspecialidadesService {
     return axios.get(`${BASE_URL}get/${id}`);
   }
 
-  create(data) {
-    return axios.post(`${BASE_URL}create`, JSON.stringify(data));
-  }
+
+
+  
+create(data) {
+  return axios.post(`${BASE_URL}create`, data);
+}
+
 
   delete(id) {
     return axios.delete(`${BASE_URL}delete/${id}`);

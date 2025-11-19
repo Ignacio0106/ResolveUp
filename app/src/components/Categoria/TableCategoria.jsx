@@ -22,7 +22,6 @@ import { LoadingGrid } from "../ui/custom/LoadingGrid";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { EmptyState } from "../ui/custom/EmptyState";
 
-// Headers de la tabla
 const categoriaColumns = [
     { key: "nombre", label: "Nombre" },
     { key: "actions", label: "Acciones" },
@@ -33,7 +32,6 @@ export default function TableCategorias() {
     const [error, setError] = useState("");
     const [loaded, setLoaded] = useState(false);
     const navigate = useNavigate();
-    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -87,15 +85,25 @@ export default function TableCategorias() {
                             ))}
                         </TableRow>
                     </TableHeader>
+
                     <TableBody>
                         {data.data.map((row) => (
                             <TableRow key={row.id}>
                                 <TableCell className="font-medium">{row.nombre}</TableCell>
+
                                 <TableCell className="flex justify-start items-center gap-1">
+
+                                    {/* BOTÓN ACTUALIZAR */}
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
-                                                <Button variant="ghost" size="icon">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() =>
+                                                        navigate(`/categoria/update/${row.id}`)
+                                                    }
+                                                >
                                                     <Edit className="h-4 w-4 text-primary" />
                                                 </Button>
                                             </TooltipTrigger>
@@ -103,6 +111,7 @@ export default function TableCategorias() {
                                         </Tooltip>
                                     </TooltipProvider>
 
+                                    {/* BOTÓN ELIMINAR */}
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
@@ -114,6 +123,7 @@ export default function TableCategorias() {
                                         </Tooltip>
                                     </TooltipProvider>
 
+                                    {/* BOTÓN DETALLE */}
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
@@ -130,6 +140,7 @@ export default function TableCategorias() {
                                             <TooltipContent>Ver detalle</TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
+
                                 </TableCell>
                             </TableRow>
                         ))}

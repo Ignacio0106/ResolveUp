@@ -14,22 +14,18 @@ class MovieService {
   getDetalleTecnico(TecnicoId){
     return axios.get(BASE_URL+'/getTecnicoDetalle/'+ TecnicoId);
   }
-  //Obtener peliculas por tienda
-  //http://localhost:81/appmovie/api/movie/moviesByShopRental/1
-//   getMovieByShopRental(ShopRentalId){
-//     return axios.get(BASE_URL+'/moviesByShopRental/'+ShopRentalId);
-//   }
-//   createMovie(Movie) {
-//     return axios.post(BASE_URL, JSON.stringify(Movie));
-//   }
-  
-//   updateMovie(Movie) {
-//     return axios({
-//       method: 'put',
-//       url: BASE_URL,
-//       data: JSON.stringify(Movie)
+    createTecncio(userData) {
+    return axios.post(BASE_URL, JSON.stringify(userData));
+  }
 
-//     })
-//   }
+  update(tecnico) {
+    return axios({
+      method: 'put',
+      url: BASE_URL,
+      data: JSON.stringify(tecnico)
+
+    })
+  }
+
 }
 export default new MovieService();

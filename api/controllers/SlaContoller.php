@@ -13,16 +13,20 @@ class sla
         }
     }
 
-    public function create()
-    {
+    public function create(){
         try {
-            $data = json_decode(file_get_contents("php://input"));
-            $slaM = new SlaModel();
-            $id = $slaM->create($data);
-
-            $response = new Response();
-            $response->toJSON(["idSLA" => $id]);
+             $response = new Response();
+             $request= new Request();
+             //Obtener JSON  de la solicitud
+             $inputJSON=$request->getJSON();
+             //Instancua de modelo
+             $movie = new SlaModel();
+             //Metodo del modelo
+             $result =$movie->create($inputJSON);
+             //Dar respuesta
+             $response->toJSON($result);
         } catch (Exception $e) {
+            $response->toJSON($result);
             handleException($e);
         }
     }

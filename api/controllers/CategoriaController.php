@@ -1,8 +1,6 @@
 <?php
 class categoria
 {
-    // GET listar
-    // localhost:81/appejemplo/api/movie
     public function index()
     {
         try {
@@ -35,8 +33,6 @@ class categoria
         }
     }
 
-    //GET Obtener 
-    // localhost:81/appejemplo/api/movie/1
     public function get($id)
     {
         try {
@@ -70,5 +66,27 @@ class categoria
             handleException($e);
         }
     }
+    
+public function update()
+    {
+        try {
+            $request = new Request();
+            $response = new Response();
+            //Obtener json enviado
+            $inputJSON = $request->getJSON();
+            //Instancia del modelo
+            $movie = new CategoriaModel();
+            //Acción del modelo a ejecutar
+            $result = $movie->update($inputJSON);
+            //Dar respuesta
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+            
+        }
+    }
+
+
     
 }
