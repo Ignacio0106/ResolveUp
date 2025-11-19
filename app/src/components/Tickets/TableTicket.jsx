@@ -10,14 +10,22 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ArrowRight, ArrowLeft } from "lucide-react";
-import TicketService from "@/services/TicketService"; // tu servicio
+import { 
+  ArrowLeft, 
+  User, 
+  Calendar,
+  Ticket,
+  Eye,
+  FileText
+} from "lucide-react";
+import TicketService from "@/services/TicketService";
 import { LoadingGrid } from "../ui/custom/LoadingGrid";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { EmptyState } from "../ui/custom/EmptyState";
@@ -62,21 +70,45 @@ export default function TableTicket() {
     return <EmptyState message="No se encontraron tickets." />;
 
   return (
-    <div className="container mx-auto py-8">
-      {/* Usuario y rol centrado y grande */}
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-white">{usuario}</h2>
-        <p className="text-lg font-medium text-white">{rol}</p>
+    <div className="container mx-auto py-8 px-4 max-w-6xl">
+      {/* Header Simple y Limpio */}
+      <div className="bg-card rounded-lg p-6 border border-border shadow-sm mb-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="p-2.5 rounded-lg bg-primary/10">
+              <User className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-foreground">{usuario}</h2>
+              <Badge variant="secondary" className="mt-1">
+                {rol}
+              </Badge>
+            </div>
+          </div>
+          
+          <div className="text-right">
+            <div className="text-sm text-muted-foreground">Total tickets</div>
+            <div className="text-2xl font-bold text-foreground">{tickets.length}</div>
+          </div>
+        </div>
       </div>
 
-      <h1 className="text-3xl font-bold tracking-tight mb-6">Listado de Tickets</h1>
+      {/* Título */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-foreground mb-2">Listado de Tickets</h1>
+        <p className="text-muted-foreground">Gestiona y revisa todos los tickets asignados</p>
+      </div>
 
-      <div className="rounded-md border">
+      {/* Tabla Simple */}
+      <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
         <Table>
-          <TableHeader className="bg-primary/50">
-            <TableRow>
+          <TableHeader>
+            <TableRow className="bg-muted/50">
               {ticketColumns.map((column) => (
-                <TableHead key={column.key} className="text-left font-semibold">
+                <TableHead 
+                  key={column.key} 
+                  className="font-semibold text-foreground py-4 px-6"
+                >
                   {column.label}
                 </TableHead>
               ))}
@@ -84,25 +116,50 @@ export default function TableTicket() {
           </TableHeader>
           <TableBody>
             {tickets.map((ticket) => (
-              <TableRow key={ticket.idTicket}>
-                <TableCell className="font-medium">{ticket.titulo}</TableCell>
-                <TableCell>{ticket.usuarioSolicitante}</TableCell>
-                <TableCell>{ticket.fechaCreacion}</TableCell>
-                <TableCell className="flex items-center gap-1">
+              <TableRow 
+                key={ticket.idTicket}
+                className="hover:bg-muted/30 transition-colors duration-150"
+              >
+                <TableCell className="py-4 px-6">
+                  <div className="font-medium text-foreground">
+                    {ticket.titulo}
+                  </div>
+                </TableCell>
+                
+                <TableCell className="py-4 px-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-xs font-medium text-primary">
+                        {ticket.usuarioSolicitante?.charAt(0)?.toUpperCase() || 'U'}
+                      </span>
+                    </div>
+                    <span className="text-foreground">{ticket.usuarioSolicitante}</span>
+                  </div>
+                </TableCell>
+                
+                <TableCell className="py-4 px-6">
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    {ticket.fechaCreacion}
+                  </div>
+                </TableCell>
+                
+                <TableCell className="py-4 px-6">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
                           variant="ghost"
-                          size="icon"
-                          onClick={() =>
-                            navigate(`/ticket/detail/${ticket.idTicket}`)
-                          }
+                          size="sm"
+                          className="h-8 w-8 rounded-lg hover:bg-primary/10"
+                          onClick={() => navigate(`/ticket/detail/${ticket.idTicket}`)}
                         >
-                          <ArrowRight className="h-4 w-4 text-green-600" />
+                          <Eye className="h-4 w-4 text-primary" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Ver detalle</TooltipContent>
+                      <TooltipContent>
+                        Ver detalle
+                      </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </TableCell>
@@ -112,9 +169,10 @@ export default function TableTicket() {
         </Table>
       </div>
 
+      {/* Botón Simple */}
       <Button
-        type="button"
-        className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6"
+        variant="outline"
+        className="mt-6 gap-2"
         onClick={() => navigate(-1)}
       >
         <ArrowLeft className="w-4 h-4" />
