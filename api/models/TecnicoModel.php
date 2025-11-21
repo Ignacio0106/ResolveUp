@@ -110,12 +110,13 @@ public function createTecnico($objeto)
         $nombre = $objeto->nombre;
         $correo = $objeto->correo;
         $password = $objeto->password;
+        $disponibilidad = $objeto->disponibilidad;
 
         $sql = "INSERT INTO Usuario (nombre, correo, contraseña, idRol)
                 VALUES ('$nombre', '$correo', '$password', 2)";
         $idUsuario = $this->enlace->executeSQL_DML_last($sql);
 
-        $disponibilidad = isset($objeto->disponibilidad) ? (int)$objeto->disponibilidad : 1;
+        
         $cargaTrabajo = isset($objeto->cargaTrabajo) ? (int)$objeto->cargaTrabajo : 0;
 
         $sqlTec = "INSERT INTO Tecnicos (idUsuario, disponibilidad, cargaTrabajo)

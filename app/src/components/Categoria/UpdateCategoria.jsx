@@ -110,42 +110,47 @@ export function UpdateCategoria() {
     fetchData();
   }, [id, reset]);
 
-  // Crear SLA
-  const crearNuevoSLA = async () => {
-    if (!newSla.tiempoRespuesta || !newSla.tiempoResolucion) {
-      return toast.error("Complete ambos campos del SLA");
-    }
-    try {
-      await SlaService.create({
-        tiempoRespuesta: Number(newSla.tiempoRespuesta),
-        tiempoResolucion: Number(newSla.tiempoResolucion),
-      });
-      toast.success("SLA creado correctamente");
-      const res = await SlaService.getAll();
-      setSlas(res.data?.data || []);
-      setNewSla({ tiempoRespuesta: "", tiempoResolucion: "" });
-      setShowNewSla(false);
-    } catch (err) {
-      console.error(err);
-      toast.error("Error al crear SLA");
-    }
-  };
 
-  // Crear Etiqueta
-  const crearNuevaEtiqueta = async () => {
-    if (!newEtiqueta.trim()) return toast.error("Ingrese un nombre de etiqueta");
-    try {
-      await EtiquetaService.create({ nombre: newEtiqueta.trim() });
-      toast.success("Etiqueta creada correctamente");
-      const res = await EtiquetaService.getAll();
-      setEtiquetas(res.data?.data || []);
-      setNewEtiqueta("");
-      setShowNewEtiqueta(false);
-    } catch (err) {
-      console.error(err);
-      toast.error("Error al crear etiqueta");
-    }
-  };
+  const crearNuevoSLA = async () => {
+  const respuesta = Number(newSla.tiempoRespuesta);
+  const resolucion = Number(newSla.tiempoResolucion);
+
+  // Validaciones
+  if (!respuesta || respuesta <= 0) {
+    return toast.error("El tiempo de respuesta debe ser mayor a 0 minutos");
+  }
+
+  if (!resolucion || resolucion <= 0) {
+    return toast.error("El tiempo de resolución debe ser mayor a 0 minutos");
+  }
+
+  if (resolucion <= respuesta) {
+    return toast.error(
+      "El tiempo de resolución debe ser mayor que el tiempo de respuesta"
+    );
+  }
+
+  try {
+    await SlaService.create({
+      tiempoRespuesta: respuesta,
+      tiempoResolucion: resolucion,
+    });
+
+    toast.success("SLA creado correctamente");
+
+    // Recargar lista
+    const res = await SlaService.getAll();
+    setSlas(res.data?.data || []);
+
+    // Reset
+    setNewSla({ tiempoRespuesta: "", tiempoResolucion: "" });
+    setShowNewSla(false);
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Error al crear el SLA");
+  }
+};
 
   // Crear Especialidad
   const crearNuevaEspecialidad = async () => {

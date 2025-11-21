@@ -20,6 +20,8 @@ import { useParams, useNavigate } from "react-router-dom";
     correoUsuario: yup.string().email("Correo inválido").required("El correo es requerido"),
     password: yup.string(), 
     especialidades: yup.array().min(1, "Seleccione al menos una especialidad"),
+    disponibilidad: yup.string().required("La disponibilidad es requerida"),
+
   });
 
 export function UpdateTecnico() {
@@ -34,7 +36,7 @@ export function UpdateTecnico() {
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(tecnicoSchema),
-    defaultValues: { nombreUsuario: "", correoUsuario: "", password: "", especialidades: [] },
+    defaultValues: { nombreUsuario: "", correoUsuario: "", password: "", especialidades: [], disponibilidad: "1" },
   });
 
 
@@ -62,7 +64,9 @@ useEffect(() => {
           nombreUsuario: cat.nombreUsuario,
           correoUsuario: cat.correoUsuario,
           password: cat.contraseña,
+          disponibilidad: String(cat.disponibilidad),
           especialidades: cat.especialidades?.map(g => g.idEspecialidad) || [],
+          
         });
 
       } catch (err) {
@@ -99,8 +103,6 @@ useEffect(() => {
   const onSubmit = async (dataForm) => {
   try {
 
-    console.log("🔍 DATAFORM COMPLETO:", dataForm);
-    console.log("🔍 ESPECIALIDADES SELECCIONADAS:", dataForm.especialidades);
 
 const payload = {
   id: Number(id),
@@ -109,7 +111,7 @@ const payload = {
   especialidades: dataForm.especialidades.map(e => ({
     idEspecialidad: Number(e)
   })),
-  disponibilidad: 1,
+  disponibilidad: Number(dataForm.disponibilidad),
   cargaTrabajo: 0,
 };
 
@@ -164,6 +166,29 @@ if (dataForm.password) payload.password = dataForm.password;
           )} />
           {errors.password && <p className="text-red-500">{errors.password.message}</p>}
         </div>
+
+{/* Disponibilidad */}
+<div>
+  <Label>Disponibilidad</Label>
+  <Controller
+    name="disponibilidad"
+    control={control}
+    render={({ field }) => (
+      <select
+        {...field}
+        className="border rounded px-3 py-2 w-full"
+      >
+        <option value="1">Disponible</option>
+        <option value="0">No disponible</option>
+      </select>
+    )}
+  />
+  {errors.disponibilidad && (
+    <p className="text-red-500 text-sm">
+      {errors.disponibilidad.message}
+    </p>
+  )}
+</div>
 
         <div>
           <div className="flex justify-between items-center mb-2">

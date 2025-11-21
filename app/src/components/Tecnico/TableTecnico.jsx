@@ -22,6 +22,11 @@ import { LoadingGrid } from "../ui/custom/LoadingGrid";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { EmptyState } from "../ui/custom/EmptyState";
 
+const usuario = {
+    id: 1,
+    rol: "admin", 
+};
+
 // Headers de la tabla
 const movieColumns = [
     { key: "nombre", label: "Nombre" },
@@ -33,7 +38,7 @@ export default function TableTecnico() {
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
     const [loaded, setLoaded] = useState(false);
-    const navigate = useNavigate(); // <-- Hook para navegación
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -62,18 +67,22 @@ export default function TableTecnico() {
         <div className="container mx-auto py-8">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-3xl font-bold tracking-tight">Listado de Técnicos</h1>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button asChild variant="outline" size="icon" className="text-primary">
-                                <Link to="/tecnico/create">
-                                    <Plus className="h-4 w-4" />
-                                </Link>
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Crear técnico</TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+
+                {/* SOLO ADMIN VE EL BOTÓN DE CREAR */}
+                {usuario.rol === "admin" && (
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button asChild variant="outline" size="icon" className="text-primary">
+                                    <Link to="/tecnico/create">
+                                        <Plus className="h-4 w-4" />
+                                    </Link>
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Crear técnico</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                )}
             </div>
 
             <div className="rounded-md border">
@@ -92,36 +101,44 @@ export default function TableTecnico() {
                             <TableRow key={row.id}>
                                 <TableCell className="font-medium">{row.nombre}</TableCell>
                                 <TableCell>{row.correo}</TableCell>
+
                                 <TableCell className="flex justify-start items-center gap-1">
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() =>
-                                                navigate(`/tecnico/update/${row.id}`)
-                                                }
-                                                >
-                                                <Edit className="h-4 w-4 text-primary" />
-                                                </Button>
-                                            </TooltipTrigger>
-                                            <TooltipContent>Actualizar</TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
 
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <Button variant="ghost" size="icon">
-                                                    <Trash2 className="h-4 w-4 text-destructive" />
-                                                </Button>
-                                            </TooltipTrigger>
-                                            <TooltipContent>Eliminar</TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
+                                    {/* SOLO ADMIN VE ACTUALIZAR */}
+                                    {usuario.rol === "admin" && (
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() =>
+                                                            navigate(`/tecnico/update/${row.id}`)
+                                                        }
+                                                    >
+                                                        <Edit className="h-4 w-4 text-primary" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Actualizar</TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    )}
 
-                                    {/* Botón para ir al detalle usando React Router */}
+                                    {/* SOLO ADMIN VE ELIMINAR */}
+                                    {usuario.rol === "admin" && (
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button variant="ghost" size="icon">
+                                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Eliminar</TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    )}
+
+                                    {/* TODOS PUEDEN VER DETALLE */}
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>

@@ -81,33 +81,47 @@ const navigate = useNavigate();
     fetchData();
   }, []);
 
-  // 👉 Crear Nuevo SLA
   const crearNuevoSLA = async () => {
-    if (!newSla.tiempoRespuesta || !newSla.tiempoResolucion) {
-      return toast.error("Complete ambos campos del SLA");
-    }
+  const respuesta = Number(newSla.tiempoRespuesta);
+  const resolucion = Number(newSla.tiempoResolucion);
 
-    try {
-      await SlaService.create({
-        tiempoRespuesta: Number(newSla.tiempoRespuesta),
-        tiempoResolucion: Number(newSla.tiempoResolucion),
-      });
+  // Validaciones
+  if (!respuesta || respuesta <= 0) {
+    return toast.error("El tiempo de respuesta debe ser mayor a 0 minutos");
+  }
 
-      toast.success("SLA creado correctamente");
+  if (!resolucion || resolucion <= 0) {
+    return toast.error("El tiempo de resolución debe ser mayor a 0 minutos");
+  }
 
-      // Recargar lista de SLAs
-      const res = await SlaService.getAll();
-      setSlas(res.data?.data || []);
+  if (resolucion <= respuesta) {
+    return toast.error(
+      "El tiempo de resolución debe ser mayor que el tiempo de respuesta"
+    );
+  }
 
-      // Reset
-      setNewSla({ tiempoRespuesta: "", tiempoResolucion: "" });
-      setShowNewSla(false);
+  try {
+    await SlaService.create({
+      tiempoRespuesta: respuesta,
+      tiempoResolucion: resolucion,
+    });
 
-    } catch (err) {
-      console.error(err);
-      toast.error("Error al crear el SLA");
-    }
-  };
+    toast.success("SLA creado correctamente");
+
+    // Recargar lista
+    const res = await SlaService.getAll();
+    setSlas(res.data?.data || []);
+
+    // Reset
+    setNewSla({ tiempoRespuesta: "", tiempoResolucion: "" });
+    setShowNewSla(false);
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Error al crear el SLA");
+  }
+};
+
 
    // CREAR ETIQUETA
   const crearNuevaEtiqueta = async () => {

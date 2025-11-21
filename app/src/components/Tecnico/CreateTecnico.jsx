@@ -26,6 +26,8 @@ const navigate = useNavigate();
     correo: yup.string().email("Correo inválido").required("El correo es requerido"),
     password: yup.string().required("La contraseña es requerida"),
     especialidades: yup.array().min(1, "Seleccione al menos una especialidad"),
+    disponibilidad: yup.string().required("La disponibilidad es requerida"),
+
   });
 
   const {
@@ -38,6 +40,7 @@ const navigate = useNavigate();
       nombre: "",
       correo: "",
       password: "",
+      disponibilidad: "1", 
       especialidades: [],
     },
     resolver: yupResolver(tecnicoSchema),
@@ -69,8 +72,6 @@ const navigate = useNavigate();
   };
 
   const onSubmit = async (dataForm) => {
-    console.log("📌 Datos recibidos del formulario:", dataForm);
-    console.log("📌 Especialidades seleccionadas:", dataForm.especialidades);
 
     const payload = {
   nombre: dataForm.nombre,
@@ -79,7 +80,7 @@ const navigate = useNavigate();
   especialidades: dataForm.especialidades.map(id => ({
     idEspecialidad: id,
   })),
-  disponibilidad: 1,
+  disponibilidad: Number(dataForm.disponibilidad),
   cargaTrabajo: 0,
 };
 
@@ -148,6 +149,30 @@ const navigate = useNavigate();
           />
           {errors.password && <p className="text-red-500">{errors.password.message}</p>}
         </div>
+
+        {/* Disponibilidad */}
+<div>
+  <Label>Disponibilidad</Label>
+  <Controller
+    name="disponibilidad"
+    control={control}
+    render={({ field }) => (
+      <select
+        {...field}
+        className="border rounded px-3 py-2 w-full"
+      >
+        <option value="1">Disponible</option>
+        <option value="0">No disponible</option>
+      </select>
+    )}
+  />
+  {errors.disponibilidad && (
+    <p className="text-red-500 text-sm">
+      {errors.disponibilidad.message}
+    </p>
+  )}
+</div>
+
 
         {/* Especialidades */}
         <div>
