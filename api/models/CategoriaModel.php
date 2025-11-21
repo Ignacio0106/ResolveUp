@@ -87,6 +87,19 @@ class CategoriaModel
     }
     }
 
+    public function getByEtiqueta($id)
+    {
+            $vSql = "SELECT 
+                    c.id, 
+                    c.nombre 
+                 FROM categoria c
+                 INNER JOIN categoriaetiqueta cE 
+                     ON c.id = cE.idCategoria
+                 WHERE cE.idEtiqueta = $id;";
+                $vResultado = $this->enlace->ExecuteSQL($vSql);
+        return $vResultado;
+    }
+
    public function create($objeto)
 {
     try {

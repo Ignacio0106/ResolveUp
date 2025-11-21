@@ -6,7 +6,7 @@ class categoria
         try {
             $response = new Response();
             //Instancia modelo
-            $movieM = new CategoriaModel;
+            $movieM = new CategoriaModel();
             //Método del modelo
             $result = $movieM->all();
             //Dar respuesta
@@ -45,6 +45,18 @@ class categoria
             $response->toJSON($result);
         } catch (Exception $e) {
             $response->toJSON($result);
+            handleException($e);
+        }
+    }
+
+    public function CategoriasByEtiqueta($id)
+    {
+        try {
+            $model = new CategoriaModel();
+            $result = $model->getByEtiqueta($id);
+            $response = new Response();
+            $response->toJSON($result);
+        } catch (Exception $e) {
             handleException($e);
         }
     }

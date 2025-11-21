@@ -10,11 +10,12 @@ class EtiquetasService {
   getById(id) {
     return axios.get(`${BASE_URL}get/${id}`);
   }
-
+  getCategoriaByEtiqueta(etiquetaId) {
+    return axios.get(`${BASE_URL}/CategoriasByEtiqueta/${etiquetaId}`);
+  }
 create(data) {
   return axios.post(`${BASE_URL}create`, data);
 }
-
 
   delete(id) {
     return axios.delete(`${BASE_URL}delete/${id}`);

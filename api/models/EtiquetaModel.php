@@ -13,8 +13,7 @@ class EtiquetasModel
         try {
             $vSql = "SELECT 
                         id, 
-                        nombre,
-                        CONCAT('http://localhost:81/Proyecto/api/etiquetas/get/', id) AS enlaceAlDetalle
+                        nombre
                      FROM Etiqueta
                      ORDER BY id DESC;";
             return $this->enlace->ExecuteSQL($vSql);

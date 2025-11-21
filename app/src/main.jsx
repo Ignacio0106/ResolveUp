@@ -15,13 +15,14 @@ import TableTecnico from './components/Tecnico/TableTecnico'
 import { TableAsignacion } from './components/Asignacion/TableAsignacion'
 import { DetailAsignacion } from './components/Asignacion/DetailAsignacion'
 import { CreateUsuario } from './components/Usuario/CreateUsuario'
-import CreateTicket from './components/Tickets/CreateTicket'
 import Login from './components/Iniciar/Login'
 import { CreateTecnico } from './components/Tecnico/CreateTecnico'
 import { UpdateTecnico } from './components/Tecnico/UpdateTecnico'
 import CreateCategoria from './components/Categoria/CreateCategoria'
 import { UpdateCategoria } from './components/Categoria/UpdateCategoria'
 import { Toaster } from "react-hot-toast";
+import { CreateTicket } from './components/Tickets/CreateTicket'
+import { UpdateTicket } from './components/Tickets/UpdateTicket'
 //Crear las rutas
 const rutas=createBrowserRouter([
   {
@@ -44,13 +45,13 @@ const rutas=createBrowserRouter([
 
       { path: "ticket/table", element: <TableTicket /> }, // lista tickets
       { path: "ticket/detail/:id", element: <DetailTicket /> }, // detalle ticket
+      { path: "ticket/create", element: <CreateTicket /> },
+      { path: "ticket/update/:id", element: <UpdateTicket /> },
 
       { path: "asignacion/table", element: <TableAsignacion /> }, // lista asignaciones
       { path: "asignacion/detail/:id", element: <DetailAsignacion /> }, // detalle asignación
 
       { path: "usuario/create", element: <CreateUsuario /> },
-
-      { path: "ticket/create", element: <CreateTicket /> },
 
       { path: "iniciar/login", element: <Login /> }
     ]

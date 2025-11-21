@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {useNavigate, useParams } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 import AsignacionService from "@/services/AsignacionService";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { Card, CardContent } from "@/components/ui/card";
@@ -180,7 +180,7 @@ function cargarTabla(asignacion, semana){
             }
         };
         fetchData();
-    }, [1]);
+    }, []);
 
     if (loading) return <LoadingGrid count={1} type="grid" />;
     if (error) return <ErrorAlert title="Error al cargar asignación" message={error} />;

@@ -14,6 +14,10 @@ class UsuarioService {
     return axios.get(BASE_URL + '/' + userId);
   }
 
+  getByTicket(ticketId) {
+    return axios.get(BASE_URL + '/getByTicket/' + ticketId);
+  }
+
   // Crear usuario
   createUser(userData) {
     return axios.post(BASE_URL, JSON.stringify(userData));

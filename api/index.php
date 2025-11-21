@@ -32,9 +32,11 @@ require_once "models/EstadoModel.php";
 require_once "models/RoleModel.php";
 require_once "models/EspecialidadModel.php";
 require_once "models/EtiquetaModel.php";
+require_once "models/PrioridadModel.php";
 require_once "models/SlaModel.php";
 
 /***--- Agregar todos los controladores*/
+require_once "controllers/SlaController.php";
 require_once "controllers/CategoriaController.php";
 require_once "controllers/TecnicoController.php";
 require_once "controllers/TicketController.php";
@@ -43,7 +45,9 @@ require_once "controllers/UsuarioController.php";
 require_once "controllers/RoleController.php";
 require_once "controllers/EspecialidadController.php";
 require_once "controllers/EtiquetaController.php";
-require_once "controllers/SlaContoller.php";
+require_once "controllers/PrioridadController.php";
+require_once "controllers/EstadoController.php";
+
 
 //Enrutador
 require_once "routes/RoutesController.php";

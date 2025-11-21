@@ -13,15 +13,19 @@ class CategoriaService {
     return axios.get(`${BASE_URL}/${categoriaId}`);
   }
 
-      getDetalleCategoriaa(id) {
+  getDetalleCategoriaa(id) {
     return axios.get(`${BASE_URL}/get/${id}`);
   }
+
+    getCategoriaByEtiqueta(etiquetaId) {
+    return axios.get(`${BASE_URL}/CategoriasByEtiqueta/${etiquetaId}`);
+  }
+  
   create(payload) {
     return axios.post(BASE_URL, payload, {
       headers: { 'Content-Type': 'application/json' }
     });
   }
-
 
 updateCategoria(Movie) {
     return axios({

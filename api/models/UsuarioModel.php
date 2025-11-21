@@ -21,9 +21,31 @@ class UsuarioModel
     // Obtener un usuario por id
     public function get($id)
     {
+        $rolM = new RolModel();
         $sql = "SELECT * FROM Usuario WHERE id = $id";
         $resultado = $this->enlace->ExecuteSQL($sql);
-        return $resultado[0] ?? null;
+        if (!empty($resultado)) {
+            $resultado = $resultado[0];
+            
+            $resultado->rol = $rolM->get(($resultado->idRol));
+        }
+        return $resultado ?? null;
+    }
+
+        public function getByTicket($idTicket)
+    {
+        $rolM = new RolModel();
+        $sql = "SELECT u.* FROM Usuario u
+                 INNER JOIN Tickets t
+                     ON u.id = t.idUsuario
+                 WHERE t.id = $idTicket;";
+        $resultado = $this->enlace->ExecuteSQL($sql);
+        if (!empty($resultado)) {
+            $resultado = $resultado[0];
+            
+            $resultado->rol = $rolM->get(($resultado->idRol));
+        }
+        return $resultado ?? null;
     }
 
     // Crear un usuario

@@ -88,18 +88,12 @@ export default function Header() {
       icon: <FolderCode className="h-4 w-4" />,
       description: "Gestionar asignaciones",
     },
-    {
+/*     {
       title: "Crear Usuario",
       href: "/usuario/create",
       icon: <UserPlus className="h-4 w-4" />,
       description: "Añadir nuevo usuario",
-    },
-    {
-      title: "Crear Ticket",
-      href: "/ticket/create",
-      icon: <TicketCheck className="h-4 w-4" />,
-      description: "Crear nuevo ticket",
-    },
+    }, */
   ];
 
   const userItems = [

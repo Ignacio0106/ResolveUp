@@ -103,6 +103,14 @@ class TicketModel
     }
 }
 
+public function getById($idTicket){
+    $vSql = "SELECT * FROM tickets
+                    WHERE id = $idTicket;";
+    $vResultado = $this->enlace->ExecuteSQL($vSql);
+        // Retornar el objeto
+    return $vResultado[0] ?? null;
+}
+
     public function getTicketDetalle()
 {
     try {
@@ -272,8 +280,8 @@ $rol = $rolResultado[0]->nombreRol;
     public function create($objeto)
     {
         //Consulta sql
-        $sql = "INSERT INTO Tickets (titulo, descripcion, fechaCreacion, idEstado, idPrioridad, idUsuario, idCategoria)" .
-            " Values ('$objeto->titulo','$objeto->descripcion','$objeto->fechaCreacion','$objeto->idEstado','$objeto->idPrioridad',
+        $sql = "INSERT INTO Tickets (titulo, descripcion, fechaCreacion, estadoId, prioridadId, idUsuario, idCategoria)" .
+            " Values ('$objeto->titulo','$objeto->descripcion','$objeto->fechaCreacion','$objeto->estadoId','$objeto->prioridadId',
                     '$objeto->idUsuario','$objeto->idCategoria')";
         //Ejecutar la consulta
         $this->enlace->executeSQL_DML_last($sql);

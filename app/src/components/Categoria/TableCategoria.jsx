@@ -15,7 +15,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Edit, Plus, Trash2, ArrowLeft, ArrowRight } from "lucide-react";
+import { Edit, Plus, Trash2, ArrowLeft, ArrowRight, Eye } from "lucide-react";
 import { useState, useEffect } from "react";
 import CategoriaService from "@/services/CategoriasService";
 import { LoadingGrid } from "../ui/custom/LoadingGrid";
@@ -134,7 +134,7 @@ export default function TableCategorias() {
                                                         navigate(`/categoria/detail/${row.id}`)
                                                     }
                                                 >
-                                                    <ArrowRight className="h-4 w-4 text-green-600" />
+                                                    <Eye className="h-4 w-4 text-primary" />
                                                 </Button>
                                             </TooltipTrigger>
                                             <TooltipContent>Ver detalle</TooltipContent>

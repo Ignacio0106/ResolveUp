@@ -17,6 +17,10 @@ class TicketService {
     return axios.get(`${BASE_URL}/get/${ticketId}`);
   }
 
+    getTicket(ticketId) {
+    return axios.get(`${BASE_URL}/getById/${ticketId}`);
+  }
+
   // Crear un nuevo ticket
   // POST: /ticket/create
   createTicket(ticketData) {

@@ -18,7 +18,7 @@ class RolModel {
     public function get($id) {
         $sql = "SELECT id, nombre FROM Rol WHERE id = $id";
          $vResultado = $this->enlace->ExecuteSQL($sql);
-           return $vResultado;
+           return $vResultado[0] ?? null;
     }
 }
 

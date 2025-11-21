@@ -53,6 +53,22 @@ class ticket
         }
     }
 
+        public function getById($id)
+    {
+        try {
+            $response = new Response();
+            //Instancia del modelo
+            $ticket = new TicketModel();
+            //Acción del modelo a ejecutar
+            $result = $ticket->getById($id);
+            //Dar respuesta
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+        }
+    }
+
     public function listadoDetalle()
     {
         try {

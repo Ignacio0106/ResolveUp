@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Table,
   TableHeader,
@@ -23,7 +23,10 @@ import {
   Calendar,
   Ticket,
   Eye,
-  FileText
+  FileText,
+  Plus,
+  Edit,
+  Trash2
 } from "lucide-react";
 import TicketService from "@/services/TicketService";
 import { LoadingGrid } from "../ui/custom/LoadingGrid";
@@ -94,9 +97,23 @@ export default function TableTicket() {
       </div>
 
       {/* Título */}
-      <div className="mb-6">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
         <h1 className="text-2xl font-bold text-foreground mb-2">Listado de Tickets</h1>
         <p className="text-muted-foreground">Gestiona y revisa todos los tickets asignados</p>
+        </div>
+              <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button asChild variant="outline" size="icon" className="text-primary">
+                                <Link to="/ticket/create">
+                                    <Plus className="h-4 w-4" />
+                                </Link>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Crear ticket</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
       </div>
 
       {/* Tabla Simple */}
@@ -145,6 +162,33 @@ export default function TableTicket() {
                 </TableCell>
                 
                 <TableCell className="py-4 px-6">
+{/*                   <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() =>
+                                                navigate(`/ticket/update/${ticket.id}`)
+                                                }
+                                                >
+                                                <Edit className="h-4 w-4 text-primary" />
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>Actualizar</TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider> */}
+
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button variant="ghost" size="icon">
+                                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>Eliminar</TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>

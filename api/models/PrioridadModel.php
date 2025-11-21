@@ -1,24 +1,24 @@
 <?php
-class PrioridadModel
-{
-
+class PrioridadModel {
+    
     public $enlace;
     public function __construct()
     {
         $this->enlace = new MySqlConnect();
     }
-    //Obtener una imagen de una pelicula
-    public function getPrioridad($idPrioridad)
-    {
-        //Consulta sql
-        $vSql = "SELECT * FROM PrioridadTicket where id=$idPrioridad";
 
-        //Ejecutar la consulta
-        $vResultado = $this->enlace->ExecuteSQL($vSql);
-        if (!empty($vResultado)) {
-            // Retornar el objeto
-            return $vResultado[0];
-        }
-        return $vResultado;
+    // Obtener todos los roles
+    public function all() {
+        $sql = "SELECT * FROM prioridadticket";
+          $vResultado = $this->enlace->ExecuteSQL($sql);
+           return $vResultado;
+    }
+
+    // Obtener un rol por id
+    public function get($id) {
+        $sql = "SELECT * FROM prioridadticket WHERE id = $id";
+         $vResultado = $this->enlace->ExecuteSQL($sql);
+           return $vResultado;
     }
 }
+
