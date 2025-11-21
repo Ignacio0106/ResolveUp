@@ -152,6 +152,34 @@ export function UpdateCategoria() {
   }
 };
 
+ // CREAR ETIQUETA
+  const crearNuevaEtiqueta = async () => {
+  if (!newEtiqueta.trim()) {
+    return toast.error("Ingrese un nombre de etiqueta");
+  }
+
+  try {
+    // Crear en BD
+    await EtiquetaService.create({
+      nombre: newEtiqueta.trim(),
+    });
+
+    toast.success("Etiqueta creada correctamente");
+
+    // Recargar lista de etiquetas para que aparezca sin recargar página
+    const res = await EtiquetaService.getAll();
+    setEtiquetas(res.data?.data || []);
+
+    // Reset
+    setNewEtiqueta("");
+    setShowNewEtiqueta(false);
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Error al crear la etiqueta");
+  }
+};
+ 
   // Crear Especialidad
   const crearNuevaEspecialidad = async () => {
     if (!newEspecialidad.trim()) return toast.error("Ingrese un nombre de especialidad");
