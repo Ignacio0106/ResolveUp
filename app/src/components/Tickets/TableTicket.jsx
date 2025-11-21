@@ -157,7 +157,13 @@ export default function TableTicket() {
                 <TableCell className="py-4 px-6">
                   <div className="flex items-center gap-2 text-foreground">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    {ticket.fechaCreacion}
+                    {ticket.fechaCreacion
+    ? new Date(ticket.fechaCreacion).toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+    : ''}
                   </div>
                 </TableCell>
                 

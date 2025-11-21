@@ -40,7 +40,7 @@ export function CreateTicket() {
   const [dataCategoria, setDataCategoria] = useState([]);
   const [error, setError] = useState("");
 
-  localStorage.setItem('currentUserId', 1);
+  localStorage.setItem('currentUserId', 4);
 
   const storedUser = localStorage.getItem('currentUserId');
   const currentUser = storedUser ? JSON.parse(storedUser) : null;
@@ -48,26 +48,30 @@ export function CreateTicket() {
 
   /*** Esquema de validación Yup ***/
   const ticketSchema = yup.object({
-        titulo: yup.string().required("El título es requerido").min(2, "El título debe tener al menos 2 caracteres"),
+        titulo: yup.string().required("El título es requerido").min(2, "El título debe tener al menos 2 caracteres").max(100, "El título no debe exceder los 100 caracteres"),
     descripcion: yup.string().required("La descripcion es requerida").min(10, "La descripción debe tener al menos 10 caracteres"),
-    fechaCreacion: yup.string().required("La fecha de creación es requerida"),
-    prioridadId: yup.number().typeError("Seleccione una prioridad").required("La prioridad es requerida"),
+    fechaCreacion: yup.string().required("La fecha de creación es requerida").matches(
+      /^\d{4}-\d{2}-\d{2} 00:00:00$/,
+      "Formato de fecha inválido"
+    ),
+    prioridadId: yup.number().typeError("Seleccione una prioridad").required("La prioridad es requerida").positive("La prioridad debe ser válida"),
     idUsuario: yup.number().typeError("Seleccione un usuario").required("El usuario es requerido"),
-    etiquetas: yup.number().typeError("Seleccione una etiqueta").required("Las etiquetas son requeridas"),
-    idCategoria: yup.number().typeError("Seleccione una categoría").required("La categoría es requerida"),
-    estadoId: yup.number().typeError("Seleccione un estado").required("El estado es requerido"),
+    etiquetas: yup.number().typeError("Seleccione una etiqueta").required("Las etiquetas son requeridas").positive("La etiqueta debe ser válida"),
+    idCategoria: yup.number().typeError("Seleccione una categoría").required("La categoría es requerida").positive("La categoria debe ser válida"),
+    estadoId: yup.number().typeError("Seleccione un estado").required("El estado es requerido").positive("El estado debe ser válida"),
   });
 
   /*** React Hook Form ***/
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
       titulo: "",
       descripcion: "",
-      fechaCreacion: `${new Date().toLocaleDateString("es-ES", {day: "2-digit", month: "2-digit", year: "numeric",})}`,
+      fechaCreacion: `${new Date().toISOString().slice(0, 10) + " 00:00:00"}`,
       prioridadId: "",
       estadoId: "1",
       idUsuario: `${currentUser}`,
@@ -104,6 +108,17 @@ export function CreateTicket() {
     fetchData()
   }, []);
 
+
+  useEffect(() => {
+
+  if (dataCategoria && dataCategoria.length > 0) {
+
+    const primerId = dataCategoria[0].id;
+    
+    setValue("idCategoria", primerId);
+  }
+}, [dataCategoria, setValue]); // Se ejecuta cada vez que dataCategoria cambia
+
   /*** Submit ***/
   const onSubmit = async (dataForm) => {
     try {
@@ -115,7 +130,7 @@ export function CreateTicket() {
         if (response.data) {
           //Notificación de creación
           console.log("Que tiene response",response.data)
-          toast.success(`Ticket creado #${response.data.id} - ${response.data.titulo}`, {
+          toast.success(`Ticket creado #${response.data.data.id} - ${response.data.data.titulo}`, {
             duration: 4000,
             position: "top-center",
           });
@@ -200,9 +215,9 @@ export function CreateTicket() {
       </div>
       <div className="flex-1 w-full md:w-1/3">
         <CustomInputField
-          label="Rol"
-          placeholder="Nombre rol"
-          value={dataUsuario?.rol?.nombre ?? ""}
+          label="Correo"
+          placeholder="Nombre correo"
+          value={dataUsuario?.correo ?? ""}
           readOnly
         />
       </div>
@@ -236,7 +251,6 @@ export function CreateTicket() {
                   console.log("EtiquetaSeleccionada",value)
                   field.onChange(value);
                   const categoriaRespuesta = await CategoriasService.getCategoriaByEtiqueta(value);
-                  console.log("SirveCategoriaPorEtiqueta",categoriaRespuesta)
                   setDataCategoria(categoriaRespuesta.data.data || []);
                   }}
               />
@@ -281,7 +295,7 @@ export function CreateTicket() {
     <input
       type="hidden"
       {...field}
-      value={new Date().toLocaleDateString("es-ES", {day: "2-digit", month: "2-digit", year: "numeric",})}
+      value={new Date().toISOString().slice(0, 10) + " 00:00:00"}
     />
   )}
 /> 

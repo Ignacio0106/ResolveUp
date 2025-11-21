@@ -284,10 +284,11 @@ $rol = $rolResultado[0]->nombreRol;
             " Values ('$objeto->titulo','$objeto->descripcion','$objeto->fechaCreacion','$objeto->estadoId','$objeto->prioridadId',
                     '$objeto->idUsuario','$objeto->idCategoria')";
         //Ejecutar la consulta
-        $this->enlace->executeSQL_DML_last($sql);
+        $insertId = $this->enlace->executeSQL_DML_last($sql);
         //Retornar resultado
-        return ["success" => true, "status" => 201, "message" => "Ticket creado"];
+        return ["success" => true, "status" => 201, "message" => "Ticket creado", "id" => $insertId,"titulo" => $objeto->titulo];
     }
+
 
     public function update($objeto)
     {

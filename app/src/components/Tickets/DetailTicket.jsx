@@ -62,27 +62,27 @@ export function DetailTicket() {
                             {/* Lado izquierdo */}
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-white">ID Ticket:</span>
-                                    <p className="text-white font-medium">{ticket.idTicket}</p>
+                                    <span className="text-foreground">ID Ticket:</span>
+                                    <p className="text-foreground font-medium">{ticket.idTicket}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-white">Solicitante:</span>
-                                    <p className="text-white font-medium">{ticket.usuarioSolicitante}</p>
+                                    <span className="font-semibold text-foreground">Solicitante:</span>
+                                    <p className="text-foreground font-medium">{ticket.usuarioSolicitante}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-white">Categoría:</span>
-                                    <p className="text-white font-medium">{ticket.categoria}</p>
+                                    <span className="font-semibold text-foreground">Categoría:</span>
+                                    <p className="text-foreground font-medium">{ticket.categoria}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-white">Fecha de creación:</span>
-                                    <p className="text-white font-medium">{ticket.fechaCreacion}</p>
+                                    <span className="font-semibold text-foreground">Fecha de creación:</span>
+                                    <p className="text-foreground font-medium">{ticket.fechaCreacion}</p>
                                 </div>
                             </div>
 
                             {/* Lado derecho */}
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-white">Estado:</span>
+                                    <span className="font-semibold text-foreground">Estado:</span>
                                     <p className={`font-medium ${
                                         ticket.estado === "Asignado" ? "text-green-600" :
                                         ticket.estado === "Pendiente" ? "text-yellow-600" :
@@ -92,7 +92,7 @@ export function DetailTicket() {
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-white">Prioridad:</span>
+                                    <span className="font-semibold text-foreground">Prioridad:</span>
                                     <p className={`font-medium ${
                                         ticket.prioridad === "Alta" ? "text-red-600" :
                                         ticket.prioridad === "Media" ? "text-yellow-600" :
@@ -102,16 +102,16 @@ export function DetailTicket() {
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-white">Fecha de cierre:</span>
-                                    <p className="text-white font-medium">{ticket.fechaCierre || "—"}</p>
+                                    <span className="font-semibold text-foreground">Fecha de cierre:</span>
+                                    <p className="text-foreground font-medium">{ticket.fechaCierre || "—"}</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Descripción en toda la tarjeta */}
                         <div className="mt-6 border-t pt-4">
-                            <span className="font-semibold text-white">Descripción:</span>
-                            <p className="text-white mt-1">{ticket.descripcion}</p>
+                            <span className="font-semibold text-foreground">Descripción:</span>
+                            <p className="text-foreground mt-1">{ticket.descripcion}</p>
                         </div>
                     </CardContent>
                 </Card>
