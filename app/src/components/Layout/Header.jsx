@@ -43,11 +43,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover
 import { Button } from "../ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "cmdk";
 import { cn } from "@/lib/utils";
-// import { useUser } from "../hooks/useUser";
+import { useTranslation } from "react-i18next";
+import { useUser } from "@/hooks/useUser";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  // const { user } = useUser();
+  const { user, isAuthenticated, clearUser, authorize } = useUser();
 
   const navItems = [
     { title: "Películas", href: "/movie", icon: <Film className="h-4 w-4" /> },
@@ -88,6 +89,13 @@ export default function Header() {
       icon: <FolderCode className="h-4 w-4" />,
       description: "Gestionar asignaciones",
     },
+    {
+      title: "Asignar Tickets",
+      href: "/asignacion/tickets",
+      icon: <FolderCode className="h-4 w-4" />,
+      description: "Gestionar asignaciones",
+    },
+
 /*     {
       title: "Crear Usuario",
       href: "/usuario/create",
@@ -95,36 +103,53 @@ export default function Header() {
       description: "Añadir nuevo usuario",
     }, */
   ];
-
+  const { t } = useTranslation();
   const userItems = [
     {
-      title: "Login",
-      href: "/user/login",
+      title: t("header.user.login"),
+      href: "/usuario/login",
       icon: <LogIn className="h-4 w-4" />,
-      description: "Iniciar sesión",
+      description: t("header.user.loginD"),
+      show: !isAuthenticated,
     },
     {
-      title: "Registrarse",
-      href: "/user/create",
+      title: t("header.user.register"),
+      href: "/usuario/create",
       icon: <UserPlus className="h-4 w-4" />,
-      description: "Crear nueva cuenta",
+      description: t("header.user.registerD"),
+      show: !isAuthenticated,
+    },
+        {
+      title: t("header.logout.button"),
+      href: "#login",
+      icon: <UserPlus className="h-4 w-4" />,
+      description: t("header.logout.description"),
+      show: isAuthenticated,
+      action: clearUser,
     },
   ];
-
-  const idiomas = [
-  {
-    value: "Español",
-    label: "Español",
-  },
-  {
-    value: "Inglés",
-    label: "Inglés",
-  }
+                 <button className="w-full flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-destructive/15 transition-all duration-200 group">
+                      <div className="mt-0.5 p-2 rounded-lg bg-destructive/60 group-hover:bg-primary/50 transition-colors duration-200 flex items-center justify-center">
+                        <LogOut className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 text-left">
+                        <div className="font-medium group-hover:font-semibold transition-all duration-150">{t("header.logout.button")}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">
+                          {t("header.logout.description")}
+                        </div>
+                      </div>
+                    </button>
+const idiomas = [
+  { value: "es", label: "Español", flag: "🇪🇸" },
+  { value: "en", label: "English", flag: "🇺🇸" }
 ];
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
+  const { i18n } = useTranslation();
 
-  const selectedLanguage = idiomas.find((idioma) => idioma.value === value);
+
+const selectedLanguage = idiomas.find((l) => l.value === i18n.language);
 
   return (
     <header className="w-full fixed top-0 left-0 z-999 border-b-4 backdrop-blur-xl bg-primary/70">
@@ -142,7 +167,7 @@ export default function Header() {
               ResolveUp
             </span>
             <span className="hidden lg:inline text-xs text-muted-foreground font-medium">
-              ¡Hola{/* , {user?.name} */}!
+              {t("header.greeting", { name: user?.nombre || t("header.guest") })}
             </span>
           </div>
         </Link>
@@ -156,7 +181,7 @@ export default function Header() {
                                         hover:border-accent hover:bg-background/90
                                          transition-all duration-200">
                 <Film className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-all duration-200" />
-                <span className="hidden xl:inline text-sm">Listados</span>
+                <span className="hidden xl:inline text-sm">{t("header.menus.lists")}</span>
                 <ChevronDown className="h-3 w-3 text-muted-foreground group-data-[state=open]:rotate-180 transition-transform duration-200" />
               </MenubarTrigger>
               <MenubarContent className="bg-card border border-border rounded-b-2xl p-3 min-w-[250px]">
@@ -186,7 +211,7 @@ export default function Header() {
                                         hover:border-accent hover:bg-background/90
                                          transition-all duration-200">
                 <Layers className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-all duration-200" />
-                <span className="hidden xl:inline text-sm">Mantenimientos</span>
+                <span className="hidden xl:inline text-sm">{t("header.menus.maintenance")}</span>
                 <ChevronDown className="h-3 w-3 text-muted-foreground group-data-[state=open]:rotate-180 transition-transform duration-200" />
               </MenubarTrigger>
               <MenubarContent className="bg-card border border-border rounded-b-2xl p-3 min-w-[280px]">
@@ -229,17 +254,6 @@ export default function Header() {
             </Badge>
           </button>
 
-          {/* Carrito */}
-          <Link
-            to="/cart"
-            className="relative p-2 rounded-full hover:bg-muted/60 transition-colors group hidden md:block"
-          >
-            <ShoppingCart className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-            <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 bg-accent text-accent-foreground text-[10px] flex items-center justify-center border border-card">
-              3
-            </Badge>
-          </Link>
-
 <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
@@ -253,16 +267,13 @@ export default function Header() {
         >
                     <span className="flex items-center gap-2 truncate">
                       {selectedLanguage ? (
-                        <>
-                          <span className="text-base leading-none">
-                            {selectedLanguage.flag}
-                          </span>
-                          <span className="text-sm">
-                            {selectedLanguage.label}
-                          </span>
-                        </>
-                      ) : ("Seleccionar idioma")}
-                    </span>
+                                      <>
+                <span className="text-base leading-none">{selectedLanguage.flag}</span>
+                <span className="text-sm">{selectedLanguage.label}</span>
+              </>            ) : (
+                <span className="text-sm text-muted-foreground">{t("header.language.placeholder")}</span>
+            )}
+          </span>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -277,8 +288,9 @@ export default function Header() {
                   key={idioma.value}
                   value={idioma.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
+                    i18n.changeLanguage(currentValue);
+                    setValue(currentValue === value ? "" : currentValue);
+                    setOpen(false);
                   }}
                   className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm
                          cursor-pointer"
@@ -315,22 +327,27 @@ export default function Header() {
                   <Avatar className="h-8 w-8 border-2 border-border">
                     <AvatarImage src={""} alt={""} />
                     <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground text-xs">
-                      IG
+                      {user?.nombre
+                        ? user.nombre
+                            .split(" ").map((n) => n[0])
+                            .join("")
+                            .toUpperCase()
+                        : ""}
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden xl:block text-left">
-                    <div className="text-sm font-medium">{/* user?.name */}Prueba</div>
-                    <div className="text-xs text-muted-foreground">{/* user?.email */}correo@prueba</div>
+                    <div className="text-sm font-medium">{user?.nombre ?? t("header.guest")}</div>
+                    <div className="text-xs text-muted-foreground">{user?.correo ?? ""}</div>
                   </div>
                   <ChevronDown className="h-3 w-3 text-muted-foreground group-data-[state=open]:rotate-180 transition-transform duration-200" />
                 </MenubarTrigger>
                 <MenubarContent className="bg-card/95 border border-border rounded-2xl p-2 min-w-[240px] shadow-xl">
-                  {userItems.map((item, index) => (
-                    <div key={item.href}>
-                      {index === 2 && <MenubarSeparator className="bg-border my-2" />}
-                      <MenubarItem asChild>
+                  {userItems.filter(i => i.show).map(item => (
+                      <MenubarItem key={item.href} asChild>
+                        
                         <Link
                           to={item.href}
+                          onClick={() => item.action && item.action()}
                           className="flex items-start gap-3 py-2.5 px-3 rounded-xl text-sm text-foreground/90 hover:text-foreground hover:bg-chart-2/60 transition-all duration-200 group"
                         >
                           <div
@@ -346,22 +363,7 @@ export default function Header() {
                           </div>
                         </Link>
                       </MenubarItem>
-                    </div>
                   ))}
-                  <MenubarSeparator className="bg-border my-2" />
-                  <MenubarItem asChild>
-                    <button className="w-full flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-destructive/15 transition-all duration-200 group">
-                      <div className="mt-0.5 p-2 rounded-lg bg-destructive/60 group-hover:bg-primary/50 transition-colors duration-200 flex items-center justify-center">
-                        <LogOut className="h-4 w-4" />
-                      </div>
-                      <div className="flex-1 text-left">
-                        <div className="font-medium group-hover:font-semibold transition-all duration-150">Cerrar Sesión</div>
-                        <div className="text-xs text-muted-foreground mt-0.5">
-                          Salir del sistema
-                        </div>
-                      </div>
-                    </button>
-                  </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>
             </Menubar>

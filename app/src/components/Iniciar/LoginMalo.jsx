@@ -38,7 +38,7 @@ const schema = yup.object({
     .required("La contraseña es obligatoria"),
 });
 
-export default function Login() {
+export default function LoginMalo() {
   const { saveUser } = useUser();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);

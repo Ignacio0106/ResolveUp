@@ -40,18 +40,14 @@ export function UpdateTicket() {
   const [dataEtiqueta, setDataEtiqueta] = useState([]);
   const [dataEstado, setDataEstado] = useState([]);
   const [dataCategoria, setDataCategoria] = useState([]);
+  const [file, setFile] = useState(null);
+  const [fileURL, setFileURL] = useState(null);
   const [error, setError] = useState("");
   
   /*** Esquema de validación Yup ***/
   const ticketSchema = yup.object({
-        titulo: yup.string().required("El título es requerido").min(2, "El título debe tener al menos 2 caracteres"),
-    descripcion: yup.string().required("La descripcion es requerida").min(10, "La descripción debe tener al menos 10 caracteres"),
-    fechaCreacion: yup.string().required("La fecha de creación es requerida"),
-    prioridad: yup.number().typeError("Seleccione una prioridad").required("La prioridad es requerida"),
-    usuario: yup.number().typeError("Seleccione un usuario").required("El usuario es requerido"),
-    etiquetas: yup.number().typeError("Seleccione una etiqueta").required("Las etiquetas son requeridas"),
-    categoria: yup.number().typeError("Seleccione una categoría").required("La categoría es requerida"),
     estado: yup.number().typeError("Seleccione un estado").required("El estado es requerido"),
+    comentario: yup.string().required("El comentario es requerido"),
   });
 
     /*** React Hook Form ***/
@@ -62,17 +58,24 @@ export function UpdateTicket() {
       formState: { errors },
     } = useForm({
       defaultValues: {
-        titulo: "",
-        descripcion: "",
-        fechaCreacion: "",
-        prioridad: "",
-        estado: "",
+        FechaCambio: "",
         usuario: "",
-        etiquetas: "",
-        categoria: "",
+        estadoAnterior: "",
+        estadoNuevo: "",
+        comentario: "",
+        imagen: "",
       },
       resolver: yupResolver(ticketSchema),
     });
+
+      /*** Manejo de imagen ***/
+  const handleChangeImage = (e) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setFileURL(URL.createObjectURL(selectedFile));
+    }
+  };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -88,9 +91,10 @@ export function UpdateTicket() {
                 setDataPrioridad(prioridadRes.data.data || []);
                 setDataEtiqueta(etiquetaRes.data.data || []);
                 setDataUsuario(usuarioRes.data.data || []);
+                console.log("Data estado:", estadoRes.data.data || []);
                 setDataEstado(estadoRes.data.data || []);
                 setDataCategoria(categoriaRes.data.data || []);
-
+                
                 if (ticketRes.data) {
                     const ticketData = ticketRes.data.data;
                     console.log("Datos del ticket:", ticketData);
@@ -105,8 +109,29 @@ export function UpdateTicket() {
                         categoria: ticketData.categoriaId,
                     });
                     setTicket(ticketData);
+                    console.log("Estado ID del ticket:", ticketData.estadoId);
+                    switch (ticketData.estadoId) {
+                        case "1":
+                            setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Pendiente')));
+                            break;
+                        case "2":
+                            setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Asignado') ||estado.nombre.includes('En Progreso')));
+                            break;
+                        case "3":
+                            setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('En Proceso') || estado.nombre.includes('Resuelto')));
+                            break;
+                        case "4":
+                            setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Resuelto') || estado.nombre.includes('Cerrado') ));
+                            break;
+                        case "5":
+                            setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Cerrado')));
+                            break;
+                        default:
+                            setDataEstado(estadoRes.data.data);
+                            break;
                     }
-                }catch (err) {
+                }
+                } catch (err) {
                     if (err.name !== "AbortError") setError(err.message);
                 }
         };
@@ -115,6 +140,10 @@ export function UpdateTicket() {
     }, [id, reset]);
 
     const onSubmit = async (dataForm) => {
+      if (!file) {
+      toast.error("Debes seleccionar una imagen para la película");
+      return;
+    }
     try {
       if (ticketSchema.isValid()) {
         //Verificar datos del formulario
@@ -152,7 +181,7 @@ export function UpdateTicket() {
           <Controller
             name="titulo"
             control={control}
-            render={({ field }) => <Input {...field} id="titulo" placeholder="Ingrese el título" />}
+            render={({ field }) => <Input readOnly {...field} id="titulo" placeholder="Ingrese el título" />}
           />
           {errors.titulo && <p className="text-sm text-red-500">{errors.titulo.message}</p>}
         </div>
@@ -163,128 +192,13 @@ export function UpdateTicket() {
           <Controller
             name="descripcion"
             control={control}
-            render={({ field }) => <Input {...field} id="descripcion" placeholder="Ingrese la descripción" />}
+            render={({ field }) => <Input readOnly {...field} id="descripcion" placeholder="Ingrese la descripción" />}
           />
           {errors.descripcion && <p className="text-sm text-red-500">{errors.descripcion.message}</p>}
         </div>   
 
-        {/* Prioridad */}
-        <div>
-          <Label className="block mb-1 text-sm font-medium">Prioridad</Label>
-
-          <Controller
-            name="prioridad"
-            control={control}
-            render={({ field }) =>
-              <CustomSelect
-                field={field}
-                data={dataPrioridad}
-                label="Prioridad"
-                getOptionLabel={(prioridad) => `${prioridad.nombre} ${prioridad.peso}`}
-                getOptionValue={(prioridad) => prioridad.id}
-                error={errors?.prioridad?.message}
-              />
-            }
-          />
-
-        </div>
-        {/* Usuario */}
-{/* Usuario */}
-<div>
-  <div className="flex items-center justify-between">
-    <Label className="block mb-1 text-sm font-medium">Usuario</Label>
-  </div>
-
-  <div className="space-y-4 mt-3">
-    <div className="mb-4 p-4 border rounded-lg shadow-sm flex flex-col md:flex-row items-start md:items-center gap-4">
-      <Contact className="w-6 h-6 text-muted-foreground" />
-
-      <div className="flex-1 w-full md:w-1/3">
-        <Controller
-            name="usuario"
-            control={control}
-            render ={({ field }) =>
-            <CustomInputField
-            {...field}
-          label="Usuario"
-          placeholder="Nombre usuario"
-          value={dataUsuario?.nombre ?? ""}
-        />
-    }
-        />
-      </div>
-      <div className="flex-1 w-full md:w-1/3">
-                <Controller
-            name="usuario"
-            control={control}
-            render ={({ field }) =>
-            <CustomInputField
-            {...field}
-          label="Rol"
-          placeholder="Nombre rol"
-          value={dataUsuario?.rol?.nombre ?? ""}
-        />}
-        />
-      </div>
-    </div>
-  </div>
-</div>
-        {/* Etiquetas */}
-        <div>
-        <div>
-          <Label className="block mb-1 text-sm font-medium">Etiqueta</Label>
-          <Controller
-            name="etiquetas"
-            control={control}
-            render={({ field }) =>
-              <CustomSelect
-                field={field}
-                data={dataEtiqueta}
-                label="Etiqueta"
-                getOptionLabel={(etiqueta) => `${etiqueta.nombre}`}
-                getOptionValue={(etiqueta) => etiqueta.id}
-                error={errors?.etiquetas?.message}
-                onChange={async (value) => {
-                  console.log("EtiquetaSeleccionada",value)
-                  field.onChange(value);
-                  const categoriaRespuesta = await CategoriasService.getCategoriaByEtiqueta(value);
-                  console.log("SirveCategoriaPorEtiqueta",categoriaRespuesta)
-                  setDataCategoria(categoriaRespuesta.data.data || []);
-                  }}
-              />
-            }
-          />
-        </div>
-        <div className="mt-2">
-                    <Label className="block mb-1 text-sm font-medium">Categoria</Label>
-          <Controller
-  name="categoria"
-  control={control}
-  render={({ field }) =>
-    <CustomSelect
-      field={field}
-      data={dataCategoria}
-      label="Categoria"
-      getOptionLabel={(c) => `${c.nombre}`}
-      getOptionValue={(c) => c.id}
-      error={errors?.categoria?.message}
-    />
-  }
-/>
-        </div>
-        </div>
-        {/* Fecha de creación */}
-        <div>
-          <Label className="block mb-1 text-sm font-medium" htmlFor="fechaCreacion">FechaCreacion</Label>
-          <Controller
-            name="fechaCreacion"
-            control={control}
-            render={({ field }) => <Input {...field} id="fechaCreacion" placeholder="Ingrese la fecha de creación" />}
-          />
-          {errors.descripcion && <p className="text-sm text-red-500">{errors.descripcion.message}</p>}
-        </div>  
         {/* Estado */}
-                <div>
+        <div>
           <Label className="block mb-1 text-sm font-medium">Estado</Label>
 
           <Controller
@@ -303,7 +217,47 @@ export function UpdateTicket() {
           />
 
         </div>
+        <div >
+          <Label className="block mb-1 text-sm font-medium" htmlFor="comentario">Comentario</Label>
+          <Controller
+            name="comentario"
+            control={control}
+            render={({ field }) => <Input {...field} id="comentario" placeholder="Ingrese el comentario" />}
+          />
+          {errors.comentario && <p className="text-sm text-red-500">{errors.comentario.message}</p>}
+        </div> 
+                <div className="mb-6">
+          <Label htmlFor="image" className="block mb-1 text-sm font-medium">
+            Imagen
+          </Label>
 
+          <div
+            className="relative w-56 h-56 border-2 border-dashed border-muted/50 rounded-lg flex items-center justify-center cursor-pointer overflow-hidden hover:border-primary transition-colors"
+            onClick={() => document.getElementById("image").click()}
+          >
+            {!fileURL && (
+              <div className="text-center px-4">
+                <p className="text-sm text-muted-foreground">Haz clic o arrastra una imagen</p>
+                <p className="text-xs text-muted-foreground">(jpg, png, máximo 5MB)</p>
+              </div>
+            )}
+            {fileURL && (
+              <img
+                src={fileURL}
+                alt="preview"
+                className="w-full h-full object-contain rounded-lg shadow-sm"
+              />
+            )}
+          </div>
+
+          <input
+            type="file"
+            id="image"
+            className="hidden"
+            accept="image/*"
+            onChange={handleChangeImage}
+          />
+        </div>
         <div className="flex justify-between gap-4 mt-6">
           <Button
             type="button"

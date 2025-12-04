@@ -1,23 +1,25 @@
 import React from "react";
 import { ArrowRightSquareIcon, ClipboardListIcon, BellIcon, TrendingUpIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export function Home() {
+  const { t } = useTranslation();
   const caracteristicas = [
     {
       icon: ClipboardListIcon,
-      title: "Registro de incidentes",
-      description: "Crea y documenta incidentes de forma rápida y estructurada con toda la información necesaria."
+      title: t("home.features.incidentTracking.title"),
+      description: t("home.features.incidentTracking.description")
     },
     {
       icon: BellIcon,
-      title: "Notificaciones en tiempo real",
-      description: "Mantente informado sobre actualizaciones y cambios de estado en tus incidentes."
+      title: t("home.features.realtimeNotifications.title"),
+      description: t("home.features.realtimeNotifications.description")
     },
     {
       icon: TrendingUpIcon,
-      title: "Análisis y reportes",
-      description: "Visualiza estadísticas y tendencias para mejorar la gestión de incidentes."
+      title: t("home.features.analyticsReports.title"),
+      description: t("home.features.analyticsReports.description")
     }
   ];
 
@@ -26,18 +28,18 @@ export function Home() {
       <section className="flex flex-col items-center justify-center min-h-[80vh] gap-8 px-4 py-16 bg-accent">
         <div className="max-w-4xl text-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 text-foreground drop-shadow-lg">
-            Sistema de Seguimiento de Incidentes
+            {t("home.title")}
           </h1>
           <p className="text-lg md:text-xl lg:text-2xl text-foreground/80 mb-8 drop-shadow max-w-2xl mx-auto">
-            Descubre y gestiona tus incidentes de manera eficiente y profesional.
+              {t("home.subtitle")}
           </p>
           
             <Link
-              to="/user/login"
+              to="/usuario/Login"
               className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/50"
-              aria-label="Iniciar sesión en el sistema"
+              aria-label={t("home.loginCtaAriaLabel")}
             >
-              <span>Iniciar Sesión</span>
+              <span>{t("home.loginCta")}</span>
               <ArrowRightSquareIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
         </div>
@@ -45,7 +47,7 @@ export function Home() {
       <section className="px-4 py-16 bg-foreground/5">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
-            Características principales
+            {t("home.featuresTitle")}
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">

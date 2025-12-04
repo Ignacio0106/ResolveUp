@@ -1,5 +1,5 @@
 <?php
-class Usuario
+class usuario
 {
     // GET listar todos los usuarios
     public function index()
@@ -15,7 +15,7 @@ class Usuario
         }
     }
 
-    // GET obtener 1 usuario por id
+    // http://localhost:81/proyecto/api/usuario/1
     public function get($id)
     {
         try {
@@ -29,7 +29,7 @@ class Usuario
         }
     }
 
-        public function getByTicket($id)
+    public function getByTicket($id)
     {
         try {
             $response = new Response();
@@ -62,4 +62,19 @@ class Usuario
 
     // PUT actualizar usuario
     
+
+    public function login()
+    {
+        $response = new Response();
+        $request = new Request();
+        //Obtener json enviado
+        $inputJSON = $request->getJSON();
+        $usuario = new UsuarioModel();
+        $result = $usuario->login($inputJSON);
+        if (isset($result) && !empty($result) && $result != false) {
+            $response->toJSON($result);
+        } else {
+            $response->toJSON($response, "Usuario no valido");
+        }
+    }
 }

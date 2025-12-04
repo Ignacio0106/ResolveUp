@@ -1,5 +1,7 @@
 <?php
 
+use Firebase\JWT\JWT;
+
 class UsuarioModel
 {
     public $enlace;
@@ -63,6 +65,11 @@ public function createUsuario($objeto)
             throw new Exception("Usuario logueado no existe");
         }
 
+		if (isset($objeto->password) && $objeto->password != null) {
+			$crypt = password_hash($objeto->password, PASSWORD_BCRYPT);
+			$objeto->password = $crypt;
+		}
+
         $sql = "INSERT INTO Usuario (nombre, correo, contraseña, idRol)
                 VALUES ('$objeto->nombre', '$objeto->correo', '$objeto->password', $objeto->idRol)";
 
@@ -118,7 +125,38 @@ public function createUsuario($objeto)
     }
 }
 
+    public function login($objeto)
+	{
+		$vSql = "SELECT * from Usuario where correo='$objeto->correo'";
 
+		//Ejecutar la consulta
+		$vResultado = $this->enlace->ExecuteSQL($vSql);
+		if (is_object($vResultado[0])) {
+			$user = $vResultado[0];
+			if (password_verify($objeto->contraseña, $user->contraseña)) {
+				$usuario = $this->get($user->id);
+				if (!empty($usuario)) {
+					// Datos para el token JWT
+					$data = [
+						'id' => $usuario->id,
+                        'nombre' => $usuario->nombre,
+						'correo' => $usuario->correo,
+						'rol' => $usuario->rol,
+						'iat' => time(),  // Hora de emisión
+						'exp' => time() + 3600 // Expiración en 1 hora
+					];
+
+					// Generar el token JWT
+					$jwt_token = JWT::encode($data, config::get('SECRET_KEY'), 'HS256');
+
+					// Enviar el token como respuesta
+					return $jwt_token;
+				}
+			}
+		} else {
+			return false;
+		}
+	}
 
 
 }

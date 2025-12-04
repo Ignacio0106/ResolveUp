@@ -1,7 +1,9 @@
 import React from "react";
 import { LaptopMinimalCheck, Code2, Heart, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function Footer() {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
   
   return (
@@ -16,13 +18,13 @@ export function Footer() {
                 </h3>
               </div>
               <p className="text-xs text-muted-foreground">
-                Sistema de gestión de tickets
+                {t("footer.description")}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs">
-              &copy; {currentYear} Todos los derechos reservados
+              &copy; {currentYear} {t("footer.rights")}
             </span>
           </div>
         </div>
@@ -40,7 +42,7 @@ export function Footer() {
             </div>
           </div>
           <div className="flex items-center justify-between text-xs">
-              <span>&copy; {currentYear} Todos los derechos reservados</span>
+              &copy; {currentYear} {t("footer.rights")}
           </div>
         </div>
       </div>

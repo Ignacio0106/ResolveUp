@@ -31,6 +31,12 @@ class UsuarioService {
       data: JSON.stringify(userData)
     });
   }
+  loginUser(User) {
+    return axios.post(BASE_URL + '/login/', JSON.stringify(User));
+  }
+  logout (){
+    localStorage.removeItem("token");
+  };
 }
 
 export default new UsuarioService();

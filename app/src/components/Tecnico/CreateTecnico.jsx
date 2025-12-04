@@ -13,6 +13,7 @@ import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
 import { useNavigate } from "react-router-dom";
 import EspecialidadService from "@/services/EspecialidadService";
 import TecnicoService from "@/services/TecnicoService";
+import { useTranslation } from "react-i18next";
 
 export function CreateTecnico() {
   const [especialidades, setEspecialidades] = useState([]);
@@ -20,6 +21,7 @@ export function CreateTecnico() {
 const navigate = useNavigate();
   const [showNewEspecialidad, setShowNewEspecialidad] = useState(false);
   const [newEspecialidad, setNewEspecialidad] = useState("");
+  const { t } = useTranslation();
 
   const tecnicoSchema = yup.object({
     nombre: yup.string().required("El nombre es requerido"),
@@ -105,20 +107,20 @@ const navigate = useNavigate();
 
   return (
     <Card className="p-6 max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Crear Técnico</h2>
+      <h2 className="text-2xl font-bold mb-6">{t("technician.createTitle")}</h2>
 
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      {error && <p className="text-red-600 mb-4">{t("technician.error")}</p>}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
         {/* Nombre */}
         <div>
-          <Label>Nombre completo</Label>
+          <Label>{t("technician.fields.fullName.label")}</Label>
           <Controller
             name="nombre"
             control={control}
             render={({ field }) => (
-              <Input {...field} placeholder="Ingrese nombre completo" />
+              <Input {...field} placeholder={t("technician.fields.fullName.placeholder")} />
             )}
           />
           {errors.nombre && <p className="text-red-500">{errors.nombre.message}</p>}
@@ -126,12 +128,12 @@ const navigate = useNavigate();
 
         {/* Correo */}
         <div>
-          <Label>Correo</Label>
+          <Label>{t("technician.fields.email.label")}</Label>
           <Controller
             name="correo"
             control={control}
             render={({ field }) => (
-              <Input {...field} placeholder="usuario@mail.com" />
+              <Input {...field} placeholder={t("technician.fields.email.placeholder")} />
             )}
           />
           {errors.correo && <p className="text-red-500">{errors.correo.message}</p>}
@@ -139,12 +141,12 @@ const navigate = useNavigate();
 
         {/* Contraseña */}
         <div>
-          <Label>Contraseña</Label>
+          <Label>{t("technician.fields.password.label")}</Label>
           <Controller
             name="password"
             control={control}
             render={({ field }) => (
-              <Input {...field} type="password" placeholder="******" />
+              <Input {...field} type="password" placeholder={t("technician.fields.password.placeholder")} />
             )}
           />
           {errors.password && <p className="text-red-500">{errors.password.message}</p>}
@@ -152,7 +154,7 @@ const navigate = useNavigate();
 
         {/* Disponibilidad */}
 <div>
-  <Label>Disponibilidad</Label>
+  <Label>{t("technician.fields.availability.label")}</Label>
   <Controller
     name="disponibilidad"
     control={control}
@@ -161,8 +163,8 @@ const navigate = useNavigate();
         {...field}
         className="border rounded px-3 py-2 w-full"
       >
-        <option value="1">Disponible</option>
-        <option value="0">No disponible</option>
+        <option value="1">{t("technician.fields.availability.options.available")}</option>
+        <option value="0">{t("technician.fields.availability.options.unavailable")}</option>
       </select>
     )}
   />
@@ -185,11 +187,11 @@ const navigate = useNavigate();
                   <CustomMultiSelect
                     field={field}
                     data={especialidades}
-                    label="Especialidades"
+                    label={t("technician.fields.specialties.label")}
                     getOptionLabel={(item) => item.nombre}
                     getOptionValue={(item) => item.id}
                     error={errors.especialidades?.message}
-                    placeholder="Seleccione las especialidades del técnico"
+                    placeholder={t("technician.fields.specialties.placeholder")}
                   />
                 );
               }}
@@ -214,18 +216,18 @@ const navigate = useNavigate();
           {showNewEspecialidad && (
             <div className="flex gap-2 mb-3 p-3 border rounded bg-muted/30">
               <Input
-                placeholder="Nueva especialidad"
+                placeholder={t("technician.fields.specialties.newPlaceholder")}
                 value={newEspecialidad}
                 onChange={(e) => setNewEspecialidad(e.target.value)}
               />
               <Button type="button" onClick={crearNuevaEspecialidad}>
-                Guardar
+                {t("technician.fields.specialties.addNew")}
               </Button>
             </div>
           )}
         </div>
 
-        <Button type="submit" className="w-full">Guardar Técnico</Button>
+        <Button type="submit" className="w-full">{t("technician.buttons.saveTechnician")}</Button>
       </form>
     </Card>
   );

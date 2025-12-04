@@ -13,6 +13,7 @@ import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
 import EspecialidadService from "@/services/EspecialidadService";
 import TecnicoService from "@/services/TecnicoService";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 
   const tecnicoSchema = yup.object({
@@ -27,6 +28,7 @@ import { useParams, useNavigate } from "react-router-dom";
 export function UpdateTecnico() {
   const { id } = useParams(); 
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [especialidades, setEspecialidades] = useState([]);
   const [error, setError] = useState("");
@@ -139,37 +141,37 @@ if (dataForm.password) payload.password = dataForm.password;
 
   return (
     <Card className="p-6 max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Actualizar Técnico</h2>
+      <h2 className="text-2xl font-bold mb-6">{t("technician.updateTitle")}</h2>
       {error && <p className="text-red-600 mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <Label>Nombre completo</Label>
+          <Label>{t("technician.fields.fullName.label")}</Label>
           <Controller name="nombreUsuario" control={control} render={({ field }) => (
-            <Input {...field} placeholder="Ingrese nombre completo" />
+            <Input {...field} placeholder={t("technician.fields.fullName.placeholder")} />
           )} />
           {errors.nombreUsuario && <p className="text-red-500">{errors.nombreUsuario.message}</p>}
         </div>
 
         <div>
-          <Label>Correo</Label>
+          <Label>{t("technician.fields.email.label")}</Label>
           <Controller name="correoUsuario" control={control} render={({ field }) => (
-            <Input {...field} placeholder="usuario@mail.com" />
+            <Input {...field} placeholder={t("technician.fields.email.placeholder")} />
           )} />
           {errors.correoUsuario && <p className="text-red-500">{errors.correoUsuario.message}</p>}
         </div>
 
         <div>
-          <Label>Contraseña</Label>
+          <Label>{t("technician.fields.password.label")}</Label>
           <Controller name="password" control={control} render={({ field }) => (
-            <Input {...field} type="password" placeholder="******" />
+            <Input {...field} type="password" placeholder={t("technician.fields.password.placeholder")} />
           )} />
           {errors.password && <p className="text-red-500">{errors.password.message}</p>}
         </div>
 
 {/* Disponibilidad */}
 <div>
-  <Label>Disponibilidad</Label>
+  <Label>{t("technician.fields.availability.label")}</Label>
   <Controller
     name="disponibilidad"
     control={control}
@@ -178,8 +180,8 @@ if (dataForm.password) payload.password = dataForm.password;
         {...field}
         className="border rounded px-3 py-2 w-full"
       >
-        <option value="1">Disponible</option>
-        <option value="0">No disponible</option>
+        <option value="1">{t("technician.fields.availability.options.available")}</option>
+        <option value="0">{t("technician.fields.availability.options.unavailable")}</option>
       </select>
     )}
   />
@@ -200,7 +202,7 @@ if (dataForm.password) payload.password = dataForm.password;
                 data={especialidades}
                 getOptionLabel={item => item.nombre}
                 getOptionValue={item => item.id}
-                placeholder="Seleccione las especialidades"
+                placeholder={t("technician.fields.specialties.placeholder")}
               />
             )} />
             <Button
@@ -217,18 +219,18 @@ if (dataForm.password) payload.password = dataForm.password;
           {showNewEspecialidad && (
             <div className="flex gap-2 mb-3 p-3 border rounded bg-muted/30">
               <Input
-                placeholder="Nueva especialidad"
+                placeholder={t("technician.fields.placeholders.newSpecialty")}
                 value={newEspecialidad}
                 onChange={(e) => setNewEspecialidad(e.target.value)}
               />
               <Button type="button" onClick={crearNuevaEspecialidad}>
-                Guardar
+                {t("technician.fields.buttons.save")}
               </Button>
             </div>
           )}
         </div>
 
-        <Button type="submit" className="w-full">Actualizar Técnico</Button>
+        <Button type="submit" className="w-full">{t("technician.updateTechnician")}</Button>
       </form>
     </Card>
   );

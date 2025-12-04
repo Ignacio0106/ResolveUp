@@ -26,38 +26,58 @@ import {
   FileText,
   Plus,
   Edit,
-  Trash2
+  Trash2,
+  ListTodo
 } from "lucide-react";
 import TicketService from "@/services/TicketService";
 import { LoadingGrid } from "../ui/custom/LoadingGrid";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { EmptyState } from "../ui/custom/EmptyState";
+import { useUser } from "@/hooks/useUser";
+
 
 const ticketColumns = [
   { key: "titulo", label: "Título" },
   { key: "usuarioSolicitante", label: "Solicitante" },
-  { key: "fechaCreacion", label: "Fecha Creación" },
+  { key: "estado", label: "Estado del Ticket" },
   { key: "actions", label: "Acciones" },
 ];
 
 export default function TableTicket() {
+  const { user, isAuthenticated, clearUser, authorize } = useUser();
   const [tickets, setTickets] = useState([]);
-  const [usuario, setUsuario] = useState("");
-  const [rol, setRol] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+const mostrarActualizar = (rol, estado) => {
+  if (rol === "Administrador") {
+    return ["Pendiente", "Resuelto", "Cerrado"].includes(estado);
+  }
+
+  if (rol === "Técnico") {
+    return ["Asignado", "En Proceso"].includes(estado);
+  }
+
+  if (rol === "Cliente") {
+    return ["Resuelto", "Cerrado"].includes(estado);
+  }
+
+  return false;
+};
+
+
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const response = await TicketService.getListadoDetalle();
+        console.log("Usuario ID:", user?.id || 1);
+        const response = await TicketService.getTicketsByUsuario(user?.id);
+        console.log("Respuesta de tickets:", response);
         const responseData = response?.data?.data || {};
-        const ticketsArray = responseData.data || [];
+        console.log("Datos de tickets:", responseData);
 
-        setTickets(Array.isArray(ticketsArray) ? ticketsArray : []);
-        setUsuario(responseData.usuario || "");
-        setRol(responseData.rol || "");
+
+        setTickets(Array.isArray(responseData) ? responseData : []);
       } catch (err) {
         setError(err.message || "Error al cargar tickets");
       } finally {
@@ -82,9 +102,9 @@ export default function TableTicket() {
               <User className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-foreground">{usuario}</h2>
+              <h2 className="text-xl font-semibold text-foreground">{user?.nombre || "Usuario"}</h2>
               <Badge variant="secondary" className="mt-1">
-                {rol}
+                {user?.rol?.nombre || "Rol"}
               </Badge>
             </div>
           </div>
@@ -134,7 +154,7 @@ export default function TableTicket() {
           <TableBody>
             {tickets.map((ticket) => (
               <TableRow 
-                key={ticket.idTicket}
+                key={ticket.id}
                 className="hover:bg-muted/30 transition-colors duration-150"
               >
                 <TableCell className="py-4 px-6">
@@ -156,36 +176,36 @@ export default function TableTicket() {
                 
                 <TableCell className="py-4 px-6">
                   <div className="flex items-center gap-2 text-foreground">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    {ticket.fechaCreacion
+                    {ticket.estado}
+{/*                     ticket.fechaCreacion
     ? new Date(ticket.fechaCreacion).toLocaleDateString('es-ES', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
       })
-    : ''}
+    : '' */}
+    
                   </div>
                 </TableCell>
                 
                 <TableCell className="py-4 px-6">
-{/*                   <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() =>
-                                                navigate(`/ticket/update/${ticket.id}`)
-                                                }
-                                                >
-                                                <Edit className="h-4 w-4 text-primary" />
-                                                </Button>
-                                            </TooltipTrigger>
-                                            <TooltipContent>Actualizar</TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider> */}
-
-                                    <TooltipProvider>
+                    {mostrarActualizar(user?.rol?.nombre, ticket.estado) && (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(`/ticket/update/${ticket.id}`)}
+          >
+            <Edit className="h-4 w-4 text-primary" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Actualizar</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )}
+                                  <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <Button variant="ghost" size="icon">

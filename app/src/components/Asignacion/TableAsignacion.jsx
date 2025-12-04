@@ -10,6 +10,7 @@ import { EmptyState } from '../ui/custom/EmptyState';
 import { ChevronRight } from "lucide-react"; 
 import { Badge } from "@/components/ui/badge"; 
 import { Progress } from '../ui/progress';
+import { useUser } from '@/hooks/useUser';
 
 
 // Headers de la tabla
@@ -95,6 +96,8 @@ function iconos(item){
 }
 
 export function TableAsignacion() {
+    const { user, isAuthenticated, clearUser, authorize } = useUser();
+
     const navigate = useNavigate();
     const [asignacion, setAsignacion] = useState(null);
     const [error, setError] = useState(null);

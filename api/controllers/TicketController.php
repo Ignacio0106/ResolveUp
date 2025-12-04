@@ -69,6 +69,38 @@ class ticket
         }
     }
 
+    public function getTicketsByUsuario($idUsuario)
+    {
+        try {
+            $response = new Response();
+            //Instancia del modelo
+            $ticket = new TicketModel();
+            //Acción del modelo a ejecutar
+            $result = $ticket->getTicketsByUsuario($idUsuario);
+            //Dar respuesta
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+        }
+    }
+
+    public function getTicketPendiente()
+    {
+        try {
+            $response = new Response();
+            //Instancia del modelo
+            $ticket = new TicketModel();
+            //Acción del modelo a ejecutar
+            $result = $ticket->getTicketPendiente();
+            //Dar respuesta
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+        }
+    }
+
     public function listadoDetalle()
     {
         try {

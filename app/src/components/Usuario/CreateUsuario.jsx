@@ -14,10 +14,9 @@ import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
 import RoleService from "@/services/RoleService";
 import UsuarioService from "@/services/UsuarioService";
 import EspecialidadService from "@/services/EspecialidadService";
+import { data } from "react-router-dom";
 
 export function CreateUsuario() {
-  const [roles, setRoles] = useState([]);
-  const [especialidades, setEspecialidades] = useState([]);
   const [error, setError] = useState("");          // Errores de carga
   const [backendError, setBackendError] = useState(""); // Errores del backend
 
@@ -25,49 +24,29 @@ export function CreateUsuario() {
     nombre: yup.string().required("El nombre es requerido"),
     correo: yup.string().email("Correo inválido").required("El correo es requerido"),
     password: yup.string().required("La contraseña es requerida"),
-    idRol: yup.number().typeError("Seleccione un rol").required("Seleccione un rol"),
-    especialidades: yup.array().when("idRol", {
-      is: 2,
-      then: (schema) => schema.min(1, "Seleccione al menos una especialidad"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+    idRol: yup.number().required("El rol es requerido").default(3),
   });
 
   const { control, watch, handleSubmit, reset, formState: { errors } } = useForm({
-    defaultValues: { nombre: "", correo: "", password: "", idRol: "", especialidades: [] },
+    defaultValues: { nombre: "", correo: "", password: "", idRol: 3,},
     resolver: yupResolver(userSchema),
   });
 
   const selectedRole = Number(watch("idRol"));
 
-  // Cargar roles
-  useEffect(() => {
-    RoleService.getRoles()
-      .then(res => setRoles(res.data?.data || []))
-      .catch(err => setError("Error al cargar roles: " + err));
-  }, []);
-
-  // Cargar especialidades solo si rol = Técnico
-  useEffect(() => {
-    if (selectedRole !== 2) return;
-
-    EspecialidadService.getAll()
-      .then(res => setEspecialidades(res.data?.data || []))
-      .catch(err => setError("Error al cargar especialidades: " + err));
-  }, [selectedRole]);
 
   const onSubmit = async (dataForm) => {
+    console.log("Entro: ", dataForm);
     setBackendError(""); // limpiar error previo
     try {
-      const payload = {
+      const usuarioN = {
         nombre: dataForm.nombre,
         correo: dataForm.correo,
         password: dataForm.password,
-        idRol: Number(dataForm.idRol),
-        especialidades: dataForm.idRol === 2 ? dataForm.especialidades : [],
+        idRol: dataForm.idRol,
       };
 
-      const response = await UsuarioService.createUser(payload);
+      const response = await UsuarioService.createUser(usuarioN);
 
       if (response.data?.success === false) {
         // Solo mostramos mensaje en pantalla
@@ -116,38 +95,13 @@ export function CreateUsuario() {
           )} />
           {errors.password && <p className="text-red-500">{errors.password.message}</p>}
         </div>
-
         <div>
           <Label>Rol</Label>
-          <Controller name="idRol" control={control} render={({ field }) => (
-            <CustomSelect
-              field={field}
-              data={roles}
-              label="Seleccione un rol"
-              getOptionLabel={r => r.nombre}
-              getOptionValue={r => r.id}
-              error={errors.idRol?.message}
-            />
-          )} />
+            <Input defaultValue="Cliente" readOnly />
         </div>
-
-        {selectedRole === 2 && (
-          <div>
-            <Controller name="especialidades" control={control} render={({ field }) => (
-              <CustomMultiSelect
-                field={field}
-                data={especialidades}
-                label="Especialidades"
-                getOptionLabel={item => item.nombre}
-                getOptionValue={item => item.id}
-                error={errors.especialidades?.message}
-                placeholder="Seleccione las especialidades del técnico"
-              />
-            )} />
-            {errors.especialidades && <p className="text-sm text-red-500">{errors.especialidades.message}</p>}
-          </div>
-        )}
-
+          <Controller name="idRol" control={control} render={({ field }) => (
+            <Input {...field} value={3} type="hidden" />
+          )} />
         <Button type="submit" className="w-full">Guardar</Button>
       </form>
     </Card>

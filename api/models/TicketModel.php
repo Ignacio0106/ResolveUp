@@ -111,6 +111,43 @@ public function getById($idTicket){
     return $vResultado[0] ?? null;
 }
 
+public function getTicketsByUsuario($idUsuario){
+    $usuarioM = new UsuarioModel();
+    $user = $usuarioM->get($idUsuario);
+    switch ($user->rol->id) {
+        case '1':
+            $vSql = "SELECT t.*, e.nombre as estado, u.nombre as usuarioSolicitante FROM tickets t
+                    JOIN estadoTicket e ON t.estadoId = e.id
+                    JOIN Usuario u ON t.idUsuario = u.id;";
+            break;
+        case '2':
+            $vSql = "SELECT t.*, e.nombre as estado, u.nombre as usuarioSolicitante FROM tickets t
+                     JOIN asignacion a ON t.id = a.idTicket
+                     JOIN tecnicos tec ON a.idTecnico = tec.id
+                     JOIN estadoTicket e ON t.estadoId = e.id
+                     JOIN Usuario u ON t.idUsuario = u.id
+                     WHERE tec.idUsuario = $idUsuario;";
+            break;
+        case '3':
+    $vSql = "SELECT t.*, e.nombre as estado, u.nombre as usuarioSolicitante FROM tickets t
+                    JOIN estadoTicket e ON t.estadoId = e.id
+                    JOIN Usuario u ON t.idUsuario = u.id
+                    WHERE idUsuario = $idUsuario;";
+    }
+    $vResultado = $this->enlace->ExecuteSQL($vSql);
+
+    return $vResultado ?? [];
+}
+
+public function getTicketPendiente(){
+    $vSql = "SELECT t.*, c.nombre as categoria, p.nombre as prioridad FROM tickets t
+                    JOIN categoria c ON t.idCategoria = c.id
+                    JOIN prioridadticket p ON t.prioridadId = p.id
+                    WHERE t.estadoId = 1;";
+    $vResultado = $this->enlace->ExecuteSQL($vSql);
+    return $vResultado[0] ?? null;
+}
+
     public function getTicketDetalle()
 {
     try {
@@ -189,7 +226,6 @@ public function getById($idTicket){
         ];
     }
 }
-
 
 public function listadoDetalle() {
     try {

@@ -1,0 +1,121 @@
+{
+  "home": {
+    "title": "Incident Tracking System",
+    "subtitle": "Discover and manage your incidents efficiently and professionally.",
+    "loginCta": "Sign in",
+    "loginCtaAriaLabel": "Sign in to the system",
+    "featuresTitle": "Main features",
+    "features": {
+      "incidentTracking": {
+        "title": "Incident logging",
+        "description": "Create and document incidents quickly and in a structured way with all the necessary information."
+      },
+      "realtimeNotifications": {
+        "title": "Real-time notifications",
+        "description": "Stay informed about updates and status changes in your incidents."
+      },
+      "analyticsReports": {
+        "title": "Analytics and reports",
+        "description": "View statistics and trends to improve incident management."
+      }
+    }
+  },
+  "notFound": {
+    "title": "Resource not found",
+    "description": "The page you are looking for may have been removed, had its name changed, or is temporarily unavailable.",
+    "backButton": "Go back",
+    "imageAlt": "404 Error"
+  },
+  "footer": {
+    "appName": "ResolveUp",
+    "description": "Ticket management system",
+    "rights": "All rights reserved"
+  },
+    "header": {
+    "appName": "ResolveUp",
+    "greeting": "Hi, {{name}}!",
+    "guest": "Guest",
+    "menus": {
+      "lists": "Listings",
+      "maintenance": "Maintenance",
+      "user": "User"
+    },
+    "mobile": {
+      "cart": "Cart",
+      "notifications": "Notif."
+    },
+    "language": {
+      "placeholder": "Select language",
+      "searchPlaceholder": "Search language...",
+      "empty": "Language not found."
+    },
+    "logout": {
+      "button": "Log out",
+      "description": "Sign out of the system"
+    },
+    "user": {
+      "login": "Sign in",
+      "loginD": "Sign in",
+      "register": "Register",
+      "registerD": "Create new account"
+    }
+  },
+  "technician": {
+    "updateTitle": "Update Technician",
+    "createTitle": "Create Technician",
+    "fields": {
+      "fullName": {
+        "label": "Full name",
+        "placeholder": "Enter full name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "user@mail.com"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "******"
+      },
+      "availability": {
+        "label": "Availability",
+        "options": {
+          "available": "Available",
+          "unavailable": "Not available"
+        }
+      },
+      "specialties": {
+        "label": "Specialties",
+        "placeholder": "Select technician specialties",
+        "newPlaceholder": "New specialty",
+        "addNew": "Save"
+      }
+    },
+    "buttons": {
+      "saveTechnician": "Save Technician"
+    },
+    "error": "An error occurred while saving the technician.",
+    
+    "details": {
+      "emailLabel": "Email:",
+      "availabilityLabel": "Availability:",
+      "workloadLabel": "Workload",
+      "specialtiesLabel": "Specialties",
+      "backButton": "Go back"
+    },
+    "list": {
+      "title": "Technician List",
+      "tooltip": {
+        "create": "Create technician",
+        "update": "Update",
+        "delete": "Delete",
+        "detail": "View details"
+      },
+      "backButton": "Go back",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "actions": "Actions"
+      }
+    }
+  }
+}

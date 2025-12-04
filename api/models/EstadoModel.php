@@ -10,7 +10,7 @@ class EstadoModel
     public function all()
     {
         //Consulta sql
-        $vSql = "SELECT * FROM estadoticket;";
+        $vSql = "SELECT * FROM estadoticket order by id desc;";
         //Ejecutar la consulta
         $vResultado = $this->enlace->ExecuteSQL($vSql);
         // Retornar el objeto

@@ -9,6 +9,7 @@ import { User, Check, X, ArrowLeft, UserCheck, Mail, Briefcase } from "lucide-re
 import { LoadingGrid } from '../ui/custom/LoadingGrid';
 import { EmptyState } from '../ui/custom/EmptyState';
 import {ChevronRight } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 
 export function DetailTecnico() {
@@ -17,6 +18,7 @@ export function DetailTecnico() {
     const [tecnico, setTecnico] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -56,11 +58,11 @@ export function DetailTecnico() {
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <Mail className="w-5 h-5 text-blue-500" />
-            <span className="font-semibold">Correo:</span>
+            <span className="font-semibold">{t("technician.details.emailLabel")}</span>
             <span className="text-muted-foreground">{tecnico.correoUsuario}</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="font-semibold">Disponibilidad:</span>
+            <span className="font-semibold">{t("technician.details.availabilityLabel")}</span>
             {tecnico.disponibilidad === "1" ? (
               <Check className="text-green-600" />
             ) : (
@@ -70,7 +72,7 @@ export function DetailTecnico() {
           <div className="flex items-center gap-3">
                 <Briefcase className="w-5 h-5 text-purple-500" />
                 <div>
-                  <p className="font-medium">Carga de trabajo</p>
+                  <p className="font-medium">{t("technician.details.workloadLabel")}</p>
                   <p className="font-semibold">{tecnico.cargaTrabajo}</p>
                 </div>
           </div>
@@ -81,7 +83,7 @@ export function DetailTecnico() {
 
           {tecnico.especialidades && tecnico.especialidades.length > 0 && (
             <div className="space-y-2">
-              <span className="font-semibold mb-2 text-xl flex justify-between items-center">Especialidades:<div className="text-xl font-bold text-secondary">
+              <span className="font-semibold mb-2 text-xl flex justify-between items-center">{t("technician.details.specialtiesLabel")}:<div className="text-xl font-bold text-secondary">
                   {tecnico.especialidades?.length || 0}
                 </div></span>
               <div className="flex flex-wrap gap-2">
@@ -104,14 +106,14 @@ export function DetailTecnico() {
     </Card>
 
     {/* Botón Regresar */}
-    <div className="flex justify-center">
+    <div className="flex justify-center ">
         <Button
           type="button"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 bg-accent hover:bg-accent/90 mt-6"
+          className="flex items-center gap-2 hover:bg-primary/80 mt-6 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          Regresar
+          {t("technician.details.backButton")}
         </Button>
     </div>
   </div>

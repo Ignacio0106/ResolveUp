@@ -1,0 +1,121 @@
+{
+  "home": {
+    "title": "Sistema de Seguimiento de Incidentes",
+    "subtitle": "Descubre y gestiona tus incidentes de manera eficiente y profesional.",
+    "loginCta": "Iniciar sesión",
+    "loginCtaAriaLabel": "Iniciar sesión en el sistema",
+    "featuresTitle": "Características principales",
+    "features": {
+      "incidentTracking": {
+        "title": "Registro de incidentes",
+        "description": "Crea y documenta incidentes de forma rápida y estructurada con toda la información necesaria."
+      },
+      "realtimeNotifications": {
+        "title": "Notificaciones en tiempo real",
+        "description": "Mantente informado sobre actualizaciones y cambios de estado en tus incidentes."
+      },
+      "analyticsReports": {
+        "title": "Análisis y reportes",
+        "description": "Visualiza estadísticas y tendencias para mejorar la gestión de incidentes."
+      }
+    }
+  },
+  "notFound": {
+    "title": "Recurso no encontrado",
+    "description": "La página que está buscando podría haber sido eliminada, cambió su nombre o no está disponible temporalmente.",
+    "backButton": "Volver",
+    "imageAlt": "Error 404"
+  },
+  "footer": {
+    "appName": "ResolveUp",
+    "description": "Sistema de gestión de tickets",
+    "rights": "Todos los derechos reservados"
+  },
+  "header": {
+    "appName": "ResolveUp",
+    "greeting": "¡Hola, {{name}}!",
+    "guest": "Invitado",
+    "menus": {
+      "lists": "Listados",
+      "maintenance": "Mantenimientos",
+      "user": "Usuario"
+    },
+    "mobile": {
+      "cart": "Carrito",
+      "notifications": "Notif."
+    },
+    "language": {
+      "placeholder": "Seleccionar idioma",
+      "searchPlaceholder": "Buscar idioma...",
+      "empty": "Idioma no encontrado."
+    },
+    "logout": {
+      "button": "Cerrar sesión",
+      "description": "Salir del sistema"
+    },
+    "user": {
+      "login": "Iniciar sesión",
+      "loginD": "Iniciar sesión",
+      "register": "Registrarse",
+      "registerD": "Crear nueva cuenta"
+    }
+  },
+  "technician": {
+    "createTitle": "Crear Técnico",
+    "updateTitle": "Actualizar Técnico",
+    "fields": {
+      "fullName": {
+        "label": "Nombre completo",
+        "placeholder": "Ingrese nombre completo"
+      },
+      "email": {
+        "label": "Correo",
+        "placeholder": "usuario@mail.com"
+      },
+      "password": {
+        "label": "Contraseña",
+        "placeholder": "******"
+      },
+      "availability": {
+        "label": "Disponibilidad",
+        "options": {
+          "available": "Disponible",
+          "unavailable": "No disponible"
+        }
+      },
+      "specialties": {
+        "label": "Especialidades",
+        "placeholder": "Seleccione las especialidades del técnico",
+        "newPlaceholder": "Nueva especialidad",
+        "addNew": "Guardar"
+      }
+    },
+    "buttons": {
+      "saveTechnician": "Guardar Técnico",
+      "updateTechnician": "Actualizar Técnico"
+    },
+    "error": "Ha ocurrido un error al guardar el técnico.",
+    "details": {
+      "emailLabel": "Correo:",
+      "availabilityLabel": "Disponibilidad:",
+      "workloadLabel": "Carga de trabajo",
+      "specialtiesLabel": "Especialidades",
+      "backButton": "Regresar"
+    },
+    "list": {
+      "title": "Listado de Técnicos",
+      "tooltip": {
+        "create": "Crear técnico",
+        "update": "Actualizar",
+        "delete": "Eliminar",
+        "detail": "Ver detalle"
+      },
+      "backButton": "Regresar",
+      "columns": {
+        "name": "Nombre",
+        "email": "Correo",
+        "actions": "Acciones"
+      }
+    }
+  }
+}

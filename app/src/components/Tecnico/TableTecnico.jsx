@@ -21,24 +21,30 @@ import MovieService from "@/services/TecnicoService";
 import { LoadingGrid } from "../ui/custom/LoadingGrid";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { EmptyState } from "../ui/custom/EmptyState";
+import { useTranslation } from "react-i18next";
+import { useUser } from "@/hooks/useUser";
+
 
 const usuario = {
     id: 1,
     rol: "admin", 
 };
 
-// Headers de la tabla
-const movieColumns = [
-    { key: "nombre", label: "Nombre" },
-    { key: "correo", label: "Correo" },
-    { key: "actions", label: "Acciones" },
-];
-
 export default function TableTecnico() {
+    const { user, isAuthenticated, clearUser, authorize } = useUser();
+
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
     const [loaded, setLoaded] = useState(false);
     const navigate = useNavigate();
+
+    const { t } = useTranslation();
+    // Headers de la tabla
+    const movieColumns = [
+        { key: "nombre", label: t("technician.list.columns.name") },
+        { key: "correo", label: t("technician.list.columns.email") },
+        { key: "actions", label: t("technician.list.columns.actions") },
+    ];
 
     useEffect(() => {
         const fetchData = async () => {
@@ -66,10 +72,10 @@ export default function TableTecnico() {
     return (
         <div className="container mx-auto py-8">
             <div className="flex items-center justify-between mb-6">
-                <h1 className="text-3xl font-bold tracking-tight">Listado de Técnicos</h1>
+                <h1 className="text-3xl font-bold tracking-tight">{t("technician.list.title")}</h1>
 
                 {/* SOLO ADMIN VE EL BOTÓN DE CREAR */}
-                {usuario.rol === "admin" && (
+                {user?.rol?.nombre === "Administrador" && (
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -79,7 +85,7 @@ export default function TableTecnico() {
                                     </Link>
                                 </Button>
                             </TooltipTrigger>
-                            <TooltipContent>Crear técnico</TooltipContent>
+                            <TooltipContent>{t("technician.list.tooltip.create")}</TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
                 )}
@@ -105,7 +111,7 @@ export default function TableTecnico() {
                                 <TableCell className="flex justify-start items-center gap-1">
 
                                     {/* SOLO ADMIN VE ACTUALIZAR */}
-                                    {usuario.rol === "admin" && (
+                                    {user?.rol?.nombre === "Administrador" && (
                                         <TooltipProvider>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
@@ -119,13 +125,13 @@ export default function TableTecnico() {
                                                         <Edit className="h-4 w-4 text-primary" />
                                                     </Button>
                                                 </TooltipTrigger>
-                                                <TooltipContent>Actualizar</TooltipContent>
+                                                <TooltipContent>{t("technician.list.tooltip.update")}</TooltipContent>
                                             </Tooltip>
                                         </TooltipProvider>
                                     )}
 
                                     {/* SOLO ADMIN VE ELIMINAR */}
-                                    {usuario.rol === "admin" && (
+                                    {user?.rol?.nombre === "Administrador" && (
                                         <TooltipProvider>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
@@ -133,7 +139,7 @@ export default function TableTecnico() {
                                                         <Trash2 className="h-4 w-4 text-destructive" />
                                                     </Button>
                                                 </TooltipTrigger>
-                                                <TooltipContent>Eliminar</TooltipContent>
+                                                <TooltipContent>{t("technician.list.tooltip.delete")}</TooltipContent>
                                             </Tooltip>
                                         </TooltipProvider>
                                     )}
@@ -152,7 +158,7 @@ export default function TableTecnico() {
                                                     <Eye className="h-4 w-4 text-primary" />
                                                 </Button>
                                             </TooltipTrigger>
-                                            <TooltipContent>Ver detalle</TooltipContent>
+                                            <TooltipContent>{t("technician.list.tooltip.detail")}</TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
                                 </TableCell>
@@ -164,11 +170,11 @@ export default function TableTecnico() {
 
             <Button
                 type="button"
-                className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6"
+                className="flex items-center gap-2 text-white hover:bg-primary/80 mt-6"
                 onClick={() => navigate(-1)}
             >
                 <ArrowLeft className="w-4 h-4" />
-                Regresar
+                {t("technician.list.backButton")}
             </Button>
         </div>
     );
