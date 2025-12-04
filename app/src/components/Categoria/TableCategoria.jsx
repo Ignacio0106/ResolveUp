@@ -157,7 +157,7 @@ const categoriaColumns = [
                 onClick={() => navigate(-1)}
             >
                 <ArrowLeft className="w-4 h-4" />
-                {t('category.list.backButton')}
+                {t("technician.list.backButton")}
             </Button>
         </div>
     );

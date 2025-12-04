@@ -21,16 +21,11 @@ import EspecialidadService from "@/services/EspecialidadService";
 
 // componente reutilizable para multi select
 import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
+import { useTranslation } from "react-i18next";
 
-// Esquema Yup
-const schema = yup.object().shape({
-  nombre: yup.string().required("El nombre es obligatorio"),
-  idSLA: yup.number().typeError("Debe seleccionar un SLA").required("Debe seleccionar un SLA"),
-  etiquetas: yup.array().min(1, "Seleccione al menos una etiqueta"),
-  especialidades: yup.array().min(1, "Seleccione al menos una especialidad"),
-});
 
 export function UpdateCategoria() {
+   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -48,6 +43,13 @@ export function UpdateCategoria() {
 
   const [showNewEspecialidad, setShowNewEspecialidad] = useState(false);
   const [newEspecialidad, setNewEspecialidad] = useState("");
+
+const schema = yup.object().shape({
+  nombre: yup.string().required(t("category.list.validation.categoryName")),
+  idSLA: yup.number().typeError(t("category.list.validation.selectSla")).required(t("category.list.validation.selectSla")),
+  etiquetas: yup.array().min(1, t("category.list.validation.selectLabel")),
+  especialidades: yup.array().min(1, t("category.list.validation.selectSpecialty")),
+});
 
   const { control, handleSubmit, reset, register, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
@@ -100,8 +102,8 @@ export function UpdateCategoria() {
 
       } catch (err) {
         console.error(err);
-        toast.error("Error cargando datos de la categoría");
-        setError("Error cargando datos de la categoría");
+        toast.error(t("category.errorTitle"));
+        setError(t("category.errorTitle"));
       } finally {
         setLoading(false);
       }
@@ -117,16 +119,16 @@ export function UpdateCategoria() {
 
   // Validaciones
   if (!respuesta || respuesta <= 0) {
-    return toast.error("El tiempo de respuesta debe ser mayor a 0 minutos");
+    return toast.error(t("category.list.validation.responseTime"));
   }
 
   if (!resolucion || resolucion <= 0) {
-    return toast.error("El tiempo de resolución debe ser mayor a 0 minutos");
+    return toast.error("category.list.validation.resolutionTime");
   }
 
   if (resolucion <= respuesta) {
     return toast.error(
-      "El tiempo de resolución debe ser mayor que el tiempo de respuesta"
+      t("category.list.validation.resolutionGreaterThanResponse")
     );
   }
 
@@ -136,7 +138,7 @@ export function UpdateCategoria() {
       tiempoResolucion: resolucion,
     });
 
-    toast.success("SLA creado correctamente");
+    toast.success(t("category.list.toast.successCreateSLA"));
 
     // Recargar lista
     const res = await SlaService.getAll();
@@ -148,14 +150,14 @@ export function UpdateCategoria() {
 
   } catch (err) {
     console.error(err);
-    toast.error("Error al crear el SLA");
+    toast.error(t("category.toast.errorCreate"));
   }
 };
 
  // CREAR ETIQUETA
   const crearNuevaEtiqueta = async () => {
   if (!newEtiqueta.trim()) {
-    return toast.error("Ingrese un nombre de etiqueta");
+    return toast.error(t("category.list.validation.enterTagName"));
   }
 
   try {
@@ -164,7 +166,7 @@ export function UpdateCategoria() {
       nombre: newEtiqueta.trim(),
     });
 
-    toast.success("Etiqueta creada correctamente");
+    toast.success(t("category.list.toast.successCreateEti"));
 
     // Recargar lista de etiquetas para que aparezca sin recargar página
     const res = await EtiquetaService.getAll();
@@ -176,23 +178,23 @@ export function UpdateCategoria() {
 
   } catch (err) {
     console.error(err);
-    toast.error("Error al crear la etiqueta");
+    toast.error(t("category.list.toast.errorCreate"));
   }
 };
  
   // Crear Especialidad
   const crearNuevaEspecialidad = async () => {
-    if (!newEspecialidad.trim()) return toast.error("Ingrese un nombre de especialidad");
+    if (!newEspecialidad.trim()) return toast.error(t("category.list.validation.enterSpecialtyName"));
     try {
       await EspecialidadService.create({ nombre: newEspecialidad.trim() });
-      toast.success("Especialidad creada correctamente");
+      toast.success(t("category.list.toast.successCreateEs"));
       const res = await EspecialidadService.getAll();
       setEspecialidades(res.data?.data || []);
       setNewEspecialidad("");
       setShowNewEspecialidad(false);
     } catch (err) {
       console.error(err);
-      toast.error("Error al crear especialidad");
+      toast.error(t("category.list.toast.errorCreate"));
     }
   };
 
@@ -215,29 +217,29 @@ export function UpdateCategoria() {
       const res = await CategoriasService.updateCategoria(payload);
       console.log("Respuesta del backend:", res);
 
-      toast.success("Categoría actualizada correctamente");
+      toast.success(t("category.list.toast.successUpdate"));
       navigate("/categoria/table");
 
     } catch (err) {
       console.error("Error al actualizar categoría:", err);
       if (err?.response?.status >= 400) {
-        toast.error("Error al actualizar la categoría");
+        toast.error(t("category.toast.errorCreate"));
       }
     }
   };
 
-  if (loading) return <p className="text-center mt-6">Cargando datos...</p>;
+  if (loading) return <p className="text-center mt-6">t("category.loadingData")</p>;
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
     <Card className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Actualizar Categoría</h2>
+      <h2 className="text-2xl font-bold mb-6">{t("category.createTitle")}</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Nombre */}
         <div>
-          <Label>Nombre</Label>
-          <Input {...register("nombre")} placeholder="Ingrese el nombre" />
+          <Label>{t("category.fields.name.label")}</Label>
+          <Input {...register("nombre")} placeholder={t("category.fields.name.placeholder")} />
           {errors.nombre && <p className="text-sm text-red-500">{errors.nombre.message}</p>}
         </div>
 
@@ -253,7 +255,7 @@ export function UpdateCategoria() {
             <div className="grid grid-cols-2 gap-2 mb-2 p-2 border rounded bg-muted/30">
               <Input placeholder="Tiempo Respuesta" type="number" value={newSla.tiempoRespuesta} onChange={e => setNewSla({...newSla, tiempoRespuesta: e.target.value})}/>
               <Input placeholder="Tiempo Resolución" type="number" value={newSla.tiempoResolucion} onChange={e => setNewSla({...newSla, tiempoResolucion: e.target.value})}/>
-              <Button type="button" className="col-span-2" onClick={crearNuevoSLA}>Guardar SLA</Button>
+              <Button type="button" className="col-span-2" onClick={crearNuevoSLA}>{t("category.buttons.saveSla")}</Button>
             </div>
           )}
           <Controller
@@ -262,12 +264,12 @@ export function UpdateCategoria() {
             render={({ field }) => (
               <Select value={field.value?.toString() || ""} onValueChange={value => field.onChange(Number(value))}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Seleccione un SLA" />
+                  <SelectValue placeholder={t("category.categorySla.placeholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {slas.map(sla => (
                     <SelectItem key={sla.id} value={sla.id.toString()}>
-                      {`Respuesta: ${sla.tiempoRespuesta} min / Resolución: ${sla.tiempoResolucion} min`}
+                      {`${t("category.categorySla.label")}: ${sla.tiempoRespuesta} ${t("category.categorySla.minutes")} / ${t("category.categorySla.resolutionTime")}: ${sla.tiempoResolucion} ${t("category.categorySla.minutes")}`}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -280,7 +282,7 @@ export function UpdateCategoria() {
         {/* Etiquetas */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <Label>Etiquetas</Label>
+            <Label>{t("category.placeholderEti")}</Label>
             <Button type="button" variant="outline" size="icon" onClick={() => setShowNewEtiqueta(!showNewEtiqueta)}>
               <Plus className="h-4 w-4" />
             </Button>
@@ -288,7 +290,7 @@ export function UpdateCategoria() {
           {showNewEtiqueta && (
             <div className="flex gap-2 mb-2 p-2 border rounded bg-muted/30">
               <Input placeholder="Nombre etiqueta" value={newEtiqueta} onChange={e => setNewEtiqueta(e.target.value)}/>
-              <Button type="button" onClick={crearNuevaEtiqueta}>Guardar</Button>
+              <Button type="button" onClick={crearNuevaEtiqueta}>{t("category.buttons.saveLabel")}</Button>
             </div>
           )}
           <Controller
@@ -300,7 +302,7 @@ export function UpdateCategoria() {
                 data={etiquetas}
                 getOptionLabel={item => item.nombre}
                 getOptionValue={item => (item.id)}
-                placeholder="Seleccione etiquetas"
+                placeholder={t("category.placeholderEti")}
                 error={errors.etiquetas?.message}
               />
             )}
@@ -310,7 +312,7 @@ export function UpdateCategoria() {
         {/* Especialidades */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <Label>Especialidades</Label>
+            <Label>{t("category.placeholderEs")}</Label>
             <Button type="button" variant="outline" size="icon" onClick={() => setShowNewEspecialidad(!showNewEspecialidad)}>
               <Plus className="h-4 w-4" />
             </Button>
@@ -318,7 +320,7 @@ export function UpdateCategoria() {
           {showNewEspecialidad && (
             <div className="flex gap-2 mb-2 p-2 border rounded bg-muted/30">
               <Input placeholder="Nombre especialidad" value={newEspecialidad} onChange={e => setNewEspecialidad(e.target.value)}/>
-              <Button type="button" onClick={crearNuevaEspecialidad}>Guardar</Button>
+              <Button type="button" onClick={crearNuevaEspecialidad}>{t("category.buttons.saveSpecialty")}</Button>
             </div>
           )}
           <Controller
@@ -330,7 +332,7 @@ export function UpdateCategoria() {
                 data={especialidades}
                 getOptionLabel={item => item.nombre}
                 getOptionValue={item => Number(item.id)}
-                placeholder="Seleccione especialidades"
+                placeholder={t("category.placeholderEs")}
                 error={errors.especialidades?.message}
               />
             )}
@@ -339,10 +341,10 @@ export function UpdateCategoria() {
 
         <div className="flex justify-between gap-4 mt-4">
           <Button type="button" variant="default" onClick={() => navigate(-1)}>
-            <ArrowLeft className="w-4 h-4"/> Regresar
+            <ArrowLeft className="w-4 h-4"/> {t("technician.list.backButton")}
           </Button>
           <Button type="submit" className="flex-1">
-            <Save className="w-4 h-4"/> Guardar
+            <Save className="w-4 h-4"/> {t("category.buttons.saveCategory")}
           </Button>
         </div>
       </form>

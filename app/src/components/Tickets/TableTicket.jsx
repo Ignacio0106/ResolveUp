@@ -34,14 +34,10 @@ import { LoadingGrid } from "../ui/custom/LoadingGrid";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { EmptyState } from "../ui/custom/EmptyState";
 import { useUser } from "@/hooks/useUser";
+import { useTranslation } from "react-i18next";
 
 
-const ticketColumns = [
-  { key: "titulo", label: "Título" },
-  { key: "usuarioSolicitante", label: "Solicitante" },
-  { key: "estado", label: "Estado del Ticket" },
-  { key: "actions", label: "Acciones" },
-];
+
 
 export default function TableTicket() {
   const { user, isAuthenticated, clearUser, authorize } = useUser();
@@ -49,7 +45,13 @@ export default function TableTicket() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const {t} = useTranslation();
+  const ticketColumns = [
+  { key: "titulo", label: t("ticket.columns.titulo") },
+  { key: "usuarioSolicitante", label: t("ticket.columns.solicitante") },
+  { key: "estado", label: t("ticket.columns.estado") },
+  { key: "actions", label: t("ticket.columns.acciones") },
+];
 const mostrarActualizar = (rol, estado) => {
   if (rol === "Administrador") {
     return ["Pendiente", "Resuelto", "Cerrado"].includes(estado);
@@ -90,7 +92,7 @@ const mostrarActualizar = (rol, estado) => {
   if (loading) return <LoadingGrid type="grid" />;
   if (error) return <ErrorAlert title="Error" message={error} />;
   if (tickets.length === 0)
-    return <EmptyState message="No se encontraron tickets." />;
+    return <EmptyState message={t("ticket.noTicketsFound")} />;
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-6xl">
@@ -110,7 +112,7 @@ const mostrarActualizar = (rol, estado) => {
           </div>
           
           <div className="text-right">
-            <div className="text-sm text-muted-foreground">Total tickets</div>
+            <div className="text-sm text-muted-foreground">{t("ticket.noTicketsFound")}</div>
             <div className="text-2xl font-bold text-foreground">{tickets.length}</div>
           </div>
         </div>
@@ -119,8 +121,8 @@ const mostrarActualizar = (rol, estado) => {
       {/* Título */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">Listado de Tickets</h1>
-        <p className="text-muted-foreground">Gestiona y revisa todos los tickets asignados</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">{t("ticket.listTitle")}</h1>
+        <p className="text-muted-foreground">{t("ticket.listSubtitle")}</p>
         </div>
               <TooltipProvider>
                     <Tooltip>
@@ -131,7 +133,7 @@ const mostrarActualizar = (rol, estado) => {
                                 </Link>
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Crear ticket</TooltipContent>
+                        <TooltipContent>{t("ticket.tooltip.create")}</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
       </div>
@@ -201,7 +203,7 @@ const mostrarActualizar = (rol, estado) => {
             <Edit className="h-4 w-4 text-primary" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent>Actualizar</TooltipContent>
+        <TooltipContent>{t("ticket.tooltip.update")}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   )}
@@ -212,7 +214,7 @@ const mostrarActualizar = (rol, estado) => {
                                                     <Trash2 className="h-4 w-4 text-destructive" />
                                                 </Button>
                                             </TooltipTrigger>
-                                            <TooltipContent>Eliminar</TooltipContent>
+                                            <TooltipContent>{t("ticket.tooltip.delete")}</TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
                   <TooltipProvider>
@@ -228,7 +230,7 @@ const mostrarActualizar = (rol, estado) => {
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        Ver detalle
+                        {t("ticket.tooltip.detail")}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -246,7 +248,7 @@ const mostrarActualizar = (rol, estado) => {
         onClick={() => navigate(-1)}
       >
         <ArrowLeft className="w-4 h-4" />
-        Regresar
+        {t("technician.list.backButton")}
       </Button>
     </div>
   );

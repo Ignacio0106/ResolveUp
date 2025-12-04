@@ -11,10 +11,11 @@ import { ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge"; 
 import { Progress } from '../ui/progress';
 import { useUser } from '@/hooks/useUser';
+import { useTranslation } from 'react-i18next';
 
 
 // Headers de la tabla
-const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
 
 function getDomingo(date) {
   const d = new Date(date);
@@ -97,7 +98,7 @@ function iconos(item){
 
 export function TableAsignacion() {
     const { user, isAuthenticated, clearUser, authorize } = useUser();
-
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const [asignacion, setAsignacion] = useState(null);
     const [error, setError] = useState(null);
@@ -105,6 +106,8 @@ export function TableAsignacion() {
 
     const [semana, setSemana] = useState(() => new Date());
 
+    const diasSemana = [t("asignacionTable.weekdays.sunday"), t("asignacionTable.weekdays.monday"), t("asignacionTable.weekdays.tuesday"), t("asignacionTable.weekdays.wednesday"), 
+        t("asignacionTable.weekdays.thursday"), t("asignacionTable.weekdays.friday"), t("asignacionTable.weekdays.saturday")];
   const cambiarSemana = (fecha, dias) => {
     const d = new Date(getDomingo(fecha));
     d.setDate(d.getDate() + dias);
@@ -158,7 +161,7 @@ function cargarTabla(asignacion, semana){
     return cargarAsignacionesParaSemana(asignacion, semana).map((asignacionD) => {
         if(asignacionD.length===0){
             return <div className="mb-2 rounded border p-2 flex flex-col gap-1">
-                        <div className="mb-2 rounded border p-2">No hay asignaciones para esta semana</div>
+                        <div className="mb-2 rounded border p-2">{t("asignacionTable.noAsignacionesSemana")}</div>
                     </div>
         } else {
             console.log("Lo que le estoy enviendo",asignacionD);
@@ -192,14 +195,14 @@ function cargarTabla(asignacion, semana){
     return (
       <div className="container mx-auto py-8">
             <div className="flex flex-col items-center mb-6">
-                <h1 className="text-3xl font-bold tracking-tight">Asignaciones</h1>
+                <h1 className="text-3xl font-bold tracking-tight">{t("asignacionTable.title")}</h1>
                 <div className="flex items-center gap-4">
                     <Button
                         className="flex items-center gap-2 hover:bg-/10 hover:cursor-pointer"
                         onClick={() => cambiarSemana(semana, -7)}
                     > 
                         <ArrowLeft className="w-4 h-4" />
-                        Anterior
+                        {t("asignacionTable.previous")}
                     </Button>
                         <p className="text-lg text-muted-foreground">
                             {semana.toLocaleDateString('es-ES', { year: 'numeric', month: 'long'})}
@@ -208,7 +211,7 @@ function cargarTabla(asignacion, semana){
                         className="flex items-center gap-2 hover:bg-primary/10 hover:cursor-pointer"
                         onClick={() => cambiarSemana(semana, 7)}
                     >
-                        Siguiente
+                        {t("asignacionTable.next")}
                         <ArrowRight className="w-4 h-4" />
                     </Button>
                 </div>
@@ -240,7 +243,7 @@ function cargarTabla(asignacion, semana){
                 onClick={() => navigate(-1)}
             >
                 <ArrowLeft className="w-4 h-4" />
-                Regresar
+                {t("technician.list.backButton")}
             </Button>
         </div>
     );

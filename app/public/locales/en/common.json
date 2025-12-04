@@ -187,7 +187,8 @@
       "saveSla": "Save SLA",
       "saveSpecialty": "Save Specialty",
       "saveCategory": "Save Category",
-      "createNewCategory": "Create New Category"
+      "createNewCategory": "Create New Category",
+      "Regre": "To return"
     },
     "error": "An error occurred while saving the category.",
     "details": {
@@ -209,6 +210,7 @@
       },
       "toast": {
         "successCreate": "Category created successfully",
+        "successUpdate": "Category updated successfully",
         "errorCreate": "The category could not be created",
         "errorCreateGeneric": "Error while creating category",
         "successDelete": "Category deleted successfully",
@@ -230,6 +232,193 @@
       "enterSpecialtyName": "Enter specialty name"
     }
   }
+  },
+  "ticket": {
+    "generalInfo": "General Information",
+    "listTitle": "Ticket List",
+    "listSubtitle": "Manage and review all assigned tickets",
+    "noTicketsFound": "No tickets found.",
+    "errorTitle": "Error loading tickets",
+    "totalTickets": "Total tickets",
+    "infTickets": "No se encontro informacion del tickets",
+"estadoAnt": "Previous Status",
+"estadoNue": "New Status",
+"observaciones": "Observations",
+"Imagen": "Image",
+"Valo": "Evaluations",
+
+    "columns": {
+      "titulo": "Title",
+      "solicitante": "Requester",
+      "estado": "Ticket Status",
+      "acciones": "Actions"
+    },
+
+    "tooltip": {
+      "create": "Create ticket",
+      "update": "Update",
+      "delete": "Delete",
+      "detail": "View details"
+    },
+
+    "buttons": {
+      "goBack": "Go back",
+      "createTicket": "Create Ticket",
+      "updateTicket": "Update Ticket",
+      "deleteTicket": "Delete Ticket"
+    },
+
+    "status": {
+      "pendiente": "Pending",
+      "asignado": "Assigned",
+      "enProceso": "In Progress",
+      "resuelto": "Resolved",
+      "cerrado": "Closed"
+    },
+
+    "list": {
+      "title": "Ticket List",
+      "tooltip": {
+        "create": "Create ticket",
+        "update": "Update ticket",
+        "delete": "Delete ticket",
+        "detail": "View details"
+      },
+      "toast": {
+        "successCreate": "Ticket created successfully",
+        "successUpdate": "Ticket updated successfully",
+        "successDelete": "Ticket deleted successfully",
+
+        "errorCreate": "The ticket could not be created",
+        "errorUpdate": "The ticket could not be updated",
+        "errorDelete": "The ticket could not be deleted",
+        "errorGeneric": "An error occurred while processing the ticket"
+      }
+    },
+
+    "validation": {
+      "titleRequired": "Ticket title is required",
+      "descriptionRequired": "Description is required",
+      "statusRequired": "You must select a status",
+      "userRequired": "You must select a requesting user"
+    },
+
+    "details": {
+      "title": "Title:",
+      "description": "Description:",
+      "status": "Status:",
+      "createdAt": "Creation date:",
+      "updatedAt": "Last update:",
+      "solicitante": "Requester:",
+      "backButton": "Go back"
+    }
+  },
+  "asignacion": {
+  "generalInfo": "General Information",
+  "ticketInfo": "Ticket Information",
+  "technicianInfo": "Technician Information",
+  "methodInfo": "Assignment Method",
+  "priorityScore": "Priority Score",
+  "remainingTime": "Remaining Time",
+  "backButton": "Back",
+
+  "titles": {
+    "detailTitle": "Assignment Details",
+    "ticketTitle": "Ticket Details",
+    "technicianTitle": "Technician Details",
+    "metodoTitle": "Method",
+    "prioridadTitle": "Priority",
+    "restanteTitle": "Remaining Time"
+  },
+
+  "fields": {
+    "descripcion": {
+      "label": "Description",
+      "placeholder": "Assignment description"
+    },
+    "fecha": {
+      "label": "Date",
+      "placeholder": "Assignment date",
+      "creacion": "Creation date",
+        "cierre": "Closing date"
+    },
+    "ticket": {
+      "titulo": "Title",
+      "descripcion": "Description",
+      "categoria": "Category",
+      "prioridad": "Priority",
+      "historial": "History"
+    },
+    "tecnico": {
+      "nombre": "Name",
+      "especialidades": "Specialties",
+      "cargaTrabajo": "Workload"
+    },
+    "metodo": {
+      "nombre": "Assignment Method"
+    },
+    "puntajePrioridad": "Priority Score",
+    "tiempoRestanteResolucion": "Remaining Resolution Time"
+  },
+
+  "messages": {
+    "noAsignacionFound": "No assignment information found.",
+    "errorTitle": "Error loading assignment"
+  },
+
+  "buttons": {
+    "back": "Back"
+  }
+},
+"asignacionTable": {
+    "title": "Assignments",
+    "previous": "Previous",
+    "next": "Next",
+    "noAsignacionesSemana": "No assignments for this week",
+    "mesActual": "Current month",
+
+    "messages": {
+      "errorTitle": "Error loading assignments",
+      "noAsignacionFound": "No assignment information was found."
+    },
+
+    "buttons": {
+      "back": "Back"
+    },
+
+    "weekdays": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    },
+
+    "fields": {
+      "ticket": "Ticket",
+      "categoria": "Category",
+      "estado": "Status",
+      "tiempoRestante": "Remaining Time",
+      "progreso": "Progress"
+    },
+
+    "estados": {
+      "pendiente": "Pending",
+      "asignado": "Assigned",
+      "enProceso": "In Progress",
+      "resuelto": "Resolved",
+      "cerrado": "Closed"
+    },
+
+    "categorias": {
+      "soporteEducativo": "Educational System Support",
+      "hardware": "Hardware",
+      "redes": "Networks & Connectivity",
+      "seguridad": "Cybersecurity",
+      "otro": "Other"
+    }
   }
 }
 
