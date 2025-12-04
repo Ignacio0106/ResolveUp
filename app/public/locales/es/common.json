@@ -66,28 +66,44 @@
     "fields": {
       "fullName": {
         "label": "Nombre completo",
-        "placeholder": "Ingrese nombre completo"
+        "placeholder": "Ingrese nombre completo",
+        "validation": {
+          "required": "El nombre es requerido"
+        }
       },
       "email": {
         "label": "Correo",
-        "placeholder": "usuario@mail.com"
+        "placeholder": "usuario@mail.com",
+        "validation": {
+          "required": "El correo es requerido",
+          "email": "Correo inválido"
+        }
       },
       "password": {
         "label": "Contraseña",
-        "placeholder": "******"
+        "placeholder": "******",
+        "validation": {
+          "required": "La contraseña es requerida"
+        }
       },
       "availability": {
         "label": "Disponibilidad",
         "options": {
           "available": "Disponible",
           "unavailable": "No disponible"
+        },
+        "validation": {
+          "required": "La disponibilidad es requerida"
         }
       },
       "specialties": {
         "label": "Especialidades",
         "placeholder": "Seleccione las especialidades del técnico",
         "newPlaceholder": "Nueva especialidad",
-        "addNew": "Guardar"
+        "addNew": "Guardar",
+        "validation": {
+          "required": "Debe seleccionar al menos una especialidad"
+        }
       }
     },
     "buttons": {
@@ -116,6 +132,105 @@
         "email": "Correo",
         "actions": "Acciones"
       }
+    },
+    "toast": {
+      "successCreate": "Técnico creado correctamente",
+      "errorCreate": "Técnico no pudo ser creado",
+      "errorCreateGeneric": "Error al crear técnico",
+      "successUpdate": "Técnico actualizado correctamente",
+      "errorUpdate": "Error al actualizar técnico",
+      "errorUpdateGeneric": "Error al actualizar técnico"
+    }
+  },
+  "category": {
+    "generalInfo": "Información General",
+    "maxResponseTime": "Tiempo máximo de respuesta",
+    "maxResolutionTime": "Tiempo máximo de resolución",
+    "specialties": "Especialidades",
+    "labels": "Etiquetas",
+    "backButton": "Volver",
+    "minutes": "minutos",
+    "noCategoryFound": "No se encontró información de la categoría.",
+    "errorTitle": "Error al cargar categoría",
+    "createTitle": "Crear Categoría",
+    "updateTitle": "Actualizar Categoría",
+    "categorySla": {
+      "label": "SLA",
+      "placeholder": "Seleccionar SLA",
+      "minutes": "minutos",
+      "resolutionTime": "Tiempo de resolución"
+    },
+    "placeholderEs": "Especialidades",
+    "placeholderEti": "Etiquetas",
+    "fields": {
+      "name": {
+        "label": "Nombre",
+        "placeholder": "Ingrese el nombre de la categoría",
+        "validation": {
+          "required": "El nombre de la categoría es requerido"
+        }
+      },
+      "description": {
+        "label": "Descripción",
+        "placeholder": "Ingrese la descripción",
+        "validation": {
+          "required": "La descripción es requerida"
+        }
+      }
+    },
+    "buttons": {
+      "saveTechnician": "Guardar Técnico",
+      "updateTechnician": "Actualizar Técnico",
+      "createNewSpecialty": "Crear Nueva Especialidad",
+      "createNewLabel": "Crear Nueva Etiqueta",
+      "saveLabel": "Guardar Etiqueta",
+      "saveSla": "Guardar SLA",
+      "saveSpecialty": "Guardar Especialidad",
+      "saveCategory": "Guardar Categoría",
+      "createNewCategory": "Crear Nueva Categoría"
+    },
+    "error": "Ocurrió un error al guardar la categoría.",
+    "details": {
+      "nameLabel": "Nombre de la categoría:",
+      "descriptionLabel": "Descripción:",
+      "backButton": "Volver"
+    },
+    "list": {
+      "title": "Listado de Categorías",
+      "tooltip": {
+        "create": "Crear categoría",
+        "update": "Actualizar categoría",
+        "delete": "Eliminar categoría",
+        "detail": "Ver detalles"
+      },
+      "columns": {
+        "name": "Nombre",
+        "actions": "Acciones"
+      },
+      "toast": {
+        "successCreate": "Categoría creada correctamente",
+        "errorCreate": "La categoría no pudo ser creada",
+        "errorCreateGeneric": "Error al crear la categoría",
+        "successDelete": "Categoría eliminada correctamente",
+        "errorDelete": "Error al eliminar la categoría",
+        "errorDeleteGeneric": "Error al eliminar la categoría",
+        "successCreateSLA": "SLA creado correctamente",
+        "successCreateEs": "Especialidad creada correctamente",
+        "successCreateEti": "Etiqueta creada correctamente"
+      },
+      "validation": {
+      "categoryName": "El nombre de la categoría es obligatorio",
+      "selectSla": "Debe seleccionar un SLA",
+      "selectLabel": "Seleccione al menos una etiqueta",
+      "selectSpecialty": "Seleccione al menos una especialidad",
+      "responseTime": "El tiempo de respuesta es obligatorio y debe ser mayor a 0",
+      "resolutionTime": "El tiempo de resolución es obligatorio y debe ser mayor a 0",
+      "resolutionGreaterThanResponse": "El tiempo de resolución debe ser mayor al tiempo de respuesta",
+      "enterTagName": "Ingrese el nombre de la etiqueta",
+      "enterSpecialtyName": "Ingrese el nombre de la especialidad"
+    }
     }
   }
 }
+
+

@@ -18,18 +18,18 @@ import { useTranslation } from "react-i18next";
 export function CreateTecnico() {
   const [especialidades, setEspecialidades] = useState([]);
   const [error, setError] = useState("");
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const [showNewEspecialidad, setShowNewEspecialidad] = useState(false);
   const [newEspecialidad, setNewEspecialidad] = useState("");
   const { t } = useTranslation();
 
+  // Esquema de validación con Yup
   const tecnicoSchema = yup.object({
-    nombre: yup.string().required("El nombre es requerido"),
-    correo: yup.string().email("Correo inválido").required("El correo es requerido"),
-    password: yup.string().required("La contraseña es requerida"),
-    especialidades: yup.array().min(1, "Seleccione al menos una especialidad"),
-    disponibilidad: yup.string().required("La disponibilidad es requerida"),
-
+    nombre: yup.string().required(t("technician.fields.fullName.validation.required")),
+    correo: yup.string().email(t("technician.fields.email.validation.email")).required(t("technician.fields.email.validation.required")),
+    password: yup.string().required(t("technician.fields.password.validation.required")),
+    especialidades: yup.array().min(1, t("technician.fields.specialties.validation.required")),
+    disponibilidad: yup.string().required(t("technician.fields.availability.validation.required")),
   });
 
   const {
@@ -52,56 +52,51 @@ const navigate = useNavigate();
   useEffect(() => {
     EspecialidadService.getAll()
       .then(res => setEspecialidades(res.data?.data || []))
-      .catch(err => setError("Error al cargar especialidades: " + err));
+      .catch(err => setError(t("technician.error") + ": " + err));
   }, []);
 
   const crearNuevaEspecialidad = async () => {
     if (!newEspecialidad.trim())
-      return toast.error("Ingrese un nombre de especialidad");
+      return toast.error(t("technician.fields.specialties.validation.required"));
 
     try {
       await EspecialidadService.create({ nombre: newEspecialidad.trim() });
-      toast.success("Especialidad creada correctamente");
+      toast.success(t("technician.fields.specialties.newPlaceholder"));
 
       const res = await EspecialidadService.getAll();
       setEspecialidades(res.data?.data || []);
-
       setNewEspecialidad("");
       setShowNewEspecialidad(false);
     } catch (err) {
-      toast.error("Error al crear la especialidad" + err);
+      toast.error(t("technician.error") + ": " + err);
     }
   };
 
   const onSubmit = async (dataForm) => {
-
     const payload = {
-  nombre: dataForm.nombre,
-  correo: dataForm.correo,
-  password: dataForm.password,
-  especialidades: dataForm.especialidades.map(id => ({
-    idEspecialidad: id,
-  })),
-  disponibilidad: Number(dataForm.disponibilidad),
-  cargaTrabajo: 0,
-};
-
+      nombre: dataForm.nombre,
+      correo: dataForm.correo,
+      password: dataForm.password,
+      especialidades: dataForm.especialidades.map(id => ({
+        idEspecialidad: id,
+      })),
+      disponibilidad: Number(dataForm.disponibilidad),
+      cargaTrabajo: 0,
+    };
 
     try {
       const response = await TecnicoService.createTecncio(payload);
 
-
       if (response.data.success) {
-        toast.success("Técnico creado correctamente");
+        toast.success(t("technician.toast.successCreate"));
         
         reset();
         navigate("/tecnico/table");
       } else {
-        toast.error("Técnico no pudo ser creado");
-        
+        toast.error(t("technician.toast.errorCreate"));
       }
     } catch (err) {
-      toast.error("Error al crear técnico" + err);
+      toast.error(t("technician.toast.errorCreateGeneric") + " " + err);
     }
   };
 
@@ -153,28 +148,20 @@ const navigate = useNavigate();
         </div>
 
         {/* Disponibilidad */}
-<div>
-  <Label>{t("technician.fields.availability.label")}</Label>
-  <Controller
-    name="disponibilidad"
-    control={control}
-    render={({ field }) => (
-      <select
-        {...field}
-        className="border rounded px-3 py-2 w-full"
-      >
-        <option value="1">{t("technician.fields.availability.options.available")}</option>
-        <option value="0">{t("technician.fields.availability.options.unavailable")}</option>
-      </select>
-    )}
-  />
-  {errors.disponibilidad && (
-    <p className="text-red-500 text-sm">
-      {errors.disponibilidad.message}
-    </p>
-  )}
-</div>
-
+        <div>
+          <Label>{t("technician.fields.availability.label")}</Label>
+          <Controller
+            name="disponibilidad"
+            control={control}
+            render={({ field }) => (
+              <select {...field} className="border rounded px-3 py-2 w-full">
+                <option value="1">{t("technician.fields.availability.options.available")}</option>
+                <option value="0">{t("technician.fields.availability.options.unavailable")}</option>
+              </select>
+            )}
+          />
+          {errors.disponibilidad && <p className="text-red-500 text-sm">{errors.disponibilidad.message}</p>}
+        </div>
 
         {/* Especialidades */}
         <div>
@@ -182,21 +169,18 @@ const navigate = useNavigate();
             <Controller
               name="especialidades"
               control={control}
-              render={({ field }) => {
-                return (
-                  <CustomMultiSelect
-                    field={field}
-                    data={especialidades}
-                    label={t("technician.fields.specialties.label")}
-                    getOptionLabel={(item) => item.nombre}
-                    getOptionValue={(item) => item.id}
-                    error={errors.especialidades?.message}
-                    placeholder={t("technician.fields.specialties.placeholder")}
-                  />
-                );
-              }}
+              render={({ field }) => (
+                <CustomMultiSelect
+                  field={field}
+                  data={especialidades}
+                  label={t("technician.fields.specialties.label")}
+                  getOptionLabel={(item) => item.nombre}
+                  getOptionValue={(item) => item.id}
+                  error={errors.especialidades?.message}
+                  placeholder={t("technician.fields.specialties.placeholder")}
+                />
+              )}
             />
-
             <Button
               type="button"
               variant="outline"
@@ -208,9 +192,7 @@ const navigate = useNavigate();
             </Button>
           </div>
 
-          {errors.especialidades && (
-            <p className="text-sm text-red-500">{errors.especialidades.message}</p>
-          )}
+          {errors.especialidades && <p className="text-sm text-red-500">{errors.especialidades.message}</p>}
 
           {/* Crear nueva especialidad */}
           {showNewEspecialidad && (

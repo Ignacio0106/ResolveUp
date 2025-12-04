@@ -61,40 +61,56 @@
     }
   },
   "technician": {
-    "updateTitle": "Update Technician",
     "createTitle": "Create Technician",
+    "updateTitle": "Update Technician",
     "fields": {
       "fullName": {
         "label": "Full name",
-        "placeholder": "Enter full name"
+        "placeholder": "Enter full name",
+        "validation": {
+          "required": "Full name is required"
+        }
       },
       "email": {
         "label": "Email",
-        "placeholder": "user@mail.com"
+        "placeholder": "user@mail.com",
+        "validation": {
+          "required": "Email is required",
+          "email": "Invalid email"
+        }
       },
       "password": {
         "label": "Password",
-        "placeholder": "******"
+        "placeholder": "******",
+        "validation": {
+          "required": "Password is required"
+        }
       },
       "availability": {
         "label": "Availability",
         "options": {
           "available": "Available",
           "unavailable": "Not available"
+        },
+        "validation": {
+          "required": "Availability is required"
         }
       },
       "specialties": {
         "label": "Specialties",
         "placeholder": "Select technician specialties",
         "newPlaceholder": "New specialty",
-        "addNew": "Save"
+        "addNew": "Save",
+        "validation": {
+          "required": "At least one specialty must be selected"
+        }
       }
     },
     "buttons": {
-      "saveTechnician": "Save Technician"
+      "saveTechnician": "Save Technician",
+      "updateTechnician": "Update Technician"
     },
     "error": "An error occurred while saving the technician.",
-    
     "details": {
       "emailLabel": "Email:",
       "availabilityLabel": "Availability:",
@@ -116,6 +132,104 @@
         "email": "Email",
         "actions": "Actions"
       }
+    },
+     "toast": {
+      "successCreate": "Technician created successfully",
+      "errorCreate": "Technician could not be created",
+      "errorCreateGeneric": "Error while creating technician",
+      "successUpdate": "Technician updated successfully",
+      "errorUpdate": "Error while updating technician",
+      "errorUpdateGeneric": "Error while updating technician"
+    }
+  },
+  "category": {
+    "generalInfo": "General Information",
+    "maxResponseTime": "Maximum response time",
+    "maxResolutionTime": "Maximum resolution time",
+    "specialties": "Specialties",
+    "labels": "Labels",
+    "backButton": "Go back",
+    "minutes": "minutes",
+    "noCategoryFound": "No category information found.",
+    "errorTitle": "Error loading category",
+    "createTitle": "Create Category",
+    "updateTitle": "Update Category",
+    "categorySla": {
+      "label": "SLA",
+      "placeholder": "Select SLA",
+      "minutes": "minutes",
+      "resolutionTime": "Resolution time"
+    },
+    "placeholderEs": "Specialties",
+    "placeholderEti": "Labels",
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Enter category name",
+        "validation": {
+          "required": "Category name is required"
+        }
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Enter description",
+        "validation": {
+          "required": "Description is required"
+        }
+      }
+    },
+    "buttons": {
+      "saveTechnician": "Save Technician",
+      "updateTechnician": "Update Technician",
+      "createNewSpecialty": "Create New Specialty",
+      "createNewLabel": "Create New Label",
+      "saveLabel": "Save Label",
+      "saveSla": "Save SLA",
+      "saveSpecialty": "Save Specialty",
+      "saveCategory": "Save Category",
+      "createNewCategory": "Create New Category"
+    },
+    "error": "An error occurred while saving the category.",
+    "details": {
+      "nameLabel": "Category Name:",
+      "descriptionLabel": "Description:",
+      "backButton": "Go back"
+    },
+    "list": {
+      "title": "Category List",
+      "tooltip": {
+        "create": "Create category",
+        "update": "Update category",
+        "delete": "Delete category",
+        "detail": "View details"
+      },
+      "columns": {
+        "name": "Name",
+        "actions": "Actions"
+      },
+      "toast": {
+        "successCreate": "Category created successfully",
+        "errorCreate": "The category could not be created",
+        "errorCreateGeneric": "Error while creating category",
+        "successDelete": "Category deleted successfully",
+        "errorDelete": "Error while deleting category",
+        "errorDeleteGeneric": "Error while deleting category",
+        "successCreateSLA": "SLA created successfully",
+        "successCreateEs": "Specialty created successfully",
+        "successCreateEti": "Label created successfully"
+      },
+      "validation": {
+      "categoryName": "Category name is required",  
+      "selectSla": "You must select an SLA",
+      "selectLabel": "Select at least one label",
+      "selectSpecialty": "Select at least one specialty",
+      "responseTime": "Response time is required and must be greater than 0",
+      "resolutionTime": "Resolution time is required and must be greater than 0",
+      "resolutionGreaterThanResponse": "Resolution time must be greater than response time",
+      "enterTagName": "Enter tag name",
+      "enterSpecialtyName": "Enter specialty name"
     }
   }
+  }
 }
+

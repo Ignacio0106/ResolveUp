@@ -21,17 +21,20 @@ import CategoriaService from "@/services/CategoriasService";
 import { LoadingGrid } from "../ui/custom/LoadingGrid";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { EmptyState } from "../ui/custom/EmptyState";
+import { useTranslation } from "react-i18next";
 
-const categoriaColumns = [
-    { key: "nombre", label: "Nombre" },
-    { key: "actions", label: "Acciones" },
-];
 
 export default function TableCategorias() {
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
     const [loaded, setLoaded] = useState(false);
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
+const categoriaColumns = [
+    { key: "nombre", label: t('category.list.columns.name') },
+    { key: "actions", label: t('category.list.columns.actions') },
+];
 
     useEffect(() => {
         const fetchData = async () => {
@@ -52,14 +55,14 @@ export default function TableCategorias() {
     }, []);
 
     if (!loaded) return <LoadingGrid type="grid" />;
-    if (error) return <ErrorAlert title="Error al cargar categorías" message={error} />;
+    if (error) return <ErrorAlert title={t('category.error')} message={error} />;
     if (!data || data.data.length === 0)
-        return <EmptyState message="No se encontraron categorías." />;
+        return <EmptyState message={t('category.list.empty')} />;
 
     return (
         <div className="container mx-auto py-8">
             <div className="flex items-center justify-between mb-6">
-                <h1 className="text-3xl font-bold tracking-tight">Listado de Categorías</h1>
+                <h1 className="text-3xl font-bold tracking-tight">{t('category.list.title')}</h1>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -69,7 +72,7 @@ export default function TableCategorias() {
                                 </Link>
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Crear categoría</TooltipContent>
+                        <TooltipContent>{t('category.list.tooltip.create')}</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
             </div>
@@ -107,7 +110,7 @@ export default function TableCategorias() {
                                                     <Edit className="h-4 w-4 text-primary" />
                                                 </Button>
                                             </TooltipTrigger>
-                                            <TooltipContent>Actualizar</TooltipContent>
+                                            <TooltipContent>{t('category.list.tooltip.update')}</TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
 
@@ -119,7 +122,7 @@ export default function TableCategorias() {
                                                     <Trash2 className="h-4 w-4 text-destructive" />
                                                 </Button>
                                             </TooltipTrigger>
-                                            <TooltipContent>Eliminar</TooltipContent>
+                                            <TooltipContent>{t('category.list.tooltip.delete')}</TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
 
@@ -137,7 +140,7 @@ export default function TableCategorias() {
                                                     <Eye className="h-4 w-4 text-primary" />
                                                 </Button>
                                             </TooltipTrigger>
-                                            <TooltipContent>Ver detalle</TooltipContent>
+                                            <TooltipContent>{t('category.list.tooltip.detail')}</TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
 
@@ -154,7 +157,7 @@ export default function TableCategorias() {
                 onClick={() => navigate(-1)}
             >
                 <ArrowLeft className="w-4 h-4" />
-                Regresar
+                {t('category.list.backButton')}
             </Button>
         </div>
     );

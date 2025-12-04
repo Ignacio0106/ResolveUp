@@ -11,22 +11,26 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-// Servicios
+// Services
 import SlaService from "@/services/SlaService";
 import EtiquetaService from "@/services/EtiquetaService";
 import EspecialidadService from "@/services/EspecialidadService";
 import CategoriasService from "@/services/CategoriasService";
 import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
+import { useTranslation } from "react-i18next";
 
-// Validación Yup
-const schema = yup.object().shape({
-  nombre: yup.string().required("El nombre es obligatorio"),
-  idSLA: yup.number().typeError("Debe seleccionar un SLA").required("Debe seleccionar un SLA"),
-  etiquetas: yup.array().min(1, "Seleccione al menos una etiqueta"),
-  especialidades: yup.array().min(1, "Seleccione al menos una especialidad"),
-});
 
 export default function CreateCategoria({ onSuccess }) {
+
+    const { t } = useTranslation();
+
+// Validation Yup
+const schema = yup.object().shape({
+  nombre: yup.string().required(t("category.list.validation.categoryName")),
+  idSLA: yup.number().typeError(t("category.list.validation.selectSla")).required(t("category.list.validation.selectSla")),
+  etiquetas: yup.array().min(1, t("category.list.validation.selectLabel")),
+  especialidades: yup.array().min(1, t("category.list.validation.selectSpecialty")),
+});
 
   // RHF
   const { control, handleSubmit, register, reset, formState: { errors } } = useForm({
@@ -39,13 +43,14 @@ export default function CreateCategoria({ onSuccess }) {
     },
   });
 
-  // Estados
+  // States
   const [slas, setSlas] = useState([]);
   const [etiquetas, setEtiquetas] = useState([]);
   const [especialidades, setEspecialidades] = useState([]);
   const [loading, setLoading] = useState(true);
-const navigate = useNavigate();
-  // Estados para crear nuevo SLA
+  const navigate = useNavigate();
+  
+  // States for creating new SLA
   const [showNewSla, setShowNewSla] = useState(false);
   const [newSla, setNewSla] = useState({
     tiempoRespuesta: "",
@@ -53,12 +58,10 @@ const navigate = useNavigate();
   });
   const [showNewEtiqueta, setShowNewEtiqueta] = useState(false);
   const [newEtiqueta, setNewEtiqueta] = useState("");
-
   const [showNewEspecialidad, setShowNewEspecialidad] = useState(false);
   const [newEspecialidad, setNewEspecialidad] = useState("");
 
-
-  // Cargar datos iniciales
+  // Fetch initial data
   useEffect(() => {
     async function fetchData() {
       try {
@@ -72,8 +75,8 @@ const navigate = useNavigate();
         setEtiquetas(etiRes.data?.data || []);
         setEspecialidades(espRes.data?.data || []);
       } catch (error) {
-        console.error("Error cargando datos:", error);
-        toast.error("Error cargando datos iniciales");
+        console.error("Error loading data:", error);
+        toast.error(t("category.errorTitle"));
       } finally {
         setLoading(false);
       }
@@ -81,93 +84,88 @@ const navigate = useNavigate();
     fetchData();
   }, []);
 
-  const crearNuevoSLA = async () => {
-  const respuesta = Number(newSla.tiempoRespuesta);
-  const resolucion = Number(newSla.tiempoResolucion);
+  const createNewSLA = async () => {
+    const responseTime = Number(newSla.tiempoRespuesta);
+    const resolutionTime = Number(newSla.tiempoResolucion);
 
-  // Validaciones
-  if (!respuesta || respuesta <= 0) {
-    return toast.error("El tiempo de respuesta debe ser mayor a 0 minutos");
-  }
+    // Validations
+    if (!responseTime || responseTime <= 0) {
+      return toast.error(t("category.list.validation.responseTime"));
+    }
 
-  if (!resolucion || resolucion <= 0) {
-    return toast.error("El tiempo de resolución debe ser mayor a 0 minutos");
-  }
+    if (!resolutionTime || resolutionTime <= 0) {
+      return toast.error(t("category.list.validation.resolutionTime"));
+    }
 
-  if (resolucion <= respuesta) {
-    return toast.error(
-      "El tiempo de resolución debe ser mayor que el tiempo de respuesta"
-    );
-  }
+    if (resolutionTime <= responseTime) {
+      return toast.error(t("category.list.validation.resolutionGreaterThanResponse"));
+    }
 
-  try {
-    await SlaService.create({
-      tiempoRespuesta: respuesta,
-      tiempoResolucion: resolucion,
-    });
+    try {
+      await SlaService.create({
+        tiempoRespuesta: responseTime,
+        tiempoResolucion: resolutionTime,
+      });
 
-    toast.success("SLA creado correctamente");
+      toast.success(t("category.list.toast.successCreateSLA"));
 
-    // Recargar lista
-    const res = await SlaService.getAll();
-    setSlas(res.data?.data || []);
+      // Reload list
+      const res = await SlaService.getAll();
+      setSlas(res.data?.data || []);
 
-    // Reset
-    setNewSla({ tiempoRespuesta: "", tiempoResolucion: "" });
-    setShowNewSla(false);
+      // Reset
+      setNewSla({ tiempoRespuesta: "", tiempoResolucion: "" });
+      setShowNewSla(false);
 
-  } catch (err) {
-    console.error(err);
-    toast.error("Error al crear el SLA");
-  }
-};
+    } catch (err) {
+      console.error(err);
+      toast.error(t("category.toast.errorCreate"));
+    }
+  };
 
+  // Create Label
+  const createNewLabel = async () => {
+    if (!newEtiqueta.trim()) {
+      return toast.error(t("category.list.validation.enterTagName"));
+    }
 
-   // CREAR ETIQUETA
-  const crearNuevaEtiqueta = async () => {
-  if (!newEtiqueta.trim()) {
-    return toast.error("Ingrese un nombre de etiqueta");
-  }
+    try {
+      // Create in DB
+      await EtiquetaService.create({
+        nombre: newEtiqueta.trim(),
+      });
 
-  try {
-    // Crear en BD
-    await EtiquetaService.create({
-      nombre: newEtiqueta.trim(),
-    });
+      toast.success(t("category.list.toast.successCreateEti"));
 
-    toast.success("Etiqueta creada correctamente");
+      // Reload labels list
+      const res = await EtiquetaService.getAll();
+      setEtiquetas(res.data?.data || []);
 
-    // Recargar lista de etiquetas para que aparezca sin recargar página
-    const res = await EtiquetaService.getAll();
-    setEtiquetas(res.data?.data || []);
+      // Reset
+      setNewEtiqueta("");
+      setShowNewEtiqueta(false);
 
-    // Reset
-    setNewEtiqueta("");
-    setShowNewEtiqueta(false);
+    } catch (err) {
+      console.error(err);
+      toast.error(t("category.list.toast.errorCreate"));
+    }
+  };
 
-  } catch (err) {
-    console.error(err);
-    toast.error("Error al crear la etiqueta");
-  }
-};
-
-
-  // CREAR ESPECIALIDAD
-const crearNuevaEspecialidad = async () => {
-    if (!newEspecialidad.trim()) return toast.error("Ingrese un nombre de especialidad");
+  // Create Specialty
+  const createNewSpecialty = async () => {
+    if (!newEspecialidad.trim()) return toast.error(t("category.list.validation.enterSpecialtyName"));
     try {
       await EspecialidadService.create({ nombre: newEspecialidad.trim() });
-      toast.success("Especialidad creada correctamente");
+      toast.success(t("category.list.toast.successCreateEs"));
       const res = await EspecialidadService.getAll();
       setEspecialidades(res.data?.data || []);
       setNewEspecialidad("");
       setShowNewEspecialidad(false);
     } catch (err) {
       console.error(err);
-      toast.error("Error al crear especialidad");
+      toast.error(t("category.list.toast.errorCreate"));
     }
   };
-
 
   const onSubmit = async (data) => {
     try {
@@ -180,7 +178,7 @@ const crearNuevaEspecialidad = async () => {
 
       await CategoriasService.create(payload);
 
-      toast.success("Categoría creada correctamente");
+      toast.success(t("category.list.toast.successCreate"));
       navigate("/categoria/table");
       reset({
         nombre: "",
@@ -192,23 +190,22 @@ const crearNuevaEspecialidad = async () => {
       if (onSuccess) onSuccess();
 
     } catch (error) {
-      console.error("Error al crear categoría:", error);
-      toast.error("Error al crear la categoría");
+      console.error("Error creating category:", error);
+      toast.error(t("category.toast.errorCreate"));
     }
   };
 
-  if (loading) return <p className="text-center mt-6">Cargando datos...</p>;
+  if (loading) return <p className="text-center mt-6">{t("category.loadingData")}</p>;
 
   return (
     <Card className="p-6 max-w-2xl mx-auto mt-6">
-      <h2 className="text-xl font-bold mb-4 text-center">Crear Nueva Categoría</h2>
-
+      <h2 className="text-xl font-bold mb-4 text-center">{t("category.createTitle")}</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         
-        {/* Nombre */}
+        {/* Name */}
         <div>
-          <Label>Nombre</Label>
-          <Input {...register("nombre")} placeholder="Ingrese el nombre de la categoría" />
+          <Label>{t("category.fields.name.label")}</Label>
+          <Input {...register("nombre")} placeholder={t("category.fields.name.placeholder")} />
           {errors.nombre && <p className="text-sm text-red-500">{errors.nombre.message}</p>}
         </div>
 
@@ -217,7 +214,7 @@ const crearNuevaEspecialidad = async () => {
           <div className="flex justify-between items-center mb-2">
             <Label>SLA</Label>
 
-            {/* Botón + para mostrar formulario */}
+            {/* Button + to show form */}
             <Button type="button" variant="outline" size="icon"
               onClick={() => setShowNewSla(!showNewSla)}
             >
@@ -225,25 +222,25 @@ const crearNuevaEspecialidad = async () => {
             </Button>
           </div>
 
-          {/* Formulario oculto de nuevo SLA */}
+          {/* Hidden form for new SLA */}
           {showNewSla && (
             <div className="grid grid-cols-2 gap-2 mb-4 p-3 border rounded-lg bg-muted/30">
               <Input
-                placeholder="Tiempo Respuesta (min)"
+                placeholder="Response Time (min)"
                 type="number"
                 value={newSla.tiempoRespuesta}
                 onChange={(e) => setNewSla({ ...newSla, tiempoRespuesta: e.target.value })}
               />
 
               <Input
-                placeholder="Tiempo Resolución (min)"
+                placeholder="Resolution Time (min)"
                 type="number"
                 value={newSla.tiempoResolucion}
                 onChange={(e) => setNewSla({ ...newSla, tiempoResolucion: e.target.value })}
               />
 
-              <Button className="col-span-2" type="button" onClick={crearNuevoSLA}>
-                Guardar SLA
+              <Button className="col-span-2" type="button" onClick={createNewSLA}>
+                {t("category.buttons.saveSla")}
               </Button>
             </div>
           )}
@@ -257,13 +254,13 @@ const crearNuevaEspecialidad = async () => {
                 value={field.value?.toString() || ""}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Seleccione un SLA" />
+                  <SelectValue placeholder={t("category.categorySla.placeholder")} />
                 </SelectTrigger>
 
                 <SelectContent>
                   {slas.map(sla => (
                     <SelectItem key={sla.id} value={sla.id.toString()}>
-                      {`Respuesta: ${sla.tiempoRespuesta} min / Resolución: ${sla.tiempoResolucion} min`}
+                      {`${t("category.categorySla.label")}: ${sla.tiempoRespuesta} ${t("category.categorySla.minutes")} / ${t("category.categorySla.resolutionTime")}: ${sla.tiempoResolucion} ${t("category.categorySla.minutes")}`}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -274,7 +271,7 @@ const crearNuevaEspecialidad = async () => {
           {errors.idSLA && <p className="text-sm text-red-500">{errors.idSLA.message}</p>}
         </div>
 
-         {/* Etiquetas */}
+         {/* Labels */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <Label></Label>
@@ -284,11 +281,11 @@ const crearNuevaEspecialidad = async () => {
           {showNewEtiqueta && (
             <div className="flex gap-2 mb-3 p-3 border rounded bg-muted/30">
               <Input
-                placeholder="Nombre de etiqueta"
+                placeholder="Label name"
                 value={newEtiqueta}
                 onChange={(e) => setNewEtiqueta(e.target.value)}
               />
-              <Button type="button" onClick={crearNuevaEtiqueta}>Guardar</Button>
+              <Button type="button" onClick={createNewLabel}>{t("category.buttons.saveLabel")}</Button>
             </div>
           )}
 
@@ -299,17 +296,17 @@ const crearNuevaEspecialidad = async () => {
               <CustomMultiSelect
                 field={field}
                 data={etiquetas}
-                label="Etiquetas"
+                label={t("category.placeholderEti")}
                 getOptionLabel={item => item.nombre}
                 getOptionValue={item => item.id}
                 error={errors.etiquetas?.message}
-                placeholder="Seleccione una o más etiquetas"
+                placeholder={t("category.placeholderEti")}
               />
             )}
           />
         </div>
 
-        {/* Especialidades */}
+        {/* Specialties */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <Label></Label>
@@ -319,11 +316,11 @@ const crearNuevaEspecialidad = async () => {
           {showNewEspecialidad && (
             <div className="flex gap-2 mb-3 p-3 border rounded bg-muted/30">
               <Input
-                placeholder="Nombre de especialidad"
+                placeholder="Specialty name"
                 value={newEspecialidad}
                 onChange={(e) => setNewEspecialidad(e.target.value)}
               />
-              <Button type="button" onClick={crearNuevaEspecialidad}>Guardar</Button>
+              <Button type="button" onClick={createNewSpecialty}>{t("category.buttons.saveSpecialty")}</Button>
             </div>
           )}
 
@@ -334,18 +331,18 @@ const crearNuevaEspecialidad = async () => {
               <CustomMultiSelect
                 field={field}
                 data={especialidades}
-                label="Especialidades"
+                label={t("category.placeholderEs")}
                 getOptionLabel={item => item.nombre}
                 getOptionValue={item => item.id}
                 error={errors.especialidades?.message}
-                placeholder="Seleccione una o más especialidades"
+                placeholder={t("category.placeholderEs")}
               />
             )}
           />
         </div>
 
         <Button type="submit" className="w-full mt-2">
-          Crear Categoría
+          {t("category.buttons.saveCategory")}
         </Button>
 
       </form>

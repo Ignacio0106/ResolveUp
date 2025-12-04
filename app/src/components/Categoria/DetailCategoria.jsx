@@ -9,6 +9,7 @@ import { LoadingGrid } from '../ui/custom/LoadingGrid';
 import { EmptyState } from '../ui/custom/EmptyState';
 import { ChevronRight } from "lucide-react"; 
 import { Badge } from "@/components/ui/badge"; 
+import { useTranslation } from 'react-i18next';
 
 export function DetailCategoria() {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ export function DetailCategoria() {
     const [categoria, setCategoria] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -37,8 +39,8 @@ export function DetailCategoria() {
     }, [id]);
 
     if (loading) return <LoadingGrid count={1} type="grid" />;
-    if (error) return <ErrorAlert title="Error al cargar categoría" message={error} />;
-    if (!categoria) return <EmptyState message="No se encontró información de la categoría." />;
+    if (error) return <ErrorAlert title={t('category.errorTitle')} message={error} />;
+    if (!categoria) return <EmptyState message={t('category.noCategoryFound')} />;
 
     return (
       <div className="max-w-4xl mx-auto py-12 px-4">
@@ -55,15 +57,15 @@ export function DetailCategoria() {
             <div className="grid md:grid-cols-2 gap-8">
               {/* IZQUIERDA: Datos generales */}
               <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-primary mb-4">Información General</h2>
+                <h2 className="text-xl font-semibold text-primary mb-4">{t('category.generalInfo')}</h2>
                 <div className="space-y-4">
                   <div className="flex flex-col gap-1">
-                    <span className="font-medium text-sm text-muted-foreground">Tiempo máximo de respuesta</span>
-                    <span className="text-lg font-semibold">{categoria.tiempoMaxRespuesta} minutos</span>
+                    <span className="font-medium text-sm text-muted-foreground">{t('category.maxResponseTime')}</span>
+                    <span className="text-lg font-semibold">{categoria.tiempoMaxRespuesta} {t('category.minutes')}</span>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="font-medium text-sm text-muted-foreground">Tiempo máximo de resolución</span>
-                    <span className="text-lg font-semibold">{categoria.tiempoMaxResolucion} minutos</span>
+                    <span className="font-medium text-sm text-muted-foreground">{t('category.maxResolutionTime')}</span>
+                    <span className="text-lg font-semibold">{categoria.tiempoMaxResolucion} {t('category.minutes')}</span>
                   </div>
                 </div>
               </div>
@@ -72,7 +74,7 @@ export function DetailCategoria() {
               <div className="space-y-6">
                 {categoria.especialidades && categoria.especialidades.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-primary mb-3">Especialidades</h3>
+                    <h3 className="text-lg font-semibold text-primary mb-3">{t('category.specialties')}</h3>
                     <div className="flex flex-wrap gap-2">
                       {categoria.especialidades.map((esp) => (
                         <Badge
@@ -90,7 +92,7 @@ export function DetailCategoria() {
 
                 {categoria.etiquetas && categoria.etiquetas.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-primary mb-3">Etiquetas</h3>
+                    <h3 className="text-lg font-semibold text-primary mb-3">{t('category.labels')}</h3>
                     <div className="flex flex-wrap gap-2">
                       {categoria.etiquetas.map((et) => (
                         <Badge
@@ -116,7 +118,7 @@ export function DetailCategoria() {
           className="flex items-center gap-2 bg-accent hover:bg-accent/90 mt-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          Regresar
+          {t('category.backButton')}
         </Button>
       </div>
     );

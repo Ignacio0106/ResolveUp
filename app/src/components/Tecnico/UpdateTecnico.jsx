@@ -15,18 +15,11 @@ import TecnicoService from "@/services/TecnicoService";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+// Esquema de validación con Yup
 
-  const tecnicoSchema = yup.object({
-    nombreUsuario: yup.string().required("El nombre es requerido"),
-    correoUsuario: yup.string().email("Correo inválido").required("El correo es requerido"),
-    password: yup.string(), 
-    especialidades: yup.array().min(1, "Seleccione al menos una especialidad"),
-    disponibilidad: yup.string().required("La disponibilidad es requerida"),
-
-  });
 
 export function UpdateTecnico() {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -35,19 +28,21 @@ export function UpdateTecnico() {
   const [showNewEspecialidad, setShowNewEspecialidad] = useState(false);
   const [newEspecialidad, setNewEspecialidad] = useState("");
 
-
+    const tecnicoSchema = yup.object({
+    nombreUsuario: yup.string().required(t("technician.fields.fullName.validation.required")),
+    correoUsuario: yup.string().email(t("technician.fields.email.validation.email")).required(t("technician.fields.email.validation.required")),
+    password: yup.string().required(t("technician.fields.password.validation.required")),
+    especialidades: yup.array().min(1, t("technician.fields.specialties.validation.required")),
+    disponibilidad: yup.string().required(t("technician.fields.availability.validation.required")),
+  });
   const { control, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(tecnicoSchema),
     defaultValues: { nombreUsuario: "", correoUsuario: "", password: "", especialidades: [], disponibilidad: "1" },
   });
 
-
-
-useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
-
-        // Traer SLAs, etiquetas y especialidades
         const [espRes] = await Promise.all([
           EspecialidadService.getAll(),
         ]);
@@ -55,40 +50,33 @@ useEffect(() => {
         const especialidadesData = espRes.data?.data || [];
         setEspecialidades(especialidadesData);
 
-        // Traer detalle de la categoría
         const catRes = await TecnicoService.getDetalleTecnico(id);
         const cat = catRes.data?.data || {};
 
-        
-
-        
         reset({
           nombreUsuario: cat.nombreUsuario,
           correoUsuario: cat.correoUsuario,
           password: cat.contraseña,
           disponibilidad: String(cat.disponibilidad),
           especialidades: cat.especialidades?.map(g => g.idEspecialidad) || [],
-          
         });
 
       } catch (err) {
         console.error(err);
-        toast.error("Error cargando datos de la categoría");
-        setError("Error cargando datos de la categoría");
-      } 
+        toast.error(t("technician.error"));
+        setError(t("technician.error"));
+      }
     };
 
     fetchData();
   }, [id, reset]);
 
-
-  // Crear nueva especialidad al vuelo
   const crearNuevaEspecialidad = async () => {
-    if (!newEspecialidad.trim()) return toast.error("Ingrese un nombre de especialidad");
+    if (!newEspecialidad.trim()) return toast.error(t("technician.fields.specialties.validation.required"));
 
     try {
       await EspecialidadService.create({ nombre: newEspecialidad.trim() });
-      toast.success("Especialidad creada correctamente");
+      toast.success(t("technician.fields.specialties.newPlaceholder"));
 
       const res = await EspecialidadService.getAll();
       setEspecialidades(res.data?.data || []);
@@ -97,47 +85,38 @@ useEffect(() => {
       setShowNewEspecialidad(false);
     } catch (err) {
       console.error(err);
-      toast.error("Error al crear la especialidad");
+      toast.error(t("technician.fields.specialties.errorCreate"));
     }
   };
 
-  
   const onSubmit = async (dataForm) => {
-  try {
+    const payload = {
+      id: Number(id),
+      nombre: dataForm.nombreUsuario,
+      correo: dataForm.correoUsuario,
+      especialidades: dataForm.especialidades.map(e => ({
+        idEspecialidad: Number(e)
+      })),
+      disponibilidad: Number(dataForm.disponibilidad),
+      cargaTrabajo: 0,
+    };
 
+    if (dataForm.password) payload.password = dataForm.password;
 
-const payload = {
-  id: Number(id),
-  nombre: dataForm.nombreUsuario,
-  correo: dataForm.correoUsuario,
-  especialidades: dataForm.especialidades.map(e => ({
-    idEspecialidad: Number(e)
-  })),
-  disponibilidad: Number(dataForm.disponibilidad),
-  cargaTrabajo: 0,
-};
+    try {
+      const response = await TecnicoService.update(payload);
 
-if (dataForm.password) payload.password = dataForm.password;
-
-
-    console.log("📦 PAYLOAD ENVIADO AL BACKEND:", payload);
-
-    const response = await TecnicoService.update(payload);
-
-    console.log("📥 RESPUESTA DEL BACKEND:", response.data);
-
-    if (response.data.success) {
-      toast.success("Técnico actualizado correctamente");
-      navigate("/tecnico/table");
-    } else {
-      toast.error(response.data.message);
+      if (response.data.success) {
+        toast.success(t("technician.toast.successUpdate"));
+        navigate("/tecnico/table");
+      } else {
+        toast.error(response.data.message || t("technician.toast.errorUpdate"));
+      }
+    } catch (err) {
+      console.error("❌ ERROR UPDATE:", err.response?.data || err.message);
+      toast.error(t("technician.toast.errorUpdateGeneric") + " " + (err.response?.data?.message || err.message));
     }
-  } catch (err) {
-    console.error("❌ ERROR UPDATE:", err.response?.data || err.message);
-    toast.error("Error al actualizar técnico: " + (err.response?.data?.message || err.message));
-  }
-};
-
+  };
 
   return (
     <Card className="p-6 max-w-xl mx-auto">
@@ -169,42 +148,40 @@ if (dataForm.password) payload.password = dataForm.password;
           {errors.password && <p className="text-red-500">{errors.password.message}</p>}
         </div>
 
-{/* Disponibilidad */}
-<div>
-  <Label>{t("technician.fields.availability.label")}</Label>
-  <Controller
-    name="disponibilidad"
-    control={control}
-    render={({ field }) => (
-      <select
-        {...field}
-        className="border rounded px-3 py-2 w-full"
-      >
-        <option value="1">{t("technician.fields.availability.options.available")}</option>
-        <option value="0">{t("technician.fields.availability.options.unavailable")}</option>
-      </select>
-    )}
-  />
-  {errors.disponibilidad && (
-    <p className="text-red-500 text-sm">
-      {errors.disponibilidad.message}
-    </p>
-  )}
-</div>
+        {/* Disponibilidad */}
+        <div>
+          <Label>{t("technician.fields.availability.label")}</Label>
+          <Controller
+            name="disponibilidad"
+            control={control}
+            render={({ field }) => (
+              <select {...field} className="border rounded px-3 py-2 w-full">
+                <option value="1">{t("technician.fields.availability.options.available")}</option>
+                <option value="0">{t("technician.fields.availability.options.unavailable")}</option>
+              </select>
+            )}
+          />
+          {errors.disponibilidad && <p className="text-red-500 text-sm">{errors.disponibilidad.message}</p>}
+        </div>
 
+        {/* Especialidades */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <Controller name="especialidades" control={control} render={({ field }) => (
-              <CustomMultiSelect
-                field={field}
-                value={field.value}
-                onChange={field.onChange}
-                data={especialidades}
-                getOptionLabel={item => item.nombre}
-                getOptionValue={item => item.id}
-                placeholder={t("technician.fields.specialties.placeholder")}
-              />
-            )} />
+            <Controller
+              name="especialidades"
+              control={control}
+              render={({ field }) => (
+                <CustomMultiSelect
+                  field={field}
+                  value={field.value}
+                  onChange={field.onChange}
+                  data={especialidades}
+                  getOptionLabel={(item) => item.nombre}
+                  getOptionValue={(item) => item.id}
+                  placeholder={t("technician.fields.specialties.placeholder")}
+                />
+              )}
+            />
             <Button
               type="button"
               variant="outline"
@@ -219,18 +196,18 @@ if (dataForm.password) payload.password = dataForm.password;
           {showNewEspecialidad && (
             <div className="flex gap-2 mb-3 p-3 border rounded bg-muted/30">
               <Input
-                placeholder={t("technician.fields.placeholders.newSpecialty")}
+                placeholder={t("technician.fields.specialties.newPlaceholder")}
                 value={newEspecialidad}
                 onChange={(e) => setNewEspecialidad(e.target.value)}
               />
               <Button type="button" onClick={crearNuevaEspecialidad}>
-                {t("technician.fields.buttons.save")}
+                {t("technician.fields.specialties.addNew")}
               </Button>
             </div>
           )}
         </div>
 
-        <Button type="submit" className="w-full">{t("technician.updateTechnician")}</Button>
+        <Button type="submit" className="w-full">{t("technician.buttons.updateTechnician")}</Button>
       </form>
     </Card>
   );
