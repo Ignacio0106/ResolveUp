@@ -38,6 +38,30 @@ class EspecialidadesModel
         }
     }
 
+    public function getByTecnico($idTecnico)
+    {
+        try {
+            $vSql = "SELECT e.id, e.nombre
+                     FROM Especialidad e
+                     JOIN tecnicoespecialidad te ON e.id = te.idEspecialidad
+                     WHERE te.idTecnico = $idTecnico;";
+            return $this->enlace->ExecuteSQL($vSql);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function getByCategoria($idTecnico)
+    {
+        $tecnicoM = new TecnicoModel();
+        $idCategoria = $tecnicoM->get($idTecnico)->idCategoria;
+            $vSql = "SELECT e.id, e.nombre
+                     FROM Especialidad e
+                     JOIN CategoriaEspecialidad ce ON e.id = ce.idEspecialidad
+                     WHERE ce.idCategoria = $idCategoria;";
+            return $this->enlace->ExecuteSQL($vSql);
+    }
+
     // Crear una nueva especialidad
     public function create($objeto)
     {

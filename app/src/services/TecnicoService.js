@@ -9,6 +9,10 @@ class MovieService {
   getTecnicos() {
     return axios.get(BASE_URL + '/listadoDeTecnicos');
   }
+
+    getListado() {
+    return axios.get(BASE_URL);
+  }
   //Obtener pelicula
   //http://localhost:81/Proyecto/api/tecnico/getTecnicoDetalle/2
   getDetalleTecnico(TecnicoId){

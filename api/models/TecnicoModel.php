@@ -8,21 +8,36 @@ class TecnicoModel
     }
     public function all(){
         try {
-			$vSql = "SELECT t.id AS idTecnico, u.nombre AS nombreUsuario,
-            u.correo AS correoUsuario, t.disponibilidad, t.cargaTrabajo,
-            GROUP_CONCAT(e.nombre SEPARATOR ', ') AS especialidades
-            FROM Tecnicos t
-            JOIN Usuario u ON t.idUsuario = u.id
-            LEFT JOIN TecnicoEspecialidad te ON t.id = te.idTecnico
-            LEFT JOIN Especialidad e ON te.idEspecialidad = e.id
-            GROUP BY t.id, u.nombre, u.correo, t.disponibilidad, t.cargaTrabajo;";
+            $especialidadesM = new EspecialidadesModel();
 
-			$vResultado = $this->enlace->ExecuteSQL ($vSql);
+			$vSql = "SELECT *
+            FROM Tecnicos t
+            JOIN Usuario u ON t.idUsuario = u.id;";
+
+			$vResultado = $this->enlace->ExecuteSQL ( $vSql);
+
+            if (!empty($vResultado) && is_array($vResultado)) {
+                for ($i = 0; $i < count($vResultado); $i++) {
+                    $especialidades = $especialidadesM->getByTecnico($vResultado[$i]->id);
+                    $vResultado[$i]->especialidades = $especialidades;
+                }
+            }
 
 			return $vResultado;
 		} catch (Exception $e) {
             handleException($e);
         }
+    }
+
+    public function getByTicket()
+    {
+        $vSql = "SELECT *
+            FROM Tecnicos t
+            JOIN Tickets ti ON t. = u.id;";
+
+		$vResultado = $this->enlace->ExecuteSQL ( $vSql);
+
+		return $vResultado;
     }
 
     public function listadoDeTecnicos()

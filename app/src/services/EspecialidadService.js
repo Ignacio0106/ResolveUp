@@ -10,9 +10,10 @@ class EspecialidadesService {
   getById(id) {
     return axios.get(`${BASE_URL}get/${id}`);
   }
-
-
-
+  
+ getByCategoria(idCategoria) {
+    return axios.get(`${BASE_URL}getByCategoria/${idCategoria}`);
+  }
   
 create(data) {
   return axios.post(`${BASE_URL}create`, data);

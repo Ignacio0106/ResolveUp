@@ -25,6 +25,18 @@ class especialidades
         }
     }
 
+    public function getByCategoria($idCategoria)
+    {
+        try {
+            $model = new EspecialidadesModel();
+            $result = $model->getByCategoria($idCategoria);
+            $response = new Response();
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
     public function create(){
         try {
              $response = new Response();

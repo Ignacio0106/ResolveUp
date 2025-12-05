@@ -145,7 +145,7 @@ public function getTicketPendiente(){
                     JOIN prioridadticket p ON t.prioridadId = p.id
                     WHERE t.estadoId = 1;";
     $vResultado = $this->enlace->ExecuteSQL($vSql);
-    return $vResultado[0] ?? null;
+    return $vResultado ?? null;
 }
 
     public function getTicketDetalle()
