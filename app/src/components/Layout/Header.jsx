@@ -45,10 +45,19 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { useUser } from "@/hooks/useUser";
+import { useNotificaciones } from "@/hooks/UseNotificaciones"; 
+import { useEffect} from "react";
+import { Clock, Send, CheckCircle } from "lucide-react";
+import { Circle } from "lucide-react";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, isAuthenticated, clearUser, authorize } = useUser();
+const usuarioID = 5; // ID fijo para pruebas
+  const { notificaciones, cantidadNoLeidas, marcarLeida, recargarNotificaciones, } = useNotificaciones();
+useEffect(() => {
+  recargarNotificaciones(usuarioID);
+}, [usuarioID]);
 
   const navItems = [
     { title: "Películas", href: "/movie", icon: <Film className="h-4 w-4" /> },
@@ -246,13 +255,98 @@ const selectedLanguage = idiomas.find((l) => l.value === i18n.language);
 
         {/* -------- Sección Derecha -------- */}
         <div className="flex items-center gap-3">
-          {/* Notificaciones */}
-          <button className="relative p-2 rounded-full hover:bg-muted/60 transition-colors group hidden md:block">
-            <Bell className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-            <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center border border-card">
-              2
-            </Badge>
-          </button>
+           <Popover>
+  <PopoverTrigger asChild>
+    <button className="relative p-2 rounded-full hover:bg-muted/60 transition-colors group">
+      <Bell className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+      {cantidadNoLeidas > 0 && (
+        <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center border border-card">
+          {cantidadNoLeidas}
+        </Badge>
+      )}
+    </button>
+  </PopoverTrigger>
+
+
+
+<PopoverContent className="w-96 max-h-96 p-4 bg-card overflow-y-auto rounded-2xl shadow-xl font-sans">
+  {notificaciones.length === 0 && (
+    <div className="text-sm text-muted-foreground p-4 text-center italic">
+      No hay notificaciones
+    </div>
+  )}
+
+  {notificaciones
+    .slice()
+    .sort((a, b) => Number(a.leida) - Number(b.leida))
+    .map((notif) => {
+      const estaLeida = Number(notif.leida) === 1;
+
+      // Colores tipo "badge"
+      const badgeColor = !estaLeida ? "bg-yellow-400" : "bg-green-400";
+      const badgeTextColor = !estaLeida ? "text-yellow-900" : "text-green-900";
+
+      return (
+        <div
+          key={notif.id}
+          className={`flex justify-between items-start p-4 mb-3 rounded-xl cursor-pointer transition-all duration-200 shadow-sm hover:shadow-lg hover:scale-[1.03] ${
+            !estaLeida ? "bg-background/80" : "bg-background/60"
+          }`}
+        >
+          <div className="flex items-start gap-4">
+            {/* Checkbox consistente */}
+            <input
+              type="checkbox"
+              checked={estaLeida}
+              onChange={() => marcarLeida(notif.id, usuarioID)}
+              className="w-5 h-5 mt-1 flex-shrink-0"
+            />
+
+            {/* Icono dinámico */}
+            <span className="flex-shrink-0 mt-1">
+              {estaLeida ? (
+                <CheckCircle className="w-5 h-5 text-green-500" />
+              ) : (
+                <Circle className="w-5 h-5 text-yellow-500" />
+              )}
+            </span>
+
+            {/* Contenido */}
+            <div className="flex flex-col">
+              {/* Badge tipo */}
+              <span
+                className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${badgeColor} ${badgeTextColor} mb-2`}
+              >
+                {notif.tipo}
+              </span>
+
+              {/* Mensaje */}
+              <span className="text-sm font-medium text-foreground/90 mb-2">{notif.mensaje}</span>
+
+              {/* Remitente y fecha */}
+              <div className="flex justify-between items-center gap-2 text-xs font-light text-muted-foreground">
+                {notif.remitente && <span className="italic">De: {notif.remitente}</span>}
+                <span>{new Date(notif.fecha).toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+</PopoverContent>
+
+
+
+
+
+
+
+
+
+
+
+</Popover>
+
 
 <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

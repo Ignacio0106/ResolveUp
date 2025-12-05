@@ -187,7 +187,8 @@
       "saveSla": "Guardar SLA",
       "saveSpecialty": "Guardar Especialidad",
       "saveCategory": "Guardar Categoría",
-      "createNewCategory": "Crear Nueva Categoría"
+      "createNewCategory": "Crear Nueva Categoría",
+      "Regre": "Regresar"
     },
     "error": "Ocurrió un error al guardar la categoría.",
     "details": {
@@ -209,6 +210,7 @@
       },
       "toast": {
         "successCreate": "Categoría creada correctamente",
+        "successUpdate": "Categoría actualizada correctamente",
         "errorCreate": "La categoría no pudo ser creada",
         "errorCreateGeneric": "Error al crear la categoría",
         "successDelete": "Categoría eliminada correctamente",
@@ -230,7 +232,201 @@
       "enterSpecialtyName": "Ingrese el nombre de la especialidad"
     }
     }
+  },
+  "ticket": {
+    "generalInfo": "Información General",
+    "listTitle": "Listado de Tickets",
+    "listSubtitle": "Gestiona y revisa todos los tickets asignados",
+    "noTicketsFound": "No se encontraron tickets.",
+    "errorTitle": "Error al cargar tickets",
+    "totalTickets": "Total de tickets",
+    "infTickets": "No se encontro informacion del tickets",
+    "estadoAnt" : "Estado Anterior",
+    "estadoNue" : "Estado Nuevo",
+    "observaciones" : "Observaciones",
+    "Imagen": "Imagen",
+    "Valo": "Valoraciones",
+    "Punt":"Puntaje",
+    "Come": "Comentario",
+
+
+
+    "columns": {
+      "titulo": "Título",
+      "solicitante": "Solicitante",
+      "estado": "Estado del Ticket",
+      "acciones": "Acciones"
+    },
+
+    "tooltip": {
+      "create": "Crear ticket",
+      "update": "Actualizar",
+      "delete": "Eliminar",
+      "detail": "Ver detalle"
+    },
+
+    "buttons": {
+      "goBack": "Regresar",
+      "createTicket": "Crear Ticket",
+      "updateTicket": "Actualizar Ticket",
+      "deleteTicket": "Eliminar Ticket"
+    },
+
+    "status": {
+      "pendiente": "Pendiente",
+      "asignado": "Asignado",
+      "enProceso": "En Proceso",
+      "resuelto": "Resuelto",
+      "cerrado": "Cerrado"
+    },
+
+    "list": {
+      "title": "Listado de Tickets",
+      "tooltip": {
+        "create": "Crear ticket",
+        "update": "Actualizar ticket",
+        "delete": "Eliminar ticket",
+        "detail": "Ver detalles"
+      },
+      "toast": {
+        "successCreate": "Ticket creado exitosamente",
+        "successUpdate": "Ticket actualizado exitosamente",
+        "successDelete": "Ticket eliminado correctamente",
+
+        "errorCreate": "No se pudo crear el ticket",
+        "errorUpdate": "No se pudo actualizar el ticket",
+        "errorDelete": "No se pudo eliminar el ticket",
+        "errorGeneric": "Ocurrió un error al procesar el ticket"
+      }
+    },
+
+    "validation": {
+      "titleRequired": "El título del ticket es obligatorio",
+      "descriptionRequired": "La descripción es obligatoria",
+      "statusRequired": "Debe seleccionar un estado",
+      "userRequired": "Debe seleccionar un usuario solicitante"
+    },
+
+    "details": {
+      "title": "Título:",
+      "description": "Descripción:",
+      "status": "Estado:",
+      "createdAt": "Fecha de creación:",
+      "updatedAt": "Última actualización:",
+      "solicitante": "Solicitante:",
+      "backButton": "Volver"
+    }
+    },
+    
+    "asignacion": {
+    "generalInfo": "Información General",
+    "ticketInfo": "Información del Ticket",
+    "technicianInfo": "Información del Técnico",
+    "methodInfo": "Método de Asignación",
+    "priorityScore": "Puntaje de Prioridad",
+    "remainingTime": "Tiempo Restante",
+    "backButton": "Regresar",
+
+    "titles": {
+      "detailTitle": "Detalle de Asignación",
+      "ticketTitle": "Datos del Ticket",
+      "technicianTitle": "Datos del Técnico",
+      "metodoTitle": "Método",
+      "prioridadTitle": "Prioridad",
+      "restanteTitle": "Tiempo restante"
+    },
+
+    "fields": {
+      "descripcion": {
+        "label": "Descripción",
+        "placeholder": "Descripción de la asignación"
+      },
+      "fecha": {
+        "label": "Fecha",
+        "placeholder": "Fecha de la asignación",
+        "creacion": "Fecha creacion",
+        "cierre": "Fecha cierre"
+      },
+      "ticket": {
+        "titulo": "Título",
+        "descripcion": "Descripción",
+        "categoria": "Categoría",
+        "prioridad": "Prioridad",
+        "historial": "Historial"
+      },
+      "tecnico": {
+        "nombre": "Nombre",
+        "especialidades": "Especialidades",
+        "cargaTrabajo": "Carga de trabajo"
+      },
+      "metodo": {
+        "nombre": "Método de asignación"
+      },
+      "puntajePrioridad": "Puntaje de Prioridad",
+      "tiempoRestanteResolucion": "Tiempo restante para resolución"
+    },
+
+    "messages": {
+      "noAsignacionFound": "No se encontró información de la asignación.",
+      "errorTitle": "Error al cargar asignación"
+    },
+
+    "buttons": {
+      "back": "Regresar"
+    }
+  },
+
+  "asignacionTable": {
+    "title": "Asignaciones",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "noAsignacionesSemana": "No hay asignaciones para esta semana",
+    "mesActual": "Mes actual",
+
+    "messages": {
+      "errorTitle": "Error al cargar asignaciones",
+      "noAsignacionFound": "No se encontró información de la asignación."
+    },
+
+    "buttons": {
+      "back": "Regresar"
+    },
+
+    "weekdays": {
+      "sunday": "Domingo",
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miércoles",
+      "thursday": "Jueves",
+      "friday": "Viernes",
+      "saturday": "Sábado"
+    },
+
+    "fields": {
+      "ticket": "Ticket",
+      "categoria": "Categoría",
+      "estado": "Estado",
+      "tiempoRestante": "Tiempo restante",
+      "progreso": "Progreso"
+    },
+
+    "estados": {
+      "pendiente": "Pendiente",
+      "asignado": "Asignado",
+      "enProceso": "En proceso",
+      "resuelto": "Resuelto",
+      "cerrado": "Cerrado"
+    },
+
+    "categorias": {
+      "soporteEducativo": "Soporte a sistemas educativos",
+      "hardware": "Hardware",
+      "redes": "Redes y conectividad",
+      "seguridad": "Seguridad informática",
+      "otro": "Otro"
+    }
   }
+  
 }
 
 

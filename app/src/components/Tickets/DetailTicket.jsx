@@ -8,9 +8,11 @@ import { ArrowLeft } from "lucide-react";
 import { LoadingGrid } from '../ui/custom/LoadingGrid';
 import { EmptyState } from '../ui/custom/EmptyState';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import { useTranslation } from 'react-i18next';
 
 export function DetailTicket() {
     const navigate = useNavigate();
+    const {t} = useTranslation();
     const { id } = useParams();
     const BASE_URL = import.meta.env.VITE_BASE_URL + 'uploads';
     const [ticket, setTicket] = useState(null);
@@ -47,8 +49,8 @@ export function DetailTicket() {
     }, [id]);
 
     if (loading) return <LoadingGrid count={1} type="grid" />;
-    if (error) return <ErrorAlert title="Error al cargar ticket" message={error} />;
-    if (!ticket) return <EmptyState message="No se encontró información del ticket." />;
+    if (error) return <ErrorAlert title={t("ticket.errorTitle")} message={error} />;
+    if (!ticket) return <EmptyState message={t/"ticket.infTickets"} />;
 
     return (
         <div className="max-w-5xl mx-auto py-12 px-4">
@@ -66,15 +68,15 @@ export function DetailTicket() {
                                     <p className="text-foreground font-medium">{ticket.idTicket}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">Solicitante:</span>
+                                    <span className="font-semibold text-foreground">{t("ticket.columns.solicitante")}</span>
                                     <p className="text-foreground font-medium">{ticket.usuarioSolicitante}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">Categoría:</span>
+                                    <span className="font-semibold text-foreground">{t("asignaciones.fields.ticket.categoria")}</span>
                                     <p className="text-foreground font-medium">{ticket.categoria}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">Fecha de creación:</span>
+                                    <span className="font-semibold text-foreground">{t("asignaciones.fields.fecha.creacion")}</span>
                                     <p className="text-foreground font-medium">{ticket.fechaCreacion}</p>
                                 </div>
                             </div>
@@ -82,7 +84,7 @@ export function DetailTicket() {
                             {/* Lado derecho */}
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">Estado:</span>
+                                    <span className="font-semibold text-foreground">{t("ticket.columns.estado")}</span>
                                     <p className={`font-medium ${
                                         ticket.estado === "Asignado" ? "text-green-600" :
                                         ticket.estado === "Pendiente" ? "text-yellow-600" :
@@ -92,7 +94,7 @@ export function DetailTicket() {
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">Prioridad:</span>
+                                    <span className="font-semibold text-foreground">{t("asignaciones.fields.ticket.prioridad")}</span>
                                     <p className={`font-medium ${
                                         ticket.prioridad === "Alta" ? "text-red-600" :
                                         ticket.prioridad === "Media" ? "text-yellow-600" :
@@ -102,7 +104,7 @@ export function DetailTicket() {
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">Fecha de cierre:</span>
+                                    <span className="font-semibold text-foreground">{t("asignaciones.fields.fecha.cierre")}</span>
                                     <p className="text-foreground font-medium">{ticket.fechaCierre || "—"}</p>
                                 </div>
                             </div>
@@ -110,14 +112,14 @@ export function DetailTicket() {
 
                         {/* Descripción en toda la tarjeta */}
                         <div className="mt-6 border-t pt-4">
-                            <span className="font-semibold text-foreground">Descripción:</span>
+                            <span className="font-semibold text-foreground">{t("asignaciones.fields.ticket.descripcion")}</span>
                             <p className="text-foreground mt-1">{ticket.descripcion}</p>
                         </div>
                     </CardContent>
                 </Card>
 
               {/* Historial en tabla */}
-<h2 className="text-2xl font-semibold mt-6 mb-4">Historial</h2>
+<h2 className="text-2xl font-semibold mt-6 mb-4">{t("asignaciones.fields.ticket.historial")}</h2>
 {historial.length === 0 ? (
   <EmptyState message="No hay historial disponible." />
 ) : (
@@ -125,11 +127,11 @@ export function DetailTicket() {
     <Table>
       <TableHeader className="bg-primary/50">
         <TableRow>
-          <TableHead>Estado Anterior</TableHead>
-          <TableHead>Estado Nuevo</TableHead>
-          <TableHead>Fecha</TableHead>
-          <TableHead>Observaciones</TableHead>
-          <TableHead>Imagen</TableHead>
+          <TableHead>{t("ticket.estadoAnt")}</TableHead>
+          <TableHead>{t("ticket.estadoNue")}</TableHead>
+          <TableHead>{t("asignaciones.fields.fecha.label")}</TableHead>
+          <TableHead>{t("ticket.observaciones")}</TableHead>
+          <TableHead>{t("ticket.imagen")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -171,7 +173,7 @@ export function DetailTicket() {
 
                 {/* Valoraciones */}
                 {/* Valoraciones en tabla */}
-<h2 className="text-2xl font-semibold mt-6 mb-4">Valoraciones</h2>
+<h2 className="text-2xl font-semibold mt-6 mb-4">{t("ticket.Valo")}</h2>
 {valoraciones.length === 0 ? (
     <EmptyState message="No hay valoraciones disponibles." />
 ) : (
@@ -179,9 +181,9 @@ export function DetailTicket() {
         <Table>
             <TableHeader className="bg-primary/50">
                 <TableRow>
-                    <TableHead>Puntaje</TableHead>
-                    <TableHead>Comentario</TableHead>
-                    <TableHead>Fecha</TableHead>
+                    <TableHead>{t("ticket.Punt")}</TableHead>
+                    <TableHead>{t("ticket.Come")}</TableHead>
+                    <TableHead>{t("asignaciones.fields.fecha.label")}</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -204,7 +206,7 @@ export function DetailTicket() {
                     className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    Regresar
+                     {t("technician.list.backButton")}
                 </Button>
             </div>
         </div>
