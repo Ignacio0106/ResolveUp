@@ -49,6 +49,7 @@ require_once "controllers/EtiquetaController.php";
 require_once "controllers/PrioridadController.php";
 require_once "controllers/EstadoController.php";
 require_once "controllers/NotificacionController.php";
+require_once "controllers/ImageController.php";
 
 
 //Enrutador

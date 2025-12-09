@@ -25,11 +25,6 @@ import { useTranslation } from "react-i18next";
 import { useUser } from "@/hooks/useUser";
 
 
-const usuario = {
-    id: 1,
-    rol: "admin", 
-};
-
 export default function TableTecnico() {
     const { user, isAuthenticated, clearUser, authorize } = useUser();
 

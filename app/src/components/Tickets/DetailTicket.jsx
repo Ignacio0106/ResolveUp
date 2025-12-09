@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 export function DetailTicket() {
     const navigate = useNavigate();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const { id } = useParams();
     const BASE_URL = import.meta.env.VITE_BASE_URL + 'uploads';
     const [ticket, setTicket] = useState(null);
@@ -22,7 +22,7 @@ export function DetailTicket() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = async () => { 
             try {
                 const response = await TicketService.getTicketById(id);
                 console.log("API Response:", response.data.data);
@@ -50,7 +50,7 @@ export function DetailTicket() {
 
     if (loading) return <LoadingGrid count={1} type="grid" />;
     if (error) return <ErrorAlert title={t("ticket.errorTitle")} message={error} />;
-    if (!ticket) return <EmptyState message={t/"ticket.infTickets"} />;
+    if (!ticket) return <EmptyState message={t("ticket.infTickets")} />;
 
     return (
         <div className="max-w-5xl mx-auto py-12 px-4">
@@ -60,7 +60,7 @@ export function DetailTicket() {
                 {/* Card principal dividida en dos columnas */}
                 <Card className="shadow-lg rounded-xl border">
                     <CardContent className="p-6">
-                        <div className="grid grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {/* Lado izquierdo */}
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2">
@@ -68,137 +68,190 @@ export function DetailTicket() {
                                     <p className="text-foreground font-medium">{ticket.idTicket}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">{t("ticket.columns.solicitante")}</span>
+                                    <span className="font-semibold text-foreground">
+                                        {t("ticket.columns.solicitante")}
+                                    </span>
                                     <p className="text-foreground font-medium">{ticket.usuarioSolicitante}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">{t("asignaciones.fields.ticket.categoria")}</span>
+                                    <span className="font-semibold text-foreground">
+                                        {t("ticket.categoria")}
+                                    </span>
                                     <p className="text-foreground font-medium">{ticket.categoria}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">{t("asignaciones.fields.fecha.creacion")}</span>
+                                    <span className="font-semibold text-foreground">
+                                        {t("ticket.fechaCreacion")}
+                                    </span>
                                     <p className="text-foreground font-medium">{ticket.fechaCreacion}</p>
+                                </div>
+
+                                {/* 🔹 SLA de Respuesta (tiempo y fecha límite) */}
+                                <div className="flex items-center gap-2">
+                                    <span className="font-semibold text-foreground">
+                                        {t("ticket.slaRespuesta") || "SLA de respuesta"}
+                                    </span>
+                                    <p className="text-foreground font-medium">
+                                        {ticket.slaRespuesta ? `${ticket.slaRespuesta} min` : "—"}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-semibold text-foreground">
+                                        {t("ticket.fechaLimiteRespuesta") || "Fecha límite respuesta"}
+                                    </span>
+                                    <p className="text-foreground font-medium">
+                                        {ticket.fechaLimiteRespuesta || "—"}
+                                    </p>
                                 </div>
                             </div>
 
                             {/* Lado derecho */}
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">{t("ticket.columns.estado")}</span>
-                                    <p className={`font-medium ${
-                                        ticket.estado === "Asignado" ? "text-green-600" :
-                                        ticket.estado === "Pendiente" ? "text-yellow-600" :
-                                        "text-red-600"
-                                    }`}>
+                                    <span className="font-semibold text-foreground">
+                                        {t("ticket.columns.estado")}
+                                    </span>
+                                    <p
+                                        className={`font-medium ${
+                                            ticket.estado === "Asignado"
+                                                ? "text-green-600"
+                                                : ticket.estado === "Pendiente"
+                                                ? "text-yellow-600"
+                                                : "text-red-600"
+                                        }`}
+                                    >
                                         {ticket.estado}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">{t("asignaciones.fields.ticket.prioridad")}</span>
-                                    <p className={`font-medium ${
-                                        ticket.prioridad === "Alta" ? "text-red-600" :
-                                        ticket.prioridad === "Media" ? "text-yellow-600" :
-                                        "text-green-600"
-                                    }`}>
+                                    <span className="font-semibold text-foreground">
+                                        {t("ticket.prioridad")}
+                                    </span>
+                                    <p
+                                        className={`font-medium ${
+                                            ticket.prioridad === "Alta"
+                                                ? "text-red-600"
+                                                : ticket.prioridad === "Media"
+                                                ? "text-yellow-600"
+                                                : "text-green-600"
+                                        }`}
+                                    >
                                         {ticket.prioridad}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-foreground">{t("asignaciones.fields.fecha.cierre")}</span>
-                                    <p className="text-foreground font-medium">{ticket.fechaCierre || "—"}</p>
+                                    <span className="font-semibold text-foreground">
+                                        {t("ticket.fechaCierre")}
+                                    </span>
+                                    <p className="text-foreground font-medium">
+                                        {ticket.fechaCierre || "—"}
+                                    </p>
+                                </div>
+
+                                {/* 🔹 SLA de Resolución (tiempo y fecha límite) */}
+                                <div className="flex items-center gap-2">
+                                    <span className="font-semibold text-foreground">
+                                        {t("ticket.slaResolucion") || "SLA de resolución"}
+                                    </span>
+                                    <p className="text-foreground font-medium">
+                                        {ticket.slaResolucion ? `${ticket.slaResolucion} min` : "—"}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-semibold text-foreground">
+                                        {t("ticket.fechaLimiteResolucion") || "Fecha límite resolución"}
+                                    </span>
+                                    <p className="text-foreground font-medium">
+                                        {ticket.fechaLimiteResolucion || "—"}
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Descripción en toda la tarjeta */}
                         <div className="mt-6 border-t pt-4">
-                            <span className="font-semibold text-foreground">{t("asignaciones.fields.ticket.descripcion")}</span>
+                            <span className="font-semibold text-foreground">
+                                {t("ticket.descripcion")}
+                            </span>
                             <p className="text-foreground mt-1">{ticket.descripcion}</p>
                         </div>
                     </CardContent>
                 </Card>
 
-              {/* Historial en tabla */}
-<h2 className="text-2xl font-semibold mt-6 mb-4">{t("asignaciones.fields.ticket.historial")}</h2>
-{historial.length === 0 ? (
-  <EmptyState message="No hay historial disponible." />
-) : (
-  <div className="rounded-md border overflow-x-auto">
-    <Table>
-      <TableHeader className="bg-primary/50">
-        <TableRow>
-          <TableHead>{t("ticket.estadoAnt")}</TableHead>
-          <TableHead>{t("ticket.estadoNue")}</TableHead>
-          <TableHead>{t("asignaciones.fields.fecha.label")}</TableHead>
-          <TableHead>{t("ticket.observaciones")}</TableHead>
-          <TableHead>{t("ticket.imagen")}</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {historial.map((h) => (
-          <TableRow key={h.idHistorial}>
-            <TableCell>{h.estadoAnterior}</TableCell>
-            <TableCell>{h.estadoNuevo}</TableCell>
-            <TableCell>{h.fecha}</TableCell>
-            <TableCell>{h.observaciones || "-"}</TableCell>
-            <TableCell>
-              {h.imagenes ? (
-                h.imagenes.split(",").map((img, i) => (
-                  <img
-                    key={i}
-                    src={`${BASE_URL}/${img}`}
-                    alt="Evidencia"
-                    className="w-20 h-20 object-cover rounded-md border inline-block mr-2"
-                  />
-
-                //   <img
-                //     key={i}
-                //     src={`${BASE_URL}/${h.data.historial.imagenes}`}
-                //     alt="Evidencia"
-                //     className="w-20 h-20 object-cover rounded-md border inline-block mr-2"
-                //   />
-                ))
-              ) : (
-                <span>-</span>
-              )}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </div>
-)}
-
-
+                {/* Historial */}
+                <h2 className="text-2xl font-semibold mt-6 mb-4">
+                    {t("ticket.historial")}
+                </h2>
+                {historial.length === 0 ? (
+                    <EmptyState message="No hay historial disponible." />
+                ) : (
+                    <div className="rounded-md border overflow-x-auto">
+                        <Table>
+                            <TableHeader className="bg-primary/50">
+                                <TableRow>
+                                    <TableHead>{t("ticket.estadoAnt")}</TableHead>
+                                    <TableHead>{t("ticket.estadoNue")}</TableHead>
+                                    <TableHead>{t("ticket.fecha")}</TableHead>
+                                    <TableHead>{t("ticket.observaciones")}</TableHead>
+                                    <TableHead>{t("ticket.imagen")}</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {historial.map((h) => (
+                                    <TableRow key={h.idHistorial}>
+                                        <TableCell>{h.estadoAnterior}</TableCell>
+                                        <TableCell>{h.estadoNuevo}</TableCell>
+                                        <TableCell>{h.fecha}</TableCell>
+                                        <TableCell>{h.observaciones || "-"}</TableCell>
+                                        <TableCell>
+                                            {h.imagenes ? (
+                                                h.imagenes.split(",").map((img, i) => (
+                                                    <img
+                                                        key={i}
+                                                        src={`${BASE_URL}/${img}`}
+                                                        alt="Evidencia"
+                                                        className="w-20 h-20 object-cover rounded-md border inline-block mr-2"
+                                                    />
+                                                ))
+                                            ) : (
+                                                <span>-</span>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                )}
 
                 {/* Valoraciones */}
-                {/* Valoraciones en tabla */}
-<h2 className="text-2xl font-semibold mt-6 mb-4">{t("ticket.Valo")}</h2>
-{valoraciones.length === 0 ? (
-    <EmptyState message="No hay valoraciones disponibles." />
-) : (
-    <div className="rounded-md border overflow-x-auto">
-        <Table>
-            <TableHeader className="bg-primary/50">
-                <TableRow>
-                    <TableHead>{t("ticket.Punt")}</TableHead>
-                    <TableHead>{t("ticket.Come")}</TableHead>
-                    <TableHead>{t("asignaciones.fields.fecha.label")}</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {valoraciones.map((v, index) => (
-                    <TableRow key={index}>
-                        <TableCell>{v.puntaje}</TableCell>
-                        <TableCell>{v.comentario}</TableCell>
-                        <TableCell>{v.fecha}</TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    </div>
-)}
-
+                <h2 className="text-2xl font-semibold mt-6 mb-4">
+                    {t("ticket.Valo")}
+                </h2>
+                {valoraciones.length === 0 ? (
+                    <EmptyState message="No hay valoraciones disponibles." />
+                ) : (
+                    <div className="rounded-md border overflow-x-auto">
+                        <Table>
+                            <TableHeader className="bg-primary/50">
+                                <TableRow>
+                                    <TableHead>{t("ticket.Punt")}</TableHead>
+                                    <TableHead>{t("ticket.Come")}</TableHead>
+                                    <TableHead>{t("ticket.fecha")}</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {valoraciones.map((v, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{v.puntaje}</TableCell>
+                                        <TableCell>{v.comentario}</TableCell>
+                                        <TableCell>{v.fecha}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                )}
 
                 <Button
                     type="button"
@@ -206,7 +259,7 @@ export function DetailTicket() {
                     className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                     {t("technician.list.backButton")}
+                    {t("technician.list.backButton")}
                 </Button>
             </div>
         </div>

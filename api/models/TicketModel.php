@@ -10,11 +10,16 @@ class TicketModel
     public function all()
     {
         //Consulta sql
-        $vSql = "SELECT * FROM ticket;";
+        $vSql = "SELECT t.*, s.tiempoRespuesta AS slaRespuesta,
+                s.tiempoResolucion AS slaResolucion
+               FROM tickets t
+            JOIN Categoria c ON t.idCategoria = c.id
+            JOIN SLA s ON c.idSLA = s.id;";
         //Ejecutar la consulta
         $vResultado = $this->enlace->ExecuteSQL($vSql);
         // Retornar el objeto
         return $vResultado;
+
     }
 
     public function get($idTicket)
@@ -108,7 +113,7 @@ public function getById($idTicket){
                     WHERE id = $idTicket;";
     $vResultado = $this->enlace->ExecuteSQL($vSql);
         // Retornar el objeto
-    return $vResultado[0] ?? null;
+    return $vResultado[0];
 }
 
 public function getTicketsByUsuario($idUsuario){
@@ -140,12 +145,15 @@ public function getTicketsByUsuario($idUsuario){
 }
 
 public function getTicketPendiente(){
+    $vResultado = [];
+
     $vSql = "SELECT t.*, c.nombre as categoria, p.nombre as prioridad FROM tickets t
                     JOIN categoria c ON t.idCategoria = c.id
                     JOIN prioridadticket p ON t.prioridadId = p.id
                     WHERE t.estadoId = 1;";
     $vResultado = $this->enlace->ExecuteSQL($vSql);
-    return $vResultado ?? null;
+
+        return $vResultado;
 }
 
     public function getTicketDetalle()
@@ -315,9 +323,29 @@ $rol = $rolResultado[0]->nombreRol;
 
     public function create($objeto)
     {
+        $fechaCreacion = $objeto->fechaCreacion;
+        $idCategoria   = (int)$objeto->idCategoria;
+
+         $sqlSla = "
+        SELECT 
+            s.tiempoRespuesta,
+            s.tiempoResolucion
+        FROM Categoria c
+        JOIN SLA s ON c.idSLA = s.id
+        WHERE c.id = $idCategoria
+        LIMIT 1;
+    ";
+    $sla = $this->enlace->ExecuteSQL($sqlSla);
+
+    $tiempoRespuesta  = (int)$sla[0]->tiempoRespuesta; 
+    $tiempoResolucion = (int)$sla[0]->tiempoResolucion;  
+    
+    $fechaLimiteRespuesta  = date('Y-m-d H:i:s', strtotime("$fechaCreacion + $tiempoRespuesta MINUTE"));
+    $fechaLimiteResolucion = date('Y-m-d H:i:s', strtotime("$fechaCreacion + $tiempoResolucion MINUTE"));
+
         //Consulta sql
-        $sql = "INSERT INTO Tickets (titulo, descripcion, fechaCreacion, estadoId, prioridadId, idUsuario, idCategoria)" .
-            " Values ('$objeto->titulo','$objeto->descripcion','$objeto->fechaCreacion','$objeto->estadoId','$objeto->prioridadId',
+        $sql = "INSERT INTO Tickets (titulo, descripcion, fechaCreacion, fechaLimiteRespuesta, fechaLimiteResolucion, estadoId, prioridadId, idUsuario, idCategoria)" .
+            " Values ('$objeto->titulo','$objeto->descripcion','$objeto->fechaCreacion', '$fechaLimiteRespuesta', '$fechaLimiteResolucion','$objeto->estadoId','$objeto->prioridadId',
                     '$objeto->idUsuario','$objeto->idCategoria')";
         //Ejecutar la consulta
         $insertId = $this->enlace->executeSQL_DML_last($sql);
@@ -328,38 +356,164 @@ $rol = $rolResultado[0]->nombreRol;
 
     public function update($objeto)
     {
-        //Consulta sql
-        $sql = "Update Tickets SET titulo ='$objeto->titulo'," .
-            "descripcion ='$objeto->descripcion',fechaCreacion ='$objeto->fechaCreacion'," .
-            "idEstado='$objeto->idEstado',idPrioridad='$objeto->idPrioridad'," .
-            "idUsuario='$objeto->idUsuario',idCategoria='$objeto->idCategoria'" .
-            " Where id=$objeto->id  ";
+        $idTicket       = (int)$objeto->idTicket;
+        $idEstadoNuevo  = (int)$objeto->idEstadoNuevo;
+        $comentario     = trim($objeto->comentario ?? '');
+        $idUsuario      = (int)$objeto->idUsuario;
+        date_default_timezone_set('America/Costa_Rica');
+        $fecha = (new DateTime())->format('Y-m-d H:i:s');
 
-        //Ejecutar la consulta
-        $cResults = $this->enlace->executeSQL_DML($sql);
-        //--- Generos ---
-        //Eliminar generos asociados a la pelicula
-        $sql = "Delete from movie_genre where movie_id=$objeto->id";
-        $vResultadoD = $this->enlace->executeSQL_DML($sql); 
-        //Insertar generos
-        foreach ($objeto->genres as $item) {
-            $sql = "Insert into movie_genre(movie_id,genre_id)" .
-                " Values($objeto->id,$item)";
-            $vResultadoG = $this->enlace->executeSQL_DML($sql);
-        }
-        //--- Actores ---
-        //Eliminar actores asociados a la pelicula
-        $sql = "Delete from movie_cast where movie_id=$objeto->id";
-        $vResultadoD = $this->enlace->executeSQL_DML($sql);
-        //Crear actores
-        foreach ($objeto->actors as $item) {
-            $sql = "Insert into movie_cast(movie_id,actor_id,role)" .
-                " Values($objeto->id, $item->actor_id, '$item->role')";
-            $vResultadoA = $this->enlace->executeSQL_DML($sql);
-        }
+        $ticket = $this->getById($idTicket);
 
-        //Retornar pelicula
-        return $this->get($objeto->id);
+        $idEstadoAnterior = (int)$ticket->estadoId;
+
+        $comentarioEscapado = addslashes($comentario);
+        $sqlHist = "
+            INSERT INTO HistorialEstado 
+                (idEstadoAnterior, idEstadoNuevo, fecha, observaciones, idTicket, idUsuario)
+            VALUES
+                ($idEstadoAnterior, $idEstadoNuevo, '$fecha', '$comentarioEscapado', $idTicket, $idUsuario);
+        ";
+        $this->enlace->executeSQL_DML_last($sqlHist);
+
+        $sqlTicket = "UPDATE Tickets SET estadoId = $idEstadoNuevo WHERE id = $idTicket;";
+        $this->enlace->executeSQL_DML($sqlTicket);
+
+                $sqlNoti =  "INSERT INTO Notificacion 
+        (tipo, 
+        mensaje, 
+        fecha, 
+        idUsuario, 
+        idRemitente, 
+        leida, 
+        leidaPor,
+        leidaAt) VALUES
+        ('Actualización de Ticket', 
+        'Se actualizó el estado del ticket #' . $idTicket . ' a " . $idEstadoNuevo . "', 
+        '$fecha', 
+        $idUsuario, 
+        NULL, 
+        0, 
+        NULL, 
+        NULL);";
+
+        $this->enlace->executeSQL_DML($sqlNoti);
+
+        return $this->get($idTicket);
     }
 
+    public function asignarManual($objeto)
+{
+    try {
+        $idTicket            = $objeto->idTicket;
+        $idTecnico           = $objeto->idTecnico;
+        $justificacion       = $objeto->justificacion ?? '';
+        $idUsuarioAsignador  = $objeto->idUsuarioAsignador ?? '';
+
+        $ticket = $this->getById($idTicket);
+
+        $sqlMetodo = "SELECT id FROM MetodoAsignacion WHERE nombre = 'Manual';";
+        $metodoRes = $this->enlace->ExecuteSQL($sqlMetodo);
+        $idMetodo = (int)$metodoRes[0]->id;
+        
+
+        date_default_timezone_set('America/Costa_Rica');
+        $fecha = (new DateTime())->format('Y-m-d H:i:s');
+
+        // 3️⃣ Calcular tiempo restante
+        $tiempoRestante = "NULL";
+        if (!empty($ticket->fechaLimiteResolucion)) {
+            $limite = strtotime($ticket->fechaLimiteResolucion);
+            $ahora  = time();
+            $minRestantes = (int)(($limite - $ahora) / 60);
+            $tiempoRestante = $minRestantes;
+        }
+
+        $sqlAsign = "
+            INSERT INTO Asignacion (
+                fecha,
+                descripcion,
+                idMetodo,
+                idTicket,
+                idTecnico,
+                idRegla,
+                tiempoRestanteResolucion,
+                puntajePrioridad
+            ) VALUES (
+                '$fecha',
+                '$justificacion',
+                $idMetodo,
+                $idTicket,
+                $idTecnico,
+                NULL,
+                $tiempoRestante,
+                NULL
+            );
+        ";
+        $this->enlace->executeSQL_DML($sqlAsign);
+
+        $sqlUpdTicket = "UPDATE Tickets SET estadoId = 2 WHERE id = $idTicket;";
+        $this->enlace->executeSQL_DML($sqlUpdTicket);
+
+        $sqlUpdTec = "UPDATE Tecnicos SET cargaTrabajo = cargaTrabajo + 1 WHERE id = $idTecnico;";
+        $this->enlace->executeSQL_DML($sqlUpdTec);
+
+        $mensaje  = 'Se le ha asignado el ticket #' . $ticket->id . ': ' . $ticket->titulo;
+
+        $sqlNoti =  "INSERT INTO Notificacion 
+        (tipo, 
+        mensaje, 
+        fecha, 
+        idUsuario, 
+        idRemitente, 
+        leida, 
+        leidaPor,
+        leidaAt) VALUES
+        ('Asignación de Ticket', 
+        '$mensaje', 
+        '$fecha', 
+        $idTecnico, 
+        $idUsuarioAsignador, 
+        0, 
+        NULL, 
+        NULL);";
+
+        $this->enlace->executeSQL_DML($sqlNoti);
+
+        $sqlNoti2 =  "INSERT INTO Notificacion 
+        (tipo, 
+        mensaje, 
+        fecha, 
+        idUsuario, 
+        idRemitente, 
+        leida, 
+        leidaPor,
+        leidaAt) VALUES
+        ('Asignación de Ticket', 
+        '$mensaje', 
+        '$fecha', 
+        $idUsuarioAsignador, 
+        NULL, 
+        0, 
+        NULL, 
+        NULL);";
+
+        $this->enlace->executeSQL_DML($sqlNoti2);
+
+        return [
+            "success" => true,
+            "status"  => 200,
+            "message" => "Asignación manual realizada correctamente"
+        ];
+
+    } catch (Exception $e) {
+        handleException($e);
+        return [
+            "success" => false,
+            "status"  => 500,
+            "message" => "Error en la asignación manual",
+            "error"   => $e->getMessage()
+        ];
+    }
+}
 }

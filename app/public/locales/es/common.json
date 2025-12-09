@@ -58,6 +58,9 @@
       "loginD": "Iniciar sesión",
       "register": "Registrarse",
       "registerD": "Crear nueva cuenta"
+    },
+    "notifications": {
+      "noNotifications": "No hay notificaciones"
     }
   },
   "technician": {
@@ -249,7 +252,19 @@
     "Punt":"Puntaje",
     "Come": "Comentario",
 
+    "descripcion": "Descripción",
+      "categoria": "Categoría",
+      "prioridad": "Prioridad",
+      "titulo": "Título",
+      "historial": "Historial",
+    "fechaCreacion": "Fecha de creación",
+    "fechaCierre": "Fecha de cierre",
+    "fecha": "Fecha",
 
+    "slaRespuesta": "SLA de respuesta",              
+    "fechaLimiteRespuesta": "Fecha límite de respuesta",
+    "slaResolucion": "SLA de resolución",          
+    "fechaLimiteResolucion": "Fecha límite de resolución",
 
     "columns": {
       "titulo": "Título",
@@ -425,8 +440,153 @@
       "seguridad": "Seguridad informática",
       "otro": "Otro"
     }
+  },
+  "assignTickets": {
+  "title": "Asignar Tickets",
+
+  "columns": {
+    "ticketTitle": "Título",
+    "ticketCategory": "Categoría",
+    "ticketPriority": "Prioridad",
+    "ticketSla": "SLA",
+    "technicianName": "Nombre",
+    "technicianWorkload": "Carga de trabajo",
+    "technicianAvailability": "Disponibilidad",
+    "technicianSpecialty": "Especialidad"
+  },
+
+  "buttons": {
+    "assignManual": "Asignar manualmente",
+    "back": "Regresar"
+  },
+
+  "fields": {
+    "justificationLabel": "Justificación para la asignación manual",
+    "justificationPlaceholder": "Explique por qué asigna este ticket a este técnico..."
+  },
+
+  "messages": {
+    "noTicketsFound": "No se encontraron tickets.",
+    "errorLoadTickets": "Error al cargar tickets",
+    "errorLoadTechniciansByCategory": "Error al cargar técnicos por categoría",
+    "mustSelectPendingTicket": "Debe seleccionar un ticket en estado Pendiente.",
+    "mustSelectTechnician": "Debe seleccionar un técnico.",
+    "mustEnterJustification": "Debe ingresar una justificación para la asignación manual.",
+    "successManualAssignment": "Asignación manual completada con éxito",
+    "errorManualAssignment": "Error en la asignación manual"
   }
+},
+"maintenanceMenu": {
+  "techniciansTitle": "Listado de Técnicos",
+  "techniciansDescription": "Gestionar técnicos del sistema",
+  "categoriesTitle": "Listado de Categorías",
+  "categoriesDescription": "Categorías de tickets",
+  "ticketsTitle": "Listado de Tickets",
+  "ticketsDescription": "Ver todos los tickets",
+  "assignmentsTitle": "Asignaciones",
+  "assignmentsDescription": "Gestionar asignaciones",
+  "assignTicketsTitle": "Asignar Tickets",
+  "assignTicketsDescription": "Gestionar asignaciones de tickets"
+},
+"login": {
+  "title": "Iniciar Sesión",
+
+  "email": "Correo electrónico",
+  "emailPlaceholder": "ejemplo@correo.com",
+  "emailRequired": "El correo electrónico es obligatorio",
+  "emailInvalid": "Correo electrónico inválido",
+
+  "password": "Contraseña",
+  "passwordPlaceholder": "••••••••",
+  "passwordRequired": "La contraseña es obligatoria",
+  "submit": "Iniciar sesión",
+  "submitting": "Iniciando sesión...",
+
+  "loginSuccess": "Inicio de sesión exitoso",
+  "invalidCredentials": "Credenciales inválidas",
+  "loginError": "Error al iniciar sesión",
+  "noAccount": "¿No tienes una cuenta?",
+  "register": "Regístrate"
+},
+  "createUsuario": {
+    "title": "Crear Usuario"
+  },
+
+  "usuario": {
+    "fields": {
+      "nombre": {
+        "label": "Nombre completo",
+        "placeholder": "Ingrese nombre completo",
+        "validation": {
+          "required": "El nombre completo es obligatorio"
+        }
+      },
+      "correo": {
+        "label": "Correo electrónico",
+        "placeholder": "usuario@correo.com",
+        "validation": {
+          "required": "El correo electrónico es obligatorio",
+          "email": "Correo electrónico inválido"
+        }
+      },
+      "password": {
+        "label": "Contraseña",
+        "placeholder": "******",
+        "validation": {
+          "required": "La contraseña es obligatoria"
+        }
+      },
+      "idRol": {
+        "label": "Rol",
+        "defaultValue": "Cliente",
+        "validation": {
+          "required": "El rol es obligatorio"
+        }
+      }
+    },
+
+    "buttons": {
+      "save": "Guardar"
+    },
+
+    "errorCreate": "Error al crear el usuario"
+  },
   
+"asignacionesTickets": {
+  "title": "Asignar tickets",
+
+  "columns": {
+    "ticketTitle": "Título",
+    "ticketCategory": "Categoría",
+    "ticketPriority": "Prioridad",
+    "ticketSla": "SLA",
+    "technicianName": "Nombre",
+    "technicianWorkload": "Carga de trabajo",
+    "technicianAvailability": "Disponibilidad",
+    "technicianSpecialty": "Especialidad"
+  },
+
+  "buttons": {
+    "assignManual": "Asignar manualmente",
+    "back": "Regresar"
+  },
+
+  "fields": {
+    "justificationLabel": "Justificación de la asignación manual",
+    "justificationPlaceholder": "Explique por qué asigna este ticket a este técnico..."
+  },
+
+    "noTicketsFound": "No se encontraron tickets.",
+    "errorLoadTickets": "Error al cargar tickets",
+    "errorLoadTechniciansByCategory": "Error al cargar técnicos por categoría",
+    "mustSelectPendingTicket": "Debe seleccionar un ticket en estado Pendiente.",
+    "mustSelectTechnician": "Debe seleccionar un técnico.",
+    "mustEnterJustification": "Debe ingresar una justificación para la asignación manual.",
+    "successManualAssignment": "Asignación manual realizada correctamente",
+    "errorManualAssignment": "Error en la asignación manual"
+  
+}
+
 }
 
 

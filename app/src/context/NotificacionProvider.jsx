@@ -34,7 +34,6 @@ export function NotificacionProvider({ children }) {
 
     useEffect(() => {
         if (!user) return;
-
         NotificacionService.getByUsuario(user.idUsuario).then(res => {
             dispatch({
                 type: "SET_NOTIFICACIONES",
@@ -46,7 +45,6 @@ export function NotificacionProvider({ children }) {
     // OPCIONAL — refrescar cada 20s
     useEffect(() => {
         if (!user) return;
-
         const interval = setInterval(() => {
             NotificacionService.getByUsuario(user.idUsuario).then(res => {
                 dispatch({

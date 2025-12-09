@@ -12,18 +12,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { AlertCircle, CheckCircle2, Eye, EyeOff, Lock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-
-const schema = yup.object({
-    correo: yup.string().email("Correo inválido").required("El correo es obligatorio"),
-    contraseña: yup.string().required("La contraseña es obligatoria"),
-});
 
 export default function Login() {
     const { saveUser } = useUser();
     const navigate = useNavigate();
-
+    const { t } = useTranslation();
     const [showPassword, setShowPassword] = useState(false);
+
+const schema = yup.object({
+    correo: yup.string().email(t("login.emailInvalid")).required(t("login.emailRequired")),
+    contraseña: yup.string().required(t("login.passwordRequired")),
+});
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -37,23 +38,23 @@ export default function Login() {
 
     const onSubmit = async (data) => {
         try {
+            data.fecha = new Date(new Date().toLocaleString('en-US', {timeZone: 'America/Costa_Rica'}));
             const response = await UsuarioService.loginUser(data);
             const verU = await UsuarioService.getUsers(data);
             console.log(verU);
-            console.log("Respuesta del login:", response.data);
             if (response.data != null
                 && response.data != 'undefined'
                 && response.data.message != 'Usuario no valido'
             ) {
                 //Guardar token
                 saveUser(response.data.data);
-                toast.success("Inicio de sesión exitoso");
+                toast.success(t("login.loginSuccess"));
                 navigate("/");
             } else {
-                toast.error("Credenciales inválidas");
+                toast.error(t("login.invalidCredentials"));
             }
         } catch (error) {
-            toast.error("Error al iniciar sesión");
+            toast.error(t("login.loginError"));
             console.error(error);
         }
     };
@@ -62,18 +63,18 @@ export default function Login() {
         <div className="min-h-screen flex items-center justify-center">
             <Card className="w-full max-w-md shadow-lg border border-white/10 bg-white/10 backdrop-blur-lg text-black">
                 <CardHeader>
-                    <CardTitle className="text-center text-2xl font-bold">Iniciar Sesión</CardTitle>
+                    <CardTitle className="text-center text-2xl font-bold">{t("login.title")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="correo" className="text-black">
-                                Correo electrónico
+                                {t("login.email")}
                             </Label>
                             <Input
                                 id="correo"
                                 type="email"
-                                placeholder="ejemplo@correo.com"
+                                placeholder={t("login.emailPlaceholder")}
                                 {...register("correo")}
                                 className="text-gray-900 placeholder:text-gray-400 border border-gray-300 "
                             />
@@ -83,7 +84,7 @@ export default function Login() {
                         </div>
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="contraseña" className="text-black">
-                                Contraseña
+                                {t("login.password")}
                             </Label>
                             <div className="flex gap-2">
                             <Input
@@ -114,13 +115,13 @@ export default function Login() {
                             disabled={isSubmitting}
                             className="w-full hover:bg-primary/80 text-white font-semibold mt-2"
                         >
-                            {isSubmitting ? "Ingresando..." : "Ingresar"}
+                            {isSubmitting ? t("login.submitting") : t("login.submit")}
                         </Button>
 
                         <p className="text-sm text-center mt-4 text-gray-300">
-                            ¿No tienes cuenta?{" "}
+                            {t("login.noAccount")}{" "}
                             <a href="/usuario/create" className="text-accent underline hover:text-accent/80">
-                                Regístrate
+                                {t("login.register")}
                             </a>
                         </p>
                     </form>

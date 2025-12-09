@@ -17,12 +17,12 @@ class TicketService {
     return axios.get(`${BASE_URL}/get/${ticketId}`);
   }
 
-    getTicketsByUsuario(idUsuario) {
+  getTicketsByUsuario(idUsuario) {
     return axios.get(`${BASE_URL}/getTicketsByUsuario/${idUsuario}`);
   }
   
 getTicketPendiente() {
-    return axios.get(`${BASE_URL}/getTicketPendiente/`);
+    return axios.get(`${BASE_URL}/getTicketPendiente`);
   }
     getTicket(ticketId) {
     return axios.get(`${BASE_URL}/getById/${ticketId}`);
@@ -41,6 +41,10 @@ getTicketPendiente() {
       url: BASE_URL,
       data: JSON.stringify(ticketData)
     });
+  }
+
+  asignarManual(data) {
+    return axios.post(`${BASE_URL}/asignarManual`, JSON.stringify(data));
   }
 }
 

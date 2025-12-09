@@ -35,12 +35,13 @@ import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { EmptyState } from "../ui/custom/EmptyState";
 import { useUser } from "@/hooks/useUser";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 
 
 
 export default function TableTicket() {
-  const { user, isAuthenticated, clearUser, authorize } = useUser();
+  const { user } = useUser();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -54,7 +55,7 @@ export default function TableTicket() {
 ];
 const mostrarActualizar = (rol, estado) => {
   if (rol === "Administrador") {
-    return ["Pendiente", "Resuelto", "Cerrado"].includes(estado);
+    return ["Resuelto", "Cerrado"].includes(estado);
   }
 
   if (rol === "Técnico") {
@@ -70,30 +71,33 @@ const mostrarActualizar = (rol, estado) => {
 
 
   useEffect(() => {
+    if (!user?.id) return;
     const fetchTickets = async () => {
       try {
-        console.log("Usuario ID:", user?.id || 1);
-        const response = await TicketService.getTicketsByUsuario(user?.id);
-        console.log("Respuesta de tickets:", response);
-        const responseData = response?.data?.data || {};
-        console.log("Datos de tickets:", responseData);
-
-
-        setTickets(Array.isArray(responseData) ? responseData : []);
+        const response = await TicketService.getTicketsByUsuario(user.id);
+        const lista = response?.data?.data ?? [];
+        setTickets(lista ? lista : []);
+        if(!response.data.success){
+          toast.error(response.data.message);
+        }
       } catch (err) {
-        setError(err.message || "Error al cargar tickets");
+        if (err.response?.status === 404) {
+          setTickets([]);
+        } else {
+          setError(err.message || "Error al cargar tickets");
+        }
       } finally {
         setLoading(false);
       }
     };
     fetchTickets();
-  }, []);
+  }, [user]);
 
   if (loading) return <LoadingGrid type="grid" />;
   if (error) return <ErrorAlert title="Error" message={error} />;
-  if (tickets.length === 0)
+/*   if (tickets.length === 0)
     return <EmptyState message={t("ticket.noTicketsFound")} />;
-
+ */
   return (
     <div className="container mx-auto py-8 px-4 max-w-6xl">
       {/* Header Simple y Limpio */}
@@ -112,7 +116,7 @@ const mostrarActualizar = (rol, estado) => {
           </div>
           
           <div className="text-right">
-            <div className="text-sm text-muted-foreground">{t("ticket.noTicketsFound")}</div>
+            <div className="text-sm text-muted-foreground">{t("ticket.totalTickets")}</div> 
             <div className="text-2xl font-bold text-foreground">{tickets.length}</div>
           </div>
         </div>
@@ -154,7 +158,14 @@ const mostrarActualizar = (rol, estado) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tickets.map((ticket) => (
+            {tickets.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={ticketColumns.length} className="text-center py-6">
+                    No tienes tickets creados
+                  </TableCell>
+                </TableRow>
+              ) : (
+              tickets.map((ticket) => (
               <TableRow 
                 key={ticket.id}
                 className="hover:bg-muted/30 transition-colors duration-150"
@@ -224,7 +235,7 @@ const mostrarActualizar = (rol, estado) => {
                           variant="ghost"
                           size="sm"
                           className="h-8 w-8 rounded-lg hover:bg-primary/10"
-                          onClick={() => navigate(`/ticket/detail/${ticket.idTicket}`)}
+                          onClick={() => navigate(`/ticket/detail/${ticket.id}`)}
                         >
                           <Eye className="h-4 w-4 text-primary" />
                         </Button>
@@ -236,7 +247,8 @@ const mostrarActualizar = (rol, estado) => {
                   </TooltipProvider>
                 </TableCell>
               </TableRow>
-            ))}
+            ))
+            )}
           </TableBody>
         </Table>
       </div>

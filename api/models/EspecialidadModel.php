@@ -51,17 +51,38 @@ class EspecialidadesModel
         }
     }
 
-    public function getByCategoria($idTecnico)
+    public function getByCategoria($idCategoria)
     {
-        $tecnicoM = new TecnicoModel();
-        $idCategoria = $tecnicoM->get($idTecnico)->idCategoria;
             $vSql = "SELECT e.id, e.nombre
                      FROM Especialidad e
                      JOIN CategoriaEspecialidad ce ON e.id = ce.idEspecialidad
                      WHERE ce.idCategoria = $idCategoria;";
             return $this->enlace->ExecuteSQL($vSql);
     }
+/*     public function getTecnicoByTicket($id){
+        $ticketM = new TicketModel();
+        $categoriaS = $ticketM->getById($id)->idCategoria;
+        $especialidadM = new EspecialidadesModel();
+        $especialidades = $especialidadM->getByCategoria($categoriaS);
 
+        $vSql = "SELECT t.id AS idTecnico, u.nombre AS nombreTecnico, u.correo AS correoTecnico,
+            t.disponibilidad, t.cargaTrabajo
+            FROM Tecnicos t
+            JOIN Usuario u ON t.idUsuario = u.id
+            JOIN Tickets ti ON ti.idTecnico = t.id
+            WHERE ti.id = {$_GET['idTicket']};";
+        $vResultado = $this->enlace->ExecuteSQL ( $vSql);
+        return $vResultado ? $vResultado[0] : null;
+    } */
+
+    public function getByTicket($idTicket)
+    {
+        $ticketM = new TicketModel();
+        $categoriaS = $ticketM->getById($idTicket)->idCategoria;
+        $especialidadM = new EspecialidadesModel();
+        $especialidades = $especialidadM->getByCategoria($categoriaS);
+        return $especialidades;
+    }
     // Crear una nueva especialidad
     public function create($objeto)
     {

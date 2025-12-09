@@ -10,7 +10,7 @@ class TecnicoModel
         try {
             $especialidadesM = new EspecialidadesModel();
 
-			$vSql = "SELECT *
+			$vSql = "SELECT t.*, u.nombre, u.correo, u.ultimoLogin, u.idRol
             FROM Tecnicos t
             JOIN Usuario u ON t.idUsuario = u.id;";
 
@@ -40,6 +40,37 @@ class TecnicoModel
 		return $vResultado;
     }
 
+    public function getByCategoria($idCategoria)
+{
+    try {
+        $especialidadesM = new EspecialidadesModel();
+
+        $vSql = "SELECT DISTINCT 
+                    t.*, 
+                    u.*
+                 FROM Tecnicos t
+                 JOIN Usuario u              ON t.idUsuario = u.id
+                 JOIN tecnicoespecialidad te ON te.idTecnico = t.id
+                 JOIN CategoriaEspecialidad ce ON ce.idEspecialidad = te.idEspecialidad
+                 WHERE ce.idCategoria = $idCategoria;";
+
+        $vResultado = $this->enlace->ExecuteSQL($vSql);
+
+        // Adjuntar las especialidades de cada técnico, igual que en all()
+        if (!empty($vResultado) && is_array($vResultado)) {
+            for ($i = 0; $i < count($vResultado); $i++) {
+                $especialidades = $especialidadesM->getByTecnico($vResultado[$i]->id);
+                $vResultado[$i]->especialidades = $especialidades;
+            }
+        }
+
+        return $vResultado;
+    } catch (Exception $e) {
+        handleException($e);
+    }
+}
+
+
     public function listadoDeTecnicos()
     {
         try {
@@ -55,7 +86,7 @@ class TecnicoModel
             handleException($e);
         }
     }
-    
+
     public function get($id)
 {
     try {

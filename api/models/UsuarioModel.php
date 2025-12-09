@@ -127,6 +127,10 @@ public function createUsuario($objeto)
 
     public function login($objeto)
 	{
+        date_default_timezone_set('America/Costa_Rica');
+        $fechaA = (new DateTime())->format('Y-m-d H:i:s');
+
+
 		$vSql = "SELECT * from Usuario where correo='$objeto->correo'";
 
 		//Ejecutar la consulta
@@ -137,6 +141,7 @@ public function createUsuario($objeto)
 				$usuario = $this->get($user->id);
 				if (!empty($usuario)) {
 					// Datos para el token JWT
+
 					$data = [
 						'id' => $usuario->id,
                         'nombre' => $usuario->nombre,
@@ -146,17 +151,38 @@ public function createUsuario($objeto)
 						'exp' => time() + 3600 // Expiración en 1 hora
 					];
 
+        $sqlTicket = "UPDATE usuario SET ultimoLogin = '$fechaA' WHERE id = $usuario->id;";
+        $this->enlace->executeSQL_DML($sqlTicket);
+
+        $sqlNoti =  "INSERT INTO Notificacion 
+        (tipo, 
+        mensaje, 
+        fecha, 
+        idUsuario, 
+        idRemitente, 
+        leida, 
+        leidaPor,
+        leidaAt) VALUES
+        ('Inicio de sesión', 
+        'Se ha detectado un inicio de sesión en su cuenta', 
+        '$fechaA', 
+        $usuario->id, 
+        NULL, 
+        0, 
+        NULL, 
+        NULL)";
+
+        $this->enlace->executeSQL_DML($sqlNoti);
 					// Generar el token JWT
 					$jwt_token = JWT::encode($data, config::get('SECRET_KEY'), 'HS256');
 
 					// Enviar el token como respuesta
 					return $jwt_token;
+                    
 				}
 			}
 		} else {
 			return false;
 		}
 	}
-
-
 }

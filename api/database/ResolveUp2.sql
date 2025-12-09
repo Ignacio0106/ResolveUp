@@ -206,23 +206,27 @@ CREATE TABLE Valoracion (
 	FOREIGN KEY (idTicket) REFERENCES Tickets(id),
 	FOREIGN KEY (idUsuario) REFERENCES Usuario(id)
 );
-
+ 
+-- ================= NOTIFICACIONES =================
+CREATE TABLE EstadoNotificacion (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	descripcion VARCHAR(50) NOT NULL
+);
  
 CREATE TABLE Notificacion (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	tipo VARCHAR(50),
 	mensaje TEXT,
 	fecha DATETIME NOT NULL,
+	idEstado INT NOT NULL DEFAULT 1,
 	idUsuario INT,
 	idRemitente INT,
-    leida TINYINT(1) DEFAULT 0,
-    leidaPor INT NULL,
-    leidaAt DATETIME NULL,
+	FOREIGN KEY (idEstado) REFERENCES EstadoNotificacion(id),
 	FOREIGN KEY (idUsuario) REFERENCES Usuario(id),
 	FOREIGN KEY (idRemitente) REFERENCES Usuario(id)
 );
  
-
+ 
  
 -- ================= INSERTS =================
 
@@ -241,7 +245,9 @@ INSERT INTO EstadoTicket (nombre) VALUES
 ('En Proceso'), 
 ('Resuelto'), 
 ('Cerrado');
-
+SELECT t.*, e.nombre as estado, u.nombre as usuarioSolicitante FROM tickets t
+                    JOIN estadoTicket e ON t.estadoId = e.id
+                    JOIN Usuario u ON t.idUsuario = u.id;
 -- ================= INSERTS PRIORIDAD =================
 INSERT INTO PrioridadTicket (nombre, peso) VALUES 
 ('Alta', 3), 
@@ -261,7 +267,11 @@ INSERT INTO PuntajeValoracion (descripcion) VALUES
 ('Satisfactorio'), 
 ('Excelente');
 
-
+-- ================= INSERTS ESTADO NOTIFICACIÓN =================
+INSERT INTO EstadoNotificacion (descripcion) VALUES 
+('Pendiente'), 
+('Enviado'), 
+('Leído');
 
 -- ================= INSERTS SLA =================
 INSERT INTO SLA (tiempoRespuesta, tiempoResolucion) VALUES
@@ -309,20 +319,62 @@ INSERT INTO CategoriaEtiqueta (idCategoria, idEtiqueta) VALUES
 (3, 9), (3, 10), (3, 11), (3, 12),
 -- Seguridad informática
 (4, 13), (4, 14), (4, 15);
-
+SELECT *
+            FROM Tecnicos t
+            JOIN Usuario u ON t.idUsuario = u.id
+            select * from tickets
+            select * from tecnicos
+            select * from tecnicoespecialidad
+            select * from categoriaespecialidad
+            SELECT * FROM tickets
+                    WHERE id = 1
+			
+            SELECT *
+            FROM Tecnicos t
+            JOIN Usuario u ON t.idUsuario = u.id;
+            
+            SELECT t.id AS idTecnico, u.nombre AS nombreTecnico, u.correo AS correoTecnico,
+            t.disponibilidad, t.cargaTrabajo
+            FROM Tecnicos t
+            JOIN Usuario u ON t.idUsuario = u.id
+            JOIN TecnicoEspecialidad te ON t.id = te.idTecnico
+            WHERE te.idEspecialidad = 1;
+                    
+            SELECT e.id, e.nombre
+                     FROM Especialidad e
+                     JOIN CategoriaEspecialidad ce ON e.id = ce.idEspecialidad
+                     WHERE ce.idCategoria = 1;
+            
+            select * from sla
+            SELECT t.*, u.*, te.*
+            FROM Tecnicos t
+            JOIN Usuario u ON t.idUsuario = u.id
+            JOIN tecnicoespecialidad te ON te.idTecnico = t.id;
+            
+            SELECT t.*
+            FROM Tecnicos t
+            JOIN Tickets ti ON t. = u.id;
+SELECT e.id, e.nombre
+                     FROM Especialidad e
+                     JOIN tecnicoespecialidad te ON e.id = te.idEspecialidad
+                     WHERE te.idTecnico = 14;
+                     
+select * from 	;
 -- ================= INSERTS USUARIOS =================
 INSERT INTO Usuario (nombre, correo, contraseña, idRol) VALUES
-('Juan Admin', 'juan.admin@email.com', '12345678', 1),
-('María Técnico', 'maria.tecnico@email.com', '1234', 2),
-('Luis Técnico', 'luis.tecnico@email.com', '1234', 2),
-('Carlos Cliente', 'carlos.cliente@email.com', '1234', 3),
-('Marcos Pérez', 'marcos.perez@email.com', '1234', 2),
-('Laura Gómez', 'laura.gomez@email.com', '1234', 2),
-('Javier Torres', 'javier.torres@email.com', '1234', 2),
-('Camila Rojas', 'camila.rojas@email.com', '1234', 2),
-('Fernando Castillo', 'fernando.castillo@email.com', '1234', 2),
-('Isabella Fernández', 'isabella.fernandez@email.com', '1234', 2);
-
+('Admin', 'juan.admin@email.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 1),
+('María Técnico', 'maria.tecnico@email.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 2),
+('Luis Técnico', 'luis.tecnico@email.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 2),
+('Carlos Cliente', 'carlos.cliente@email.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 3),
+('Marcos Pérez', 'marcos.perez@email.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 2),
+('Laura Gómez', 'laura.gomez@email.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 2),
+('Javier Torres', 'javier.torres@email.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 2),
+('Camila Rojas', 'camila.rojas@email.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 2),
+('Fernando Castillo', 'fernando.castillo@email.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 2),
+('Isabella Fernández', 'isabella.fernandez@email.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 2);
+select * from asignacion 
+SELECT * FROM tickets
+                    WHERE idUsuario = 1
 -- ================= INSERTS TÉCNICOS =================
 INSERT INTO Tecnicos (idUsuario, disponibilidad, cargaTrabajo) VALUES
 (2, 1, 0), -- María
@@ -376,53 +428,15 @@ INSERT INTO TecnicoEspecialidad (idTecnico, idEspecialidad) VALUES
 (8, 3), -- Técnico en reparación de equipos
 (8, 2); -- Administración de sistemas
 
-INSERT INTO Notificacion (tipo, mensaje, fecha, idUsuario, idRemitente, leida, leidaPor, leidaAt) VALUES
-('Asignación de Ticket', 'Se le ha asignado el ticket #1: Problema con Aula Virtual', NOW(), 2, 1, 0, NULL, NULL),
-('Asignación de Ticket', 'Se le ha asignado el ticket #2: Problema con Usuarios', NOW(), 3, 1, 0, NULL, NULL),
-('Cambio de estado', 'El ticket #3: Laptop no enciende ha pasado a En Proceso', NOW(), 5, 1, 0, NULL, NULL),
-('Comentario', 'El usuario Carlos Cliente comentó en el ticket #4: Wifi intermitente', NOW(), 6, 4, 0, NULL, NULL),
-('Asignación de Ticket', 'Se le ha asignado el ticket #5: Antivirus desactualizado', NOW(), 7, 1, 0, NULL, NULL),
-('Recordatorio', 'El ticket #6: Correo no funciona está próximo a su fecha límite', NOW(), 3, NULL, 0, NULL, NULL),
-('Aviso', 'Se ha cerrado el ticket #7: Monitor no responde', NOW(), 5, NULL, 0, NULL, NULL),
-('Asignación de Ticket', 'Se le ha asignado el ticket #8: VPN no conecta', NOW(), 6, 1, 0, NULL, NULL),
-('Notificación general', 'Se realizará mantenimiento en el sistema este viernes', NOW(), 2, NULL, 0, NULL, NULL),
-('Comentario', 'El técnico Marcos Pérez agregó un comentario al ticket #10: Proyector falla', NOW(), 5, 3, 0, NULL, NULL);
 
 
-INSERT INTO Usuario (nombre, correo, contraseña, idRol) VALUES
-('Admin', 'juan.admin@email2.com', '$2y$10$scI82uL6SHKqI.YV6yimjeFKEtMWySRiUc02lBVZ35AjWVxPTzQj6', 1);
-
-
-INSERT INTO ReglasAutotriage (
-    idCategoria,
-    idPrioridad,
-    idEspecialidad,
-    pesoCargaTecnico,
-    ordenPrioridad,
-    descripcion,
-    activo
-)
-VALUES
-(1, 1, NULL, 10, 1, 'Alta prioridad en categoría 1', 1),
-(1, 2, NULL, 8, 2, 'Prioridad media en categoría 1', 1),
-(2, 1, NULL, 9, 1, 'Alta prioridad en categoría 2', 1);
-
-INSERT INTO ReglasAutotriage (idCategoria, idPrioridad, idEspecialidad, pesoCargaTecnico, ordenPrioridad, descripcion, activo)
-VALUES
-(4, 1, NULL, 10, 1, 'Alta prioridad en categoría 4', 1),
-(4, 2, NULL, 8, 2, 'Media prioridad en categoría 4', 1),
-(4, 3, NULL, 5, 3, 'Baja prioridad en categoría 4', 1);
-
-
+ 
 -- ================= TRIGGERS   =================
  
- SHOW CREATE TABLE reglasautotriage;
-
+ 
 DELIMITER $$
 
-/* ============================================================
-   1. BEFORE INSERT - Calcular fechas SLA
-   ============================================================ */
+-- 1. Calcular fechas SLA al crear ticket
 CREATE TRIGGER trg_tickets_before_insert
 BEFORE INSERT ON Tickets
 FOR EACH ROW
@@ -437,148 +451,79 @@ BEGIN
         JOIN SLA s ON c.idSLA = s.id
         WHERE c.id = NEW.idCategoria;
 
-        SET NEW.fechaLimiteRespuesta =
-            DATE_ADD(NEW.fechaCreacion, INTERVAL resp MINUTE);
-
-        SET NEW.fechaLimiteResolucion =
-            DATE_ADD(NEW.fechaCreacion, INTERVAL reso MINUTE);
+        SET NEW.fechaLimiteRespuesta = DATE_ADD(NEW.fechaCreacion, INTERVAL resp MINUTE);
+        SET NEW.fechaLimiteResolucion = DATE_ADD(NEW.fechaCreacion, INTERVAL reso MINUTE);
     END IF;
 END$$
 
-
-
-/* ============================================================
-   2. BEFORE UPDATE - Cálculo SLA + Historial
-   ============================================================ */
+-- 2. Calcular cumplimiento SLA al cerrar ticket y registrar historial
 CREATE TRIGGER trg_tickets_before_update
 BEFORE UPDATE ON Tickets
 FOR EACH ROW
 BEGIN
-    DECLARE diff INT;
-    DECLARE cumpleResp TINYINT;
-    DECLARE cumpleReso TINYINT;
+    DECLARE diff INT DEFAULT 0;
+    DECLARE cumpleResp TINYINT DEFAULT 0;
+    DECLARE cumpleReso TINYINT DEFAULT 0;
 
     IF OLD.fechaCierre IS NULL AND NEW.fechaCierre IS NOT NULL THEN
-        
         SET diff = TIMESTAMPDIFF(DAY, NEW.fechaCreacion, NEW.fechaCierre);
-        SET NEW.diasResolucion = diff;
-
         SET cumpleResp = IF(NEW.fechaLimiteRespuesta >= NEW.fechaCierre, 1, 0);
-        SET NEW.cumplimientoRespuesta = cumpleResp;
-
         SET cumpleReso = IF(NEW.fechaLimiteResolucion >= NEW.fechaCierre, 1, 0);
+
+        SET NEW.diasResolucion = diff;
+        SET NEW.cumplimientoRespuesta = cumpleResp;
         SET NEW.cumplimientoResolucion = cumpleReso;
     END IF;
 
-    IF OLD.estadoId <> NEW.estadoId THEN
+    -- Registrar historial si cambió el estado
+    IF OLD.estadoId != NEW.estadoId THEN
         INSERT INTO HistorialEstado(idEstadoAnterior, idEstadoNuevo, fecha, idTicket, idUsuario)
         VALUES (OLD.estadoId, NEW.estadoId, NOW(), NEW.id, NULL);
     END IF;
-
 END$$
 
-
-
-/* ============================================================
-   3. AFTER INSERT - Asignación automática / manual
-   ============================================================ */
+-- 3. AFTER INSERT en Tickets: crear asignación automática
 CREATE TRIGGER trg_tickets_after_insert_asignacion
 AFTER INSERT ON Tickets
 FOR EACH ROW
 BEGIN
     DECLARE tecnicoId INT DEFAULT NULL;
-    DECLARE tiempoRest INT;
-    DECLARE puntaje INT;
-    DECLARE regla INT DEFAULT NULL;
-    DECLARE metodo INT;
 
-    SET tiempoRest = TIMESTAMPDIFF(MINUTE, NOW(), NEW.fechaLimiteResolucion);
-    SET puntaje = (NEW.prioridadId * 1000) - tiempoRest;
+    -- Buscar primer técnico disponible
+    SELECT id INTO tecnicoId
+    FROM Tecnicos
+    WHERE cargaTrabajo < 5
+    ORDER BY cargaTrabajo ASC, id ASC
+    LIMIT 1;
 
-    /* ============================================================
-       🚀 REGLA MODIFICADA:
-       Prioridad 2 y 3 → AUTOMÁTICA (mayoría)
-       Prioridad 1 → MANUAL (pocos)
-       ============================================================ */
-    IF NEW.prioridadId >= 2 THEN
-        SET regla = 1;  -- Regla automática
-        SET metodo = 2; -- Automático
-
-        SELECT id
-        INTO tecnicoId
-        FROM Tecnicos
-        WHERE cargaTrabajo < 5
-        ORDER BY cargaTrabajo ASC, id ASC
-        LIMIT 1;
-
-    ELSE
-        SET regla = 2;  -- Regla manual
-        SET metodo = 1; -- Manual
+    -- Insertar asignación si hay técnico disponible
+    IF tecnicoId IS NOT NULL THEN
+        INSERT INTO Asignacion(fecha, descripcion, idMetodo, idTicket, idTecnico)
+        VALUES (NOW(), 'Asignación automática', 2, NEW.id, tecnicoId);
     END IF;
-
-    INSERT INTO Asignacion(
-        fecha,
-        descripcion,
-        idMetodo,
-        idRegla,
-        tiempoRestanteResolucion,
-        puntajePrioridad,
-        idTicket,
-        idTecnico
-    )
-    VALUES(
-        NOW(),
-        IF(metodo = 2, 'Asignación automática', 'Pendiente asignación manual'),
-        metodo,
-        regla,
-        tiempoRest,
-        puntaje,
-        NEW.id,
-        tecnicoId
-    );
-
 END$$
 
-
-
-/* ============================================================
-   4. AFTER INSERT en Asignacion - Actualizar carga + Notificación
-   ============================================================ */
+-- 4. AFTER INSERT en Asignacion: actualizar carga y crear notificación
 CREATE TRIGGER trg_asignacion_after_insert
 AFTER INSERT ON Asignacion
 FOR EACH ROW
 BEGIN
-    DECLARE usuarioTecnico INT;
+    DECLARE usuarioTecnico INT DEFAULT NULL;
 
     IF NEW.idTecnico IS NOT NULL THEN
-        
+        -- Actualizar carga del técnico
         UPDATE Tecnicos
         SET cargaTrabajo = (SELECT COUNT(*) FROM Asignacion WHERE idTecnico = NEW.idTecnico)
         WHERE id = NEW.idTecnico;
 
-        SELECT idUsuario INTO usuarioTecnico
-        FROM Tecnicos
-        WHERE id = NEW.idTecnico
-        LIMIT 1;
-
-        INSERT INTO Notificacion(tipo, mensaje, fecha, idUsuario, idRemitente)
-        VALUES (
-            'Asignación de Ticket',
-            CONCAT('Se le asignó el ticket ', NEW.idTicket),
-            NOW(),
-            usuarioTecnico,
-            NULL
-        );
-
+        -- Crear notificación
+        SELECT idUsuario INTO usuarioTecnico FROM Tecnicos WHERE id = NEW.idTecnico LIMIT 1;
+        INSERT INTO Notificacion(tipo, mensaje, fecha, idEstado, idUsuario, idRemitente)
+        VALUES ('Asignación de Ticket', CONCAT('Se le ha asignado el ticket: ', NEW.idTicket), NOW(), 1, usuarioTecnico, NULL);
     END IF;
-
 END$$
 
-
-
-/* ============================================================
-   5. AFTER DELETE - Recalcular carga
-   ============================================================ */
+-- 5. AFTER DELETE en Asignacion: actualizar carga del técnico
 CREATE TRIGGER trg_asignacion_after_delete
 AFTER DELETE ON Asignacion
 FOR EACH ROW
@@ -590,11 +535,7 @@ BEGIN
     END IF;
 END$$
 
-
-
-/* ============================================================
-   6. AFTER UPDATE - Recalcular cargas si cambia técnico
-   ============================================================ */
+-- 6. AFTER UPDATE en Asignacion: recalcular carga de técnicos si cambia idTecnico
 CREATE TRIGGER trg_asignacion_after_update
 AFTER UPDATE ON Asignacion
 FOR EACH ROW
@@ -610,14 +551,9 @@ BEGIN
         SET cargaTrabajo = (SELECT COUNT(*) FROM Asignacion WHERE idTecnico = NEW.idTecnico)
         WHERE id = NEW.idTecnico;
     END IF;
-
 END$$
 
-
-
-/* ============================================================
-   7. BEFORE UPDATE en Técnicos - Evitar carga negativa
-   ============================================================ */
+-- 7. BEFORE UPDATE en Tecnicos: evitar carga negativa
 CREATE TRIGGER trg_tecnicos_before_update
 BEFORE UPDATE ON Tecnicos
 FOR EACH ROW
@@ -629,36 +565,53 @@ END$$
 
 DELIMITER ;
 
+DELIMITER $$
 
-SELECT * FROM reglasautotriage;
+CREATE TRIGGER trg_historial_ticket_creado
+AFTER INSERT ON Tickets
+FOR EACH ROW
+BEGIN
+    INSERT INTO HistorialEstado (
+        idEstadoAnterior,
+        idEstadoNuevo,
+        fecha,
+        idTicket,
+        idUsuario,
+        observaciones
+    ) VALUES (
+        NEW.estadoId,     -- ← No permite NULL
+        NEW.estadoId,     -- ← Mismo estado para el registro inicial
+        NOW(),
+        NEW.id,
+        NEW.idUsuario,
+        'Ticket creado'
+    );
+END$$
 
+DELIMITER ;
 
--- ================= INSERTS DE NOTIFICACIONES =================
-INSERT INTO Notificacion (tipo, mensaje, fecha, idUsuario, idRemitente, leida) VALUES
-('Asignación de Ticket', 'Se le ha asignado el ticket #1: Problema con Aula Virtual', NOW(), 2, 1, 0),
-('Asignación de Ticket', 'Se le ha asignado el ticket #2: Problema con Usuarios', NOW(), 3, 1, 0),
-('Cambio de estado', 'El ticket #3: Laptop no enciende ha pasado a En Proceso', NOW(), 5, 1, 0),
-('Comentario', 'El usuario Carlos Cliente comentó en el ticket #4: Wifi intermitente', NOW(), 6, 4, 0),
-('Asignación de Ticket', 'Se le ha asignado el ticket #5: Antivirus desactualizado', NOW(), 7, 1, 0),
-('Recordatorio', 'El ticket #6: Correo no funciona está próximo a su fecha límite', NOW(), 3, NULL, 0),
-('Aviso', 'Se ha cerrado el ticket #7: Monitor no responde', NOW(), 5, NULL, 0),
-('Asignación de Ticket', 'Se le ha asignado el ticket #8: VPN no conecta', NOW(), 6, 1, 0),
-('Notificación general', 'Se realizará mantenimiento en el sistema este viernes', NOW(), 2, NULL, 0),
-('Comentario', 'El técnico Marcos Pérez agregó un comentario al ticket #10: Proyector falla', NOW(), 5, 3, 0);
 -- ================= INSERTS TICKETS =================
 INSERT INTO Tickets (titulo, descripcion, fechaCreacion, estadoId, prioridadId, idUsuario, idCategoria)
 VALUES
 ('Problema con Aula Virtual', 'No puedo ingresar al aula virtual', NOW(), 1, 1, 4, 1),
-('Problema con Usuarios', 'No puedo agregar nuevos usuarios al sistema', NOW(), 1, 2, 4, 1),
-('Laptop no enciende', 'La laptop se apaga sola al encender', NOW(), 1, 2, 4, 2),
-('Wifi intermitente', 'Se cae la conexión cada 10 minutos', NOW(), 1, 2, 4, 3),
-('Antivirus desactualizado', 'El antivirus muestra errores de actualización', NOW(), 1, 1, 4, 4),
+('Problema con Usuarios', 'No puedo agregar nuevos usuarios al sistema', NOW(), 2, 2, 4, 1),
+('Laptop no enciende', 'La laptop se apaga sola al encender', NOW(), 3, 2, 4, 2),
+('Wifi intermitente', 'Se cae la conexión cada 10 minutos', NOW(), 4, 2, 4, 3),
+('Antivirus desactualizado', 'El antivirus muestra errores de actualización', NOW(), 5, 1, 4, 4),
 ('Correo no funciona', 'No puedo enviar ni recibir correos', NOW(), 1, 2, 4, 1),
-('Monitor no responde', 'El monitor queda en negro al encender el PC', NOW(), 1, 2, 4, 2),
-('VPN no conecta', 'No se puede establecer conexión VPN desde casa', NOW(), 1, 2, 4, 3),
-('Acceso no autorizado', 'Se detectó acceso no autorizado en la red', NOW(), 1, 1, 4, 4),
-('Proyector falla', 'El proyector no enciende en la sala de reuniones', NOW(), 1, 2, 4, 2),
+('Monitor no responde', 'El monitor queda en negro al encender el PC', NOW(), 2, 2, 4, 2),
+('VPN no conecta', 'No se puede establecer conexión VPN desde casa', NOW(), 3, 2, 4, 3),
+('Acceso no autorizado', 'Se detectó acceso no autorizado en la red', NOW(), 4, 1, 4, 4),
+('Proyector falla', 'El proyector no enciende en la sala de reuniones', NOW(), 5, 2, 4, 2),
 ('Problema con Aula Virtual', 'No puedo ingresar al aula virtual', NOW(), 1, 2, 4, 1);
+select * from tickets
+select * from categoria
+select * from sla
+select * from prioridadticket
+SELECT t.*, c.nombre as categoria, p.nombre as prioridad FROM tickets t
+                    JOIN categoria c ON t.idCategoria = c.id
+                    JOIN prioridadticket p ON t.prioridadId = p.id
+                    WHERE t.estadoId = 1;
 
 -- ================= INSERTS HISTORIAL =================
 INSERT INTO HistorialEstado (idEstadoAnterior, idEstadoNuevo, fecha, idTicket, idUsuario, observaciones)
@@ -705,18 +658,6 @@ VALUES
 ('Acceso_no_autorizado.webp', NOW(), 8, 8),
 ('Proyector_falla.webp', NOW(), 9, 9),
 ('Problema_con_Aula_Virtual.jpg', NOW(), 11, 11);
-
-select * from asignacion;
-
-INSERT INTO Tickets (
-    titulo, descripcion, fechaCreacion, estadoId, prioridadId, idUsuario, idCategoria
-) VALUES
-
-('Ticket Automático 3', 'Problema de acceso remoto', NOW(), 1, 3, 4, 4);
-
-
-
-
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

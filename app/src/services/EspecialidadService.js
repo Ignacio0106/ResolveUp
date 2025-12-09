@@ -14,6 +14,10 @@ class EspecialidadesService {
  getByCategoria(idCategoria) {
     return axios.get(`${BASE_URL}getByCategoria/${idCategoria}`);
   }
+
+  getByTicket(ticketId) {
+    return axios.get(`${BASE_URL}getByTicket/${ticketId}`);
+  }
   
 create(data) {
   return axios.post(`${BASE_URL}create`, data);

@@ -152,4 +152,21 @@ class ticket
             handleException($e);
         }
     }
+
+    public function asignarManual()
+    {
+        $response = new Response();
+        try {
+            $request   = new Request();
+            $inputJSON = $request->getJSON();
+
+            $ticketM = new TicketModel();
+            $result  = $ticketM->asignarManual($inputJSON);
+
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+        }
+    }
 }

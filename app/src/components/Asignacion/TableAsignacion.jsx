@@ -97,8 +97,8 @@ function iconos(item){
 }
 
 export function TableAsignacion() {
-    const { user, isAuthenticated, clearUser, authorize } = useUser();
-  const { t } = useTranslation();
+    const { user } = useUser();
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [asignacion, setAsignacion] = useState(null);
     const [error, setError] = useState(null);
@@ -172,15 +172,21 @@ function cargarTabla(asignacion, semana){
     useEffect(() => {
         const fetchData = async () => {
             try {   
-                const response = await AsignacionService.getAsignacionesByUsuario(1);
-                //console.log(response.data);
+                if(!user?.id) return;
+                console.log("Usuario en asignacion", user);
+                const response = await AsignacionService.getAsignacionesByUsuario(user?.id);
+                console.log("Esto que es", response);
                 if (response.data.success) {
-                    setAsignacion(response.data.data); // guardamos directamente el objeto de asignación
+                    setAsignacion(response.data.data); 
                 } else {
                     setError(response.data.message);
                 }
             } catch (err) {       
-                if (err.name !== "AbortError") setError(err.message);
+                if(err.response?.status === 404) {
+                    setAsignacion([]);
+                } else {
+                    setError(err.message || "Error al cargar asignación");
+                }
             } finally {
                 setLoading(false);
             }

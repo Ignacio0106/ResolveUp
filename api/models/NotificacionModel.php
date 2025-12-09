@@ -8,12 +8,24 @@ class NotificacionModel
         $this->enlace = new MySqlConnect();
     }
 
+    public function crearNotificacionLogin($idUsuario)
+    {
+        $tipo = "login";
+        $mensaje = "Se ha iniciado sesión en su cuenta.";
+        
+        $sql = "INSERT INTO Notificacion
+                (tipo, mensaje, fecha, idEstado, idUsuario, idRemitente, leida, leidaPor, leidaAt)
+                VALUES
+                ('$tipo', '$mensaje', NOW(), 1, $idUsuario, $idUsuario, 0, NULL, NULL)";
+
+        return $this->enlace->executeSQL_DML($sql);
+    }
+
     // ====================================================
     // Obtener TODAS las notificaciones de un usuario
     // ====================================================
     public function allByUser($idUsuario)
     {
-        try{
         $sql = "SELECT 
     n.id,
     n.tipo,
@@ -29,17 +41,8 @@ WHERE n.idUsuario = $idUsuario
 ORDER BY  n.fecha DESC;";
 
         return $this->enlace->ExecuteSQL($sql);
-        if (!is_array($res)) {
-            return [];
-        }
-
-        return $res;
-
-    } catch (\Throwable $th) {
-        error_log("Error en allByUser(): " . $th->getMessage());
-        return [];
     }
-    }
+    
 
     // ====================================================
     // Ver solo las NO LEÍDAS

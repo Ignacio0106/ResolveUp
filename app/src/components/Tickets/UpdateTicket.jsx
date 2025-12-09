@@ -26,20 +26,20 @@ import EtiquetaService from "@/services/EtiquetaService";
 import { CustomSelect } from "../ui/custom/custom-select";
 import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
 import { CustomInputField } from "../ui/custom/custom-input-field";
+import { useUser } from "@/hooks/useUser";
+import ImageService from "@/services/ImageService";
 
 
 
 export function UpdateTicket() {
+    const { user } = useUser();
     const navigate = useNavigate();
     const { id } = useParams();
     const BASE_URL = import.meta.env.VITE_BASE_URL + 'uploads';
     const [ticket, setTicket] = useState(null);
 
-  const [dataPrioridad, setDataPrioridad] = useState([]);
-  const [dataUsuario, setDataUsuario] = useState([]);
-  const [dataEtiqueta, setDataEtiqueta] = useState([]);
   const [dataEstado, setDataEstado] = useState([]);
-  const [dataCategoria, setDataCategoria] = useState([]);
+
   const [file, setFile] = useState(null);
   const [fileURL, setFileURL] = useState(null);
   const [error, setError] = useState("");
@@ -80,20 +80,14 @@ export function UpdateTicket() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const prioridadRes = await PrioridadService.getAll();
-                const etiquetaRes = await EtiquetaService.getAll();
-                const usuarioRes = await UsuarioService.getByTicket(id);
                 const estadoRes = await EstadoService.getAll();
-                const categoriaRes = await CategoriasService.getCategoriaByEtiqueta(1);
                 const ticketRes = await TicketService.getTicket(id);
                 console.log("Respuesta del ticket:", ticketRes);
                 // Si la petición es exitosa, se guardan los datos
-                setDataPrioridad(prioridadRes.data.data || []);
-                setDataEtiqueta(etiquetaRes.data.data || []);
-                setDataUsuario(usuarioRes.data.data || []);
+
                 console.log("Data estado:", estadoRes.data.data || []);
                 setDataEstado(estadoRes.data.data || []);
-                setDataCategoria(categoriaRes.data.data || []);
+
                 
                 if (ticketRes.data) {
                     const ticketData = ticketRes.data.data;
@@ -102,20 +96,17 @@ export function UpdateTicket() {
                         titulo: ticketData.titulo,
                         descripcion: ticketData.descripcion,
                         fechaCreacion: ticketData.fechaCreacion,
-                        prioridad: ticketData.prioridadId,
                         estado: ticketData.estadoId,
                         usuario: ticketData.usuarioId,
                         etiquetas: ticketData.etiquetaId,
-                        categoria: ticketData.categoriaId,
                     });
                     setTicket(ticketData);
-                    console.log("Estado ID del ticket:", ticketData.estadoId);
                     switch (ticketData.estadoId) {
                         case "1":
                             setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Pendiente')));
                             break;
                         case "2":
-                            setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Asignado') ||estado.nombre.includes('En Progreso')));
+                            setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Asignado') ||estado.nombre.includes('Resuelto')));
                             break;
                         case "3":
                             setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('En Proceso') || estado.nombre.includes('Resuelto')));
@@ -140,31 +131,39 @@ export function UpdateTicket() {
     }, [id, reset]);
 
     const onSubmit = async (dataForm) => {
-      if (!file) {
-      toast.error("Debes seleccionar una imagen para la película");
-      return;
-    }
     try {
       if (ticketSchema.isValid()) {
-        //Verificar datos del formulario
-        console.log(dataForm)
-        //Crear pelicula en el API
-        const response = await TicketService.updateTicket(id, dataForm);
-        if (response.data) {
-          //Notificación de creación
-          toast.success(`Ticket actualizado #${response.data.id} - ${response.data.titulo}`, {
-            duration: 4000,
-            position: "top-center",
-          });
-          //Redireccionar al listado del mantenimiento
-          navigate("/ticket/table");
-        } else if (response.error) {
-          setError(response.error);
-        }
-      }
+  
+        const rutaImagen = file.name; 
+
+      const datos = {
+        idTicket: Number(id),
+        idEstadoNuevo: Number(dataForm.estado),
+        comentario: dataForm.comentario,
+        idUsuario: user.id,
+      };
+
+          const response = await TicketService.updateTicket(datos);
+          if (response.data?.success) {
+            console.log("Respuesta de actualización:", response.data);
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("ticket_id", response.data.data.id);
+            formData.append("historial_id", response.data.data.idHistorialEstado);
+            await ImageService.createImage(formData);
+      toast.success("Ticket actualizado correctamente", {
+        duration: 4000,
+        position: "top-center",
+      });
+      navigate("/ticket/table");
+    } else {
+      setError(response.data?.message || "Error al actualizar el ticket");
+    }
+  }
+
     } catch (err) {
       console.error(err);
-      setError("Error al crear película");
+      setError("Error al actualizar el ticket");
     }
   };
 

@@ -37,6 +37,18 @@ class especialidades
         }
     }
 
+    public function getByTicket($idTicket)
+    {
+        try {
+            $model = new EspecialidadesModel();
+            $result = $model->getByTicket($idTicket);
+            $response = new Response();
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
     public function create(){
         try {
              $response = new Response();

@@ -58,6 +58,9 @@
       "loginD": "Sign in",
       "register": "Register",
       "registerD": "Create new account"
+    },
+    "notifications": {
+      "noNotifications": "No notifications"
     }
   },
   "technician": {
@@ -234,18 +237,35 @@
   }
   },
   "ticket": {
-    "generalInfo": "General Information",
+  "generalInfo": "General Information",
     "listTitle": "Ticket List",
     "listSubtitle": "Manage and review all assigned tickets",
     "noTicketsFound": "No tickets found.",
     "errorTitle": "Error loading tickets",
     "totalTickets": "Total tickets",
-    "infTickets": "No se encontro informacion del tickets",
-"estadoAnt": "Previous Status",
-"estadoNue": "New Status",
-"observaciones": "Observations",
-"Imagen": "Image",
-"Valo": "Evaluations",
+    "infTickets": "No ticket information found",
+    "estadoAnt" : "Previous Status",
+    "estadoNue" : "New Status",
+    "observaciones" : "Observations",
+    "Imagen": "Image",
+    "Valo": "Evaluations",
+    "Punt":"Score",
+    "Come": "Comment",
+
+    "descripcion": "Description",
+      "categoria": "Category",
+      "prioridad": "Priority",
+      "titulo": "Title",
+      "historial": "History",
+    "fechaCreacion": "Creation Date",
+    "fechaCierre": "Closing Date",
+    "fecha": "Date",
+
+    "slaRespuesta": "Response SLA",              
+    "fechaLimiteRespuesta": "Response Deadline",
+    "slaResolucion": "Resolution SLA",          
+    "fechaLimiteResolucion": "Resolution Deadline",
+
 
     "columns": {
       "titulo": "Title",
@@ -419,6 +439,150 @@
       "seguridad": "Cybersecurity",
       "otro": "Other"
     }
+  },
+  "assignTickets": {
+  "title": "Assign Tickets",
+
+  "columns": {
+    "ticketTitle": "Title",
+    "ticketCategory": "Category",
+    "ticketPriority": "Priority",
+    "ticketSla": "SLA",
+    "technicianName": "Name",
+    "technicianWorkload": "Workload",
+    "technicianAvailability": "Availability",
+    "technicianSpecialty": "Specialty"
+  },
+
+  "buttons": {
+    "assignManual": "Assign manually",
+    "back": "Back"
+  },
+
+  "fields": {
+    "justificationLabel": "Justification for manual assignment",
+    "justificationPlaceholder": "Explain why you assign this ticket to this technician..."
+  },
+
+  "messages": {
+    "noTicketsFound": "No tickets found.",
+    "errorLoadTickets": "Error loading tickets",
+    "errorLoadTechniciansByCategory": "Error loading technicians by category",
+    "mustSelectPendingTicket": "You must select a ticket in Pending status.",
+    "mustSelectTechnician": "You must select a technician.",
+    "mustEnterJustification": "You must enter a justification for the manual assignment.",
+    "successManualAssignment": "Manual assignment completed successfully",
+    "errorManualAssignment": "Error in manual assignment"
+  }
+},
+"maintenanceMenu": {
+  "techniciansTitle": "Technician List",
+  "techniciansDescription": "Manage system technicians",
+  "categoriesTitle": "Category List",
+  "categoriesDescription": "Ticket categories",
+  "ticketsTitle": "Ticket List",
+  "ticketsDescription": "View all tickets",
+  "assignmentsTitle": "Assignments",
+  "assignmentsDescription": "Manage assignments",
+  "assignTicketsTitle": "Assign Tickets",
+  "assignTicketsDescription": "Manage ticket assignments"
+},
+"login": {
+  "title": "Sign in",
+
+  "email": "Email address",
+  "emailPlaceholder": "example@mail.com",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Invalid email",
+
+  "password": "Password",
+  "passwordPlaceholder": "••••••••",
+  "passwordRequired": "Password is required",
+
+  "submit": "Sign in",
+  "submitting": "Signing in...",
+
+  "loginSuccess": "Login successful",
+  "invalidCredentials": "Invalid credentials",
+  "loginError": "Error while signing in",
+
+  "noAccount": "Don't have an account?",
+  "register": "Register"
+},
+  "createUsuario": {
+    "title": "Create User"
+  },
+
+  "usuario": {
+    "fields": {
+      "nombre": {
+        "label": "Full name",
+        "placeholder": "Enter full name",
+        "validation": {
+          "required": "Full name is required"
+        }
+      },
+      "correo": {
+        "label": "Email",
+        "placeholder": "user@mail.com",
+        "validation": {
+          "required": "Email is required",
+          "email": "Invalid email"
+        }
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "******",
+        "validation": {
+          "required": "Password is required"
+        }
+      },
+      "idRol": {
+        "label": "Role",
+        "defaultValue": "Customer",
+        "validation": {
+          "required": "Role is required"
+        }
+      }
+    },
+
+    "buttons": {
+      "save": "Save"
+    },
+
+    "errorCreate": "Error creating user"
+  },
+  "asignacionesTickets": {
+  "title": "Assign Tickets",
+
+  "columns": {
+    "ticketTitle": "Title",
+    "ticketCategory": "Category",
+    "ticketPriority": "Priority",
+    "ticketSla": "SLA",
+    "technicianName": "Name",
+    "technicianWorkload": "Workload",
+    "technicianAvailability": "Availability",
+    "technicianSpecialty": "Specialty"
+  },
+
+  "buttons": {
+    "assignManual": "Assign manually",
+    "back": "Back"
+  },
+
+  "fields": {
+    "justificationLabel": "Manual assignment justification",
+    "justificationPlaceholder": "Explain why you assign this ticket to this technician..."
+  },
+
+    "noTicketsFound": "No tickets found.",
+    "errorLoadTickets": "Error loading tickets",
+    "errorLoadTechniciansByCategory": "Error loading technicians by category",
+    "mustSelectPendingTicket": "You must select a ticket in Pending status.",
+    "mustSelectTechnician": "You must select a technician.",
+    "mustEnterJustification": "You must enter a justification for the manual assignment.",
+    "successManualAssignment": "Manual assignment completed successfully",
+    "errorManualAssignment": "Error in manual assignment"
   }
 }
-

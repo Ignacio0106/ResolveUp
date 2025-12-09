@@ -63,7 +63,7 @@ class AsignacionModel
         $usuario = new UsuarioModel();
 
         if($usuario->get($id)){
-            if($usuario->get($id)->idRol==1){
+            if($usuario->get($id)->rol->id == 1){
             //Consulta SQL
             $vSQL = "SELECT a.id, a.fecha, ti.id AS idTicket, c.nombre AS categoria, et.nombre AS estado, tiempoRestanteResolucion, puntajePrioridad, pt.nombre AS prioridad FROM asignacion a
                 inner join tecnicos t ON t.id = a.idTecnico

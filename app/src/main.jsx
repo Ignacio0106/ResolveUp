@@ -57,9 +57,9 @@ const rutas=createBrowserRouter([
       { path: "ticket/create", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <CreateTicket /> </RoleRoute> },
       { path: "ticket/update/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <UpdateTicket /> </RoleRoute> },
 
-      { path: "asignacion/table", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <TableAsignacion /></RoleRoute> }, // lista asignaciones
-      { path: "asignacion/detail/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <DetailAsignacion /> </RoleRoute> }, // detalle asignación
-      { path: "asignacion/tickets", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <AsignacionTickets /> </RoleRoute> },
+      { path: "asignacion/table", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <TableAsignacion /></RoleRoute> }, // lista asignaciones
+      { path: "asignacion/detail/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <DetailAsignacion /> </RoleRoute> }, // detalle asignación
+      { path: "asignacion/tickets", element: <RoleRoute requiredRoles={["Administrador"]}> <AsignacionTickets /> </RoleRoute> },
 
       { path: "usuario/create", element: <CreateUsuario /> },      
       { path: "usuario/login", element: <Login /> },

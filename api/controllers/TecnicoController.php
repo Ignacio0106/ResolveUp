@@ -54,6 +54,21 @@ class tecnico
         }
     }
 
+    // GET técnicos filtrados por categoría
+// Ejemplo: GET /tecnico/getByCategoria/3
+public function getByCategoria($idCategoria)
+{
+    try {
+        $response = new Response();
+        $tecnicoM = new TecnicoModel();
+        $result = $tecnicoM->getByCategoria($idCategoria);
+        $response->toJSON($result);
+    } catch (Exception $e) {
+        handleException($e);
+    }
+}
+
+
     public function create(){
         try {
              $response = new Response();
@@ -73,17 +88,17 @@ class tecnico
     }
 
     public function update(){
-        try {
-             $response = new Response();
-             $request= new Request();
-             //Obtener JSON  de la solicitud
-             $inputJSON=$request->getJSON();
-             //Instancua de modelo
-             $movie = new TecnicoModel();
-             //Metodo del modelo
-             $result =$movie->updateTecnico($inputJSON);
-             //Dar respuesta
-             $response->toJSON($result);
+    try {
+        $response = new Response();
+        $request  = new Request();
+
+        $inputJSON = $request->getJSON();
+
+        $ticket = new TicketModel();
+
+        $result = $ticket->update($inputJSON);
+
+        $response->toJSON($result);
         } catch (Exception $e) {
             $response->toJSON($result);
             handleException($e);

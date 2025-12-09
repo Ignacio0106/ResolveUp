@@ -18,6 +18,11 @@ class MovieService {
   getDetalleTecnico(TecnicoId){
     return axios.get(BASE_URL+'/getTecnicoDetalle/'+ TecnicoId);
   }
+
+  getByCategoria(categoriaId) {
+    return axios.get(`${BASE_URL}/getByCategoria/${categoriaId}`);
+  }
+
     createTecncio(userData) {
     return axios.post(BASE_URL, JSON.stringify(userData));
   }

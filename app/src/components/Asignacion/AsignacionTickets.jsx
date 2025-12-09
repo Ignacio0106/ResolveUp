@@ -35,45 +35,53 @@ import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { EmptyState } from "../ui/custom/EmptyState";
 import { useUser } from "@/hooks/useUser";
 import TecnicoService from "@/services/TecnicoService";
+import EspecialidadService from "@/services/EspecialidadService";
+import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
-
-const ticketColumns = [
-  { key: "titulo", label: "Título" },
-  { key: "categoria", label: "Categoría" },
-  { key: "prioridad", label: "Prioridad" },
-  { key: "sla", label: "SLA" },
-];
-
-const tecnicoColumns = [
-  { key: "nombre", label: "Nombre" },
-  { key: "cargaTrabajo", label: "Carga de Trabajo" },
-  { key: "disponibilidad", label: "Disponibilidad" },
-  { key: "especialidad", label: "Especialidad" },
-];
 
 export default function AsignacionTickets() {
   const { user, isAuthenticated, clearUser, authorize } = useUser();
   const [tickets, setTickets] = useState([]);
   const [tecnicos, setTecnicos] = useState([]);
+  const [tecnicosByTicket, setTecnicosByTicket] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [selectedTicketId, setSelectedTicketId] = useState(null);
   const [selectedTecnicoId, setSelectedTecnicoId] = useState(null);
+  const [justificacion, setJustificacion] = useState("");
+  const { t } = useTranslation();
+  
   const navigate = useNavigate();
+
+
+  const ticketColumns = [
+  { key: "titulo", label: t("asignacionesTickets.columns.ticketTitle") },
+  { key: "categoria", label: t("asignacionesTickets.columns.ticketCategory") },
+  { key: "prioridad", label: t("asignacionesTickets.columns.ticketPriority") },
+  { key: "sla", label: t("asignacionesTickets.columns.ticketSla") },
+];
+
+const tecnicoColumns = [
+  { key: "nombre", label: t("asignacionesTickets.columns.technicianName") },
+  { key: "cargaTrabajo", label: t("asignacionesTickets.columns.technicianWorkload") },
+  { key: "disponibilidad", label: t("asignacionesTickets.columns.technicianAvailability") },
+  { key: "especialidad", label: t("asignacionesTickets.columns.technicianSpecialty") },
+];
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
         const responseTickets = await TicketService.getTicketPendiente();
         const responseTecnicos = await TecnicoService.getListado();
+        console.log("Response tickets pendientes1: ", responseTickets);
         const responseData = responseTickets?.data?.data || {};
-        console.log("Tickets recibidos:", responseData);
-        setTickets(Array.isArray(responseData) ? responseData : []);
+        console.log("Response data tickets pendientes2: ", responseData);
+        setTickets(responseData);
         const responseDataTecnicos = responseTecnicos?.data?.data || {};
-        console.log("Tecnicos recibidos:", responseDataTecnicos);
-        setTecnicos(Array.isArray(responseDataTecnicos) ? responseDataTecnicos : []);
+        setTecnicos(responseDataTecnicos);
+        setTecnicosByTicket(responseDataTecnicos);
       } catch (err) {
-        setError(err.message || "Error al cargar tickets");
+        toast.error(err.message || "Error al cargar tickets");
       } finally {
         setLoading(false);
       }
@@ -81,61 +89,121 @@ export default function AsignacionTickets() {
     fetchTickets();
   }, []);
 
-  useEffect(() => {
-    const fetchTecnicos = async () => {
-      try {
-        const responseTickets = await TicketService.getTicketPendiente();
-        const responseTecnicos = await TecnicoService.getListado();
-        const responseData = responseTickets?.data?.data || {};
-        console.log("Tickets recibidos:", responseData);
-        setTickets(Array.isArray(responseData) ? responseData : []);
-        const responseDataTecnicos = responseTecnicos?.data?.data || {};
-        console.log("Tecnicos recibidos:", responseDataTecnicos);
-        setTecnicos(Array.isArray(responseDataTecnicos) ? responseDataTecnicos : []);
-      } catch (err) {
-        setError(err.message || "Error al cargar tickets");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTecnicos();
-  }, []);
+useEffect(() => {
+  const fetchTecnicosPorCategoria = async () => {
+    try {
+      if (!selectedTicketId || selectedTicketId == null) return;
+      
+      console.log("Vuelve a entrar por aqui: ", selectedTicketId);
+      const ticketSeleccionado = tickets.find(
+        (t) => t.id === selectedTicketId
+      );
+
+      const especialidadesTicket = await EspecialidadService.getByCategoria(ticketSeleccionado.idCategoria);
+      let tecnicosByTicket = new Set();
+      tecnicos.forEach(tecnico => {
+        if(tecnico.especialidades){
+          tecnico.especialidades.forEach(espTecnico => {
+            especialidadesTicket.data.data.forEach(espTicket => {
+              if(espTicket.id === espTecnico.id){
+                tecnicosByTicket.add(tecnico);
+              }
+            });
+          });
+        }
+      });
+      setTecnicosByTicket(Array.from(tecnicosByTicket));
+
+    } catch (err) {
+      toast.error(err.message || "Error al cargar técnicos por categoría");
+    }
+  };
+
+  fetchTecnicosPorCategoria();
+}, [selectedTicketId, tickets, tecnicos]);
+
+
 
   if (loading) return <LoadingGrid type="grid" />;
-  if (error) return <ErrorAlert title="Error" message={error} />;
-  if (tickets.length === 0)
-    return <EmptyState message="No se encontraron tickets." />;
+/*   if (tickets.length === 0)
+    return <EmptyState message={t("asignacionesTickets.noTicketsFound")} />; */
 
-  const handleTicketSelect = (ticketId) => {
+  const TicketSeleccionado = (ticketId) => {
     setSelectedTicketId(ticketId);
   };
 
-  const handleTecnicoSelect = (tecnicoId) => {
+  const TecnicoSeleccionado = (tecnicoId) => {
     setSelectedTecnicoId(tecnicoId);
   };
+
+  const AsignarManual = async () => {
+  try {
+    if (!selectedTicketId) {
+      toast.error(t("asignacionesTickets.mustSelectPendingTicket"));
+      return;
+    }
+
+    if (!selectedTecnicoId) {
+      toast.error(t("asignacionesTickets.mustSelectTechnician"));
+      return;
+    }
+
+    if (!justificacion.trim()) {
+      toast.error(t("asignacionesTickets.mustEnterJustification"));
+      return;
+    }
+
+    const datos = {
+      idTicket: selectedTicketId,
+      idTecnico: selectedTecnicoId,
+      justificacion: justificacion,
+      idUsuarioAsignador: user.id,
+      fecha: new Date(new Date().toLocaleString('en-US', {timeZone: 'America/Costa_Rica'}))
+    };
+    console.log("Datos para asignación manual:", datos);
+    const response = await TicketService.asignarManual(datos);
+    console.log("que devolvio asignar", response)
+    if (response.data?.success) {
+      toast.success(response.data.message || t("asignacionesTickets.successManualAssignment"));
+
+      // Refrescar lista de tickets pendientes
+      const responseTickets = await TicketService.getTicketPendiente();
+      console.log("Response tickets pendientes after assignment: ", responseTickets);
+      const responseData = responseTickets?.data?.data || [];
+
+      const responseTecnicos = await TecnicoService.getListado();
+      const responseDataTecnicos = responseTecnicos?.data?.data || [];
+
+      // Limpiar selección
+setSelectedTicketId(null);
+setSelectedTecnicoId(null);
+setJustificacion("");
+
+setTickets(responseData);
+setTecnicosByTicket(responseDataTecnicos);
+    } else {
+      toast.error(response.data?.message || t("asignacionesTickets.errorManualAssignment"));
+    }
+  } catch (err) {
+    toast.error(err.message || t("asignacionesTickets.errorManualAssignment"));
+  }
+};
 
   return (
     <div className="container mx-auto py-8">
       {/* Título */}
       <div className="mb-6 flex items-center justify-between max-w-6xl mx-auto">
         <div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">Asignar Tickets</h1>
+        <h1 className="text-2xl font-bold text-foreground mb-2">{t("asignacionesTickets.title")}</h1>
         </div>
         <div className="flex gap-5">
          <Button
-                type="button"
-                className="flex items-center gap-2 text-white hover:bg-primary/80 mt-6"
-                onClick={() => navigate(-1)}
-            >
-                Asignar automaticamente
-            </Button>
-         <Button
-                type="button"
-                className="flex items-center gap-2 text-white hover:bg-primary/80 mt-6"
-                onClick={() => navigate(-1)}
-            >
-                Asignar manualmente
-            </Button>
+  type="button"
+  className="flex items-center gap-2 text-white hover:bg-primary/80 mt-6"
+  onClick={AsignarManual}
+>
+  {t("asignacionesTickets.buttons.assignManual")}
+</Button>
             </div>
       </div>
 
@@ -156,7 +224,14 @@ export default function AsignacionTickets() {
             </TableRow>
           </TableHeader>
           <TableBody>
-  {tickets.map((ticket) => (
+            {tickets.length === 0 ? (
+    <TableRow>
+      <TableCell colSpan={ticketColumns.length} className="text-center py-6">
+        No hay tickets pendientes
+      </TableCell>
+    </TableRow>
+  ) : (
+  tickets.map((ticket) => (
                 <TableRow
                   key={ticket.id}
                   className="hover:bg-muted/30 transition-colors duration-150"
@@ -168,7 +243,7 @@ export default function AsignacionTickets() {
                         name="ticket"
                         value={ticket.id}
                         checked={selectedTicketId === ticket.id}
-                        onChange={() => handleTicketSelect(ticket.id)}
+                        onChange={() => TicketSeleccionado(ticket.id)}
                       />
                       {ticket.titulo}
                     </div>
@@ -177,12 +252,13 @@ export default function AsignacionTickets() {
                   <TableCell className="py-4 ">{ticket.prioridad}</TableCell>
                   <TableCell className="py-4 ">    
                     <div className="flex flex-col gap-2">
-                    <Badge>{ticket.cumplimientoResolucion}</Badge>
-                    <Badge>{ticket.cumplimientoRespuesta}</Badge>
+                    <Badge>{ticket.slaRespuesta}</Badge>
+                    <Badge>{ticket.slaResolucion}</Badge>
                     </div>
                     </TableCell>
                 </TableRow>
-              ))}
+              ))
+              )}
           </TableBody>
         </Table>
       </div>
@@ -201,7 +277,13 @@ export default function AsignacionTickets() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tecnicos.map((tecnico) => (
+            {tecnicosByTicket.length === 0 ? (
+    <TableRow>
+      <TableCell colSpan={tecnicoColumns.length} className="text-center py-6">
+        Selecciona un ticket para ver técnicos disponibles
+      </TableCell>
+    </TableRow>
+  ) : (tecnicosByTicket.map((tecnico) => (
                 <TableRow
                   key={tecnico.id}
                   className="hover:bg-muted/30 transition-colors duration-150"
@@ -213,7 +295,7 @@ export default function AsignacionTickets() {
                         name="tecnico"
                         value={tecnico.id}
                         checked={selectedTecnicoId === tecnico.id}
-                        onChange={() => handleTecnicoSelect(tecnico.id)}
+                        onChange={() => TecnicoSeleccionado(tecnico.id)}
                       />
                       {tecnico.nombre}
                     </div>
@@ -232,11 +314,25 @@ export default function AsignacionTickets() {
   </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+              )}
           </TableBody>
         </Table>
       </div>
       </div>
+      <div className="mt-4 max-w-6xl mx-auto">
+  <label className="block text-sm font-medium mb-1">
+    {t("asignacionesTickets.fields.justificationLabel")}
+  </label>
+  <textarea
+    className="w-full border rounded-md p-2 text-sm"
+    rows={3}
+    value={justificacion}
+    onChange={(e) => setJustificacion(e.target.value)}
+    placeholder={t("asignacionesTickets.fields.justificationPlaceholder")}
+  />
+</div>
+
       {/* Botón Simple */}
       <Button
         variant="outline"
@@ -244,7 +340,7 @@ export default function AsignacionTickets() {
         onClick={() => navigate(-1)}
       >
         <ArrowLeft className="w-4 h-4" />
-        Regresar
+        {t("asignacionesTickets.buttons.back")}
       </Button>
     </div>
   );
