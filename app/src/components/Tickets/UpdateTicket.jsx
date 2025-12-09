@@ -106,7 +106,7 @@ export function UpdateTicket() {
                             setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Pendiente')));
                             break;
                         case "2":
-                            setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Asignado') ||estado.nombre.includes('Resuelto')));
+                            setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Asignado') ||estado.nombre.includes('En Proceso')));
                             break;
                         case "3":
                             setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('En Proceso') || estado.nombre.includes('Resuelto')));
@@ -142,14 +142,14 @@ export function UpdateTicket() {
         comentario: dataForm.comentario,
         idUsuario: user.id,
       };
-
+        console.log("Datos a enviar para actualización:", datos);
           const response = await TicketService.updateTicket(datos);
           if (response.data?.success) {
-            console.log("Respuesta de actualización:", response.data);
+            console.log("Respuesta de actualización:", response.data.data.data);
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("ticket_id", response.data.data.id);
-            formData.append("historial_id", response.data.data.idHistorialEstado);
+            formData.append("ticket_id", response.data.data.data.ticket.idTicket);
+            formData.append("historial_id", response.data.data.data.historial[0].idHistorial);
             await ImageService.createImage(formData);
       toast.success("Ticket actualizado correctamente", {
         duration: 4000,

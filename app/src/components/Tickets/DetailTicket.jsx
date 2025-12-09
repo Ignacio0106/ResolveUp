@@ -9,6 +9,10 @@ import { LoadingGrid } from '../ui/custom/LoadingGrid';
 import { EmptyState } from '../ui/custom/EmptyState';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
+import { Input } from '../ui/input';
+import ValoracionService from '@/services/ValoracionService';
+import { useUser } from '@/hooks/useUser';
 
 export function DetailTicket() {
     const navigate = useNavigate();
@@ -20,7 +24,7 @@ export function DetailTicket() {
     const [valoraciones, setValoraciones] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    const { user } = useUser();
     useEffect(() => {
         const fetchData = async () => { 
             try {
@@ -47,6 +51,47 @@ export function DetailTicket() {
 
         fetchData();
     }, [id]);
+
+const [showNewValoracion, setShowNewValoracion] = useState(false);
+const [newValoracion, setNewValoracion] = useState({
+    puntaje: "",
+    comentario: ""
+});
+    const createNewValoracion = async () => {
+    if (!newValoracion.puntaje) {
+        return toast.error("Debes ingresar un puntaje");
+    }
+
+    try {
+        console.log("Creando valoración:", {
+            idTicket: ticket.idTicket,
+            idUsuario: user?.id,
+            ...newValoracion
+        });
+        const res = await ValoracionService.createValoracion({
+            idTicket: ticket.idTicket,
+            idUsuario: user?.id,
+            ...newValoracion
+        });
+
+        toast.success("Valoración agregada con éxito");
+
+        // Actualizar tabla sin recargar página
+        setValoraciones(prev => [...prev, {
+            puntaje: newValoracion.puntaje,
+            comentario: newValoracion.comentario,
+            fecha: new Date().toISOString().split("T")[0]
+        }]);
+
+        setShowNewValoracion(false);
+        setNewValoracion({ puntaje: "", comentario: "" });
+
+    } catch (err) {
+        console.error(err);
+        toast.error("Error al guardar la valoración");
+    }
+};
+
 
     if (loading) return <LoadingGrid count={1} type="grid" />;
     if (error) return <ErrorAlert title={t("ticket.errorTitle")} message={error} />;
@@ -224,10 +269,57 @@ export function DetailTicket() {
                     </div>
                 )}
 
-                {/* Valoraciones */}
-                <h2 className="text-2xl font-semibold mt-6 mb-4">
-                    {t("ticket.Valo")}
-                </h2>
+                {/* Valoraciones */}               
+{/* SOLO MOSTRAR BOTÓN Y FORMULARIO SI EL TICKET ESTÁ CERRADO */}
+{ticket.estado === "Cerrado" && (
+        <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Agregar valoración</h2>
+
+            <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setShowNewValoracion(!showNewValoracion)}
+            >
+                +
+            </Button>
+        </div>
+)}
+        {showNewValoracion && (
+            <div className="grid grid-cols-2 gap-2 mb-4 p-3 border rounded-lg bg-muted/30">
+                
+                <Input
+                    placeholder="Puntaje (1-5)"
+                    type="number"
+                    min="1"
+                    max="5"
+                    value={newValoracion.puntaje}
+                    onChange={(e) =>
+                        setNewValoracion({
+                            ...newValoracion,
+                            puntaje: e.target.value
+                        })
+                    }
+                />
+
+                <Input
+                    placeholder="Comentario"
+                    type="text"
+                    value={newValoracion.comentario}
+                    onChange={(e) =>
+                        setNewValoracion({
+                            ...newValoracion,
+                            comentario: e.target.value
+                        })
+                    }
+                />
+
+                <Button className="col-span-2" type="button" onClick={createNewValoracion}>
+                    Guardar valoración
+                </Button>
+            </div>
+        )}
+
                 {valoraciones.length === 0 ? (
                     <EmptyState message="No hay valoraciones disponibles." />
                 ) : (

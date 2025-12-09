@@ -26,7 +26,7 @@ import { useUser } from "@/hooks/useUser";
 
 
 export default function TableTecnico() {
-    const { user, isAuthenticated, clearUser, authorize } = useUser();
+    const { user } = useUser();
 
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
@@ -126,7 +126,7 @@ export default function TableTecnico() {
                                     )}
 
                                     {/* SOLO ADMIN VE ELIMINAR */}
-                                    {user?.rol?.nombre === "Administrador" && (
+{/*                                     {user?.rol?.nombre === "Administrador" && (
                                         <TooltipProvider>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
@@ -137,7 +137,7 @@ export default function TableTecnico() {
                                                 <TooltipContent>{t("technician.list.tooltip.delete")}</TooltipContent>
                                             </Tooltip>
                                         </TooltipProvider>
-                                    )}
+                                    )} */}
 
                                     {/* TODOS PUEDEN VER DETALLE */}
                                     <TooltipProvider>

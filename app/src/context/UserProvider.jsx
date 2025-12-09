@@ -47,7 +47,6 @@ export default function UserProvider({ children }) {
     const authorize = (requiredRoles = []) => {
         const decoded = decodeToken();
         if (!decoded || !decoded.rol) return false;
-        console.log("Rol",decoded.rol);
         return requiredRoles.includes(decoded.rol.nombre);
     };
 

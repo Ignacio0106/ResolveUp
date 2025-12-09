@@ -42,6 +42,7 @@ const marcarLeida = (id, usuarioId) => {
     };
 
     const recargarNotificaciones = async (idUsuario) => {
+        if (!idUsuario) return;
         const res = await NotificacionService.getByUsuario(idUsuario);
         dispatch({
             type: "SET_NOTIFICACIONES",

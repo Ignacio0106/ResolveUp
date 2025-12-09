@@ -52,23 +52,12 @@ import { Circle } from "lucide-react";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user, isAuthenticated, clearUser } = useUser();
+  const { user, isAuthenticated, clearUser, authorize } = useUser();
+const usuarioID = user?.id; // ID fijo para pruebas
   const { notificaciones, cantidadNoLeidas, marcarLeida, recargarNotificaciones, } = useNotificaciones();
-
-    const initials = user?.nombre
-    ? user.nombre
-        .split(" ")
-        .map((n) => (n && n[0] ? n[0] : ""))
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "IG";
-    const notificationCount = cantidadNoLeidas ?? 0;
-    const cartCount = 0;
 useEffect(() => {
-  if(!user?.id) return;
-  recargarNotificaciones(user?.id);
-}, [user?.id]);
+  recargarNotificaciones(usuarioID);
+}, [usuarioID]);
 
   const { t } = useTranslation();
   const userItems = [
@@ -101,30 +90,35 @@ useEffect(() => {
       href: "/tecnico/table",
       icon: <User className="h-4 w-4" />,
       description: t("maintenanceMenu.techniciansDescription"),
+      show: authorize(["Administrador"]),
     },
     {
       title: t("maintenanceMenu.categoriesTitle"),
       href: "/categoria/table",
       icon: <BookOpen className="h-4 w-4" />,
       description: t("maintenanceMenu.categoriesDescription"),
+      show: authorize(["Administrador"]),
     },
     {
       title: t("maintenanceMenu.ticketsTitle"),
       href: "/ticket/table",
       icon: <TicketCheck className="h-4 w-4" />,
       description: t("maintenanceMenu.ticketsDescription"),
+      show: authorize(["Administrador", "Técnico", "Cliente"]),
     },
     {
       title: t("maintenanceMenu.assignmentsTitle"),
       href: "/asignacion/table",
       icon: <FolderCode className="h-4 w-4" />,
       description: t("maintenanceMenu.assignmentsDescription"),
+      show: authorize(["Administrador", "Técnico"]),
     },
     {
       title: t("maintenanceMenu.assignTicketsTitle"),
       href: "/asignacion/tickets",
       icon: <FolderCode className="h-4 w-4" />,
       description: t("maintenanceMenu.assignTicketsDescription"),
+      show: authorize(["Administrador"]),
     },
   ];
                  <button className="w-full flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-destructive/15 transition-all duration-200 group">
@@ -145,9 +139,10 @@ const idiomas = [
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
+  const { i18n } = useTranslation();
 
 
-const selectedLanguage = idiomas.find((l) => l.value === t.language);
+const selectedLanguage = idiomas.find((l) => l.value === i18n.language);
 
   return (
     <header className="w-full fixed top-0 left-0 z-999 border-b-4 backdrop-blur-xl bg-primary/70">
@@ -183,7 +178,8 @@ const selectedLanguage = idiomas.find((l) => l.value === t.language);
                 <ChevronDown className="h-3 w-3 text-muted-foreground group-data-[state=open]:rotate-180 transition-transform duration-200" />
               </MenubarTrigger>
               <MenubarContent className="bg-card border border-border rounded-b-2xl p-3 min-w-[280px]">
-                {mantItems.map((item) => (
+                {mantItems.filter((item) => item.show)
+                .map((item) => (
                   <div key={item.href}>
                     <Link
                       to={item.href}
@@ -294,14 +290,6 @@ const selectedLanguage = idiomas.find((l) => l.value === t.language);
 
 
 
-
-
-
-
-
-
-
-
 </Popover>
 
 
@@ -339,7 +327,7 @@ const selectedLanguage = idiomas.find((l) => l.value === t.language);
                   key={idioma.value}
                   value={idioma.value}
                   onSelect={(currentValue) => {
-                    t.changeLanguage(currentValue);
+                    i18n.changeLanguage(currentValue);
                     setValue(currentValue === value ? "" : currentValue);
                     setOpen(false);
                   }}
@@ -421,8 +409,8 @@ const selectedLanguage = idiomas.find((l) => l.value === t.language);
           </div>
 
           {/* Menú Móvil */}
-          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-      <SheetTrigger asChild>
+      <Sheet>
+          <SheetTrigger asChild>
         <button
           aria-label={mobileOpen ? "Cerrar menú móvil" : "Abrir menú móvil"}
           className="lg:hidden inline-flex items-center justify-center p-2 rounded-full bg-muted/80 hover:bg-muted transition-all duration-200 active:scale-95"
@@ -446,39 +434,63 @@ const selectedLanguage = idiomas.find((l) => l.value === t.language);
 
         <nav className="mt-8 space-y-6">
           {/* Usuario móvil */}
-          <div className="p-4 bg-sidebar/80 rounded-lg border border-sidebar-border">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10 border-2 border-sidebar-border">
-                {user?.avatarUrl ? (
-                  <AvatarImage src={user.avatarUrl} alt={user.nombre ?? "avatar"} />
-                ) : (
-                  <AvatarFallback className="bg-gradient-to-br from-sidebar-primary to-sidebar-accent text-sidebar-primary-foreground">
-                    {initials}
-                  </AvatarFallback>
-                )}
-              </Avatar>
-              <div>
-                <div className="font-medium">{user?.nombre ?? "Invitado"}</div>
-                <div className="text-sm text-muted-foreground">{user?.correo ?? ""}</div>
-              </div>
-            </div>
+          <div className="block">
+            <Menubar className="bg-transparent border-none shadow-none">
+              <MenubarMenu>
+                <MenubarTrigger className="group
+          relative
+          flex items-center justify-between gap-3
+          px-4 py-2
+          rounded-full
+          text-sm font-medium text-foreground
+          bg-background/60 border-2 border-border
+          hover:bg-background/90 hover:border-accent
+          data-[state=open]:border-accent data-[state=open]:bg-background
+          transition-all duration-200">
+                  <Avatar className="h-8 w-8 border-2 border-border">
+                    <AvatarImage src={""} alt={""} />
+                    <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground text-xs">
+                      {user?.nombre
+                        ? user.nombre
+                            .split(" ").map((n) => n[0])
+                            .join("")
+                            .toUpperCase()
+                        : ""}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="block text-left">
+                    <div className="text-sm font-medium">{user?.nombre ?? t("header.guest")}</div>
+                    <div className="text-xs text-muted-foreground">{user?.correo ?? ""}</div>
+                  </div>
+                  <ChevronDown className="h-3 w-3 text-muted-foreground group-data-[state=open]:rotate-180 transition-transform duration-200" />
+                </MenubarTrigger>
+                <MenubarContent className="bg-card/95 border border-border rounded-2xl p-2 min-w-[240px] shadow-xl">
+                  {userItems.filter(i => i.show).map(item => (
+                      <MenubarItem key={item.href} asChild>
+                        
+                        <Link
+                          to={item.href}
+                          onClick={() => item.action && item.action()}
+                          className="flex items-start gap-3 py-2.5 px-3 rounded-xl text-sm text-foreground/90 hover:text-foreground hover:bg-chart-2/60 transition-all duration-200 group"
+                        >
+                          <div
+                            className="mt-0.5 p-2 rounded-lg bg-chart-5/75 group-hover:bg-chart-5/90 transition-colors duration-200 flex items-center justify-center"
+                          >
+                            {item.icon}
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium group-hover:font-semibold transition-all duration-150">{item.title}</div>
+                            <div className="text-xs text-muted-foreground mt-0.5">
+                              {item.description}
+                            </div>
+                          </div>
+                        </Link>
+                      </MenubarItem>
+                  ))}
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
           </div>
-
-          {/* Acciones rápidas móvil */}
-          <div className="flex gap-2">
-            <button
-              onClick={close}
-              className="flex-1 flex items-center justify-center gap-2 p-3 bg-secondary/15 rounded-lg hover:bg-secondary/25 transition-colors"
-              aria-label="Ver notificaciones"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="text-sm">Notif.</span>
-              <Badge className="bg-destructive text-destructive-foreground text-xs">
-                {notificationCount}
-              </Badge>
-            </button>
-          </div>
-
           {/* Menús móvil: Mantenimientos */}
           <div>
             <h4 className="mb-3 text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
@@ -503,60 +515,6 @@ const selectedLanguage = idiomas.find((l) => l.value === t.language);
                   </div>
                 </Link>
               ))}
-            </div>
-          </div>
-
-          {/* Menús móvil: Usuario */}
-          <div>
-            <h4 className="mb-3 text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-              <User className="h-4 w-4" /> Usuario
-            </h4>
-            <div className="space-y-1">
-              {userItems
-                .filter((i) => (typeof i.show === "undefined" ? true : i.show))
-                .map((item) => (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    onClick={close}
-                    className="flex items-start gap-3 py-3 px-4 rounded-lg text-sidebar-foreground/90 hover:bg-muted/20 hover:text-sidebar-foreground transition-all duration-200 group"
-                  >
-                    <div
-                      className={`p-1.5 rounded-md transition-colors mt-0.5 ${
-                        item.title === "Login" || item.title === "Registrarse"
-                          ? "bg-chart-5/20 group-hover:bg-chart-5/30"
-                          : "bg-accent/20 group-hover:bg-accent/30"
-                      }`}
-                    >
-                      {item.icon}
-                    </div>
-                    <div>
-                      <div className="font-medium">{item.title}</div>
-                      {item.description && (
-                        <div className="text-xs text-muted-foreground mt-0.5">
-                          {item.description}
-                        </div>
-                      )}
-                    </div>
-                  </Link>
-                ))}
-
-              <button
-                onClick={() => {
-                  if (onLogout) onLogout();
-                  close();
-                }}
-                className="w-full flex items-start gap-3 py-3 px-4 rounded-lg text-destructive hover:bg-destructive/15 hover:text-destructive transition-all duration-200 group"
-                aria-label="Cerrar sesión"
-              >
-                <div className="p-1.5 rounded-md bg-destructive/15 group-hover:bg-destructive/25 transition-colors mt-0.5">
-                  <LogOut className="h-4 w-4" />
-                </div>
-                <div>
-                  <div className="font-medium">Cerrar Sesión</div>
-                  <div className="text-xs text-destructive/70 mt-0.5">Salir del sistema</div>
-                </div>
-              </button>
             </div>
           </div>
         </nav>

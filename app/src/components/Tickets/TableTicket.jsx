@@ -218,7 +218,7 @@ const mostrarActualizar = (rol, estado) => {
       </Tooltip>
     </TooltipProvider>
   )}
-                                  <TooltipProvider>
+{/*                                   <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <Button variant="ghost" size="icon">
@@ -227,7 +227,7 @@ const mostrarActualizar = (rol, estado) => {
                                             </TooltipTrigger>
                                             <TooltipContent>{t("ticket.tooltip.delete")}</TooltipContent>
                                         </Tooltip>
-                                    </TooltipProvider>
+                                    </TooltipProvider> */}
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>

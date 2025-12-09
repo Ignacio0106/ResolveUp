@@ -35,6 +35,7 @@ require_once "models/EtiquetaModel.php";
 require_once "models/PrioridadModel.php";
 require_once "models/SlaModel.php";
 require_once "models/NotificacionModel.php";
+require_once "models/ValoracionModel.php";
 
 /***--- Agregar todos los controladores*/
 require_once "controllers/SlaController.php";
@@ -50,6 +51,7 @@ require_once "controllers/PrioridadController.php";
 require_once "controllers/EstadoController.php";
 require_once "controllers/NotificacionController.php";
 require_once "controllers/ImageController.php";
+require_once "controllers/ValoracionController.php";
 
 
 //Enrutador

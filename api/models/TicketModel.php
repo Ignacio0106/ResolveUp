@@ -367,12 +367,11 @@ $rol = $rolResultado[0]->nombreRol;
 
         $idEstadoAnterior = (int)$ticket->estadoId;
 
-        $comentarioEscapado = addslashes($comentario);
         $sqlHist = "
             INSERT INTO HistorialEstado 
                 (idEstadoAnterior, idEstadoNuevo, fecha, observaciones, idTicket, idUsuario)
             VALUES
-                ($idEstadoAnterior, $idEstadoNuevo, '$fecha', '$comentarioEscapado', $idTicket, $idUsuario);
+                ($idEstadoAnterior, $idEstadoNuevo, '$fecha', '$comentario', $idTicket, $idUsuario);
         ";
         $this->enlace->executeSQL_DML_last($sqlHist);
 
@@ -389,7 +388,7 @@ $rol = $rolResultado[0]->nombreRol;
         leidaPor,
         leidaAt) VALUES
         ('Actualización de Ticket', 
-        'Se actualizó el estado del ticket #' . $idTicket . ' a " . $idEstadoNuevo . "', 
+        'Se actualizó el estado del ticket #$idTicket', 
         '$fecha', 
         $idUsuario, 
         NULL, 

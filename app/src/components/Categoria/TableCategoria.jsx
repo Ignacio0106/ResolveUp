@@ -115,7 +115,7 @@ const categoriaColumns = [
                                     </TooltipProvider>
 
                                     {/* BOTÓN ELIMINAR */}
-                                    <TooltipProvider>
+{/*                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <Button variant="ghost" size="icon">
@@ -124,7 +124,7 @@ const categoriaColumns = [
                                             </TooltipTrigger>
                                             <TooltipContent>{t('category.list.tooltip.delete')}</TooltipContent>
                                         </Tooltip>
-                                    </TooltipProvider>
+                                    </TooltipProvider> */}
 
                                     {/* BOTÓN DETALLE */}
                                     <TooltipProvider>

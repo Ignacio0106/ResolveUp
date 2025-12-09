@@ -39,7 +39,7 @@ class ImageModel
                         //Moverlo a la carpeta del servidor del API
                         if (move_uploaded_file($tempPath, $this->upload_path . $fileName)) {
                             //Guardarlo en la BD
-                            $sql = "INSERT INTO ticket_image (ruta, fechaSubida, idTicket, idHistorialEstado) VALUES ('$fileName', '$fechaSubida', $ticket_id, $historial_id)";
+                            $sql = "INSERT INTO ticketimagen  (ruta, fechaSubida, idTicket, idHistorialEstado) VALUES ('$fileName', '$fechaSubida', $ticket_id, $historial_id)";
                             $vResultado = $this->enlace->executeSQL_DML($sql);
                             if ($vResultado > 0) {
                                 return 'Imagen creada';
