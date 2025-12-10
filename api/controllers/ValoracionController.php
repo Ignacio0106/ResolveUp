@@ -15,6 +15,19 @@ class valoracion
         }
     }
 
+    public function getPuntajes()
+    {
+        try {
+            $response = new Response();
+            $valoracionM = new ValoracionModel();
+            $result = $valoracionM->getPuntajes();
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+        }
+    }
+
     // POST crear usuario
     public function create()
     {

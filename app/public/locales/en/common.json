@@ -525,6 +525,7 @@
       "correo": {
         "label": "Email",
         "placeholder": "user@mail.com",
+        "tamaño": "The password must be at least 8 characters long",
         "validation": {
           "required": "Email is required",
           "email": "Invalid email"

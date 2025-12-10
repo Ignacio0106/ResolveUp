@@ -24,7 +24,7 @@ export function CreateUsuario() {
   const userSchema = yup.object({
     nombre: yup.string().required(t("usuario.fields.nombre.validation.required")),
     correo: yup.string().email(t("usuario.fields.correo.validation.email")).required(t("usuario.fields.correo.validation.required")),
-    password: yup.string().required(t("usuario.fields.password.validation.required")),
+    password: yup.string().required(t("usuario.fields.password.validation.required")).min(8, t("usuario.fields.correo.tamaño")),
     idRol: yup.number().required(t("usuario.fields.idRol.validation.required")).default(3),
   });
 

@@ -8,18 +8,26 @@ class ValoracionModel
         $this->enlace = new MySqlConnect();
     }
     
-    public function crearValoracion($object)
+
+public function crearValoracion($object)
+    {
+        $sql = "INSERT INTO Valoracion (idUsuario, idTicket, idPuntaje, comentario, fecha)
+                VALUES ('$object->idUsuario', '$object->idTicket', '$object->idPuntaje', '$object->comentario', NOW())";
+        return $this->enlace->executeSQL_DML_last($sql);
+    }
+
+
+
+
+public function getPuntajes()
     {
         try {
-            $sql = "INSERT INTO Valoracion (idUsuario, idTicket, idPuntaje, comentario, fechaCreacion)
-                    VALUES (' $object->idUsuario',' $object->idTicket',' $object->puntuacion',' $object->comentario')";
-
-            $this->enlace->ExecuteSQL($sql);
-
-            return true;
+            $sql = "SELECT id, descripcion FROM PuntajeValoracion ORDER BY id ASC";
+            $resultado = $this->enlace->ExecuteSQL($sql);
+            return $resultado;
         } catch (Exception $e) {
             handleException($e);
-            return false;
+            return [];
         }
     }
 

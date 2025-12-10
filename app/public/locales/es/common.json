@@ -524,6 +524,7 @@
       "correo": {
         "label": "Correo electrónico",
         "placeholder": "usuario@correo.com",
+        "tamaño": "La contraseña debe de tener al menos 8 caracteres",
         "validation": {
           "required": "El correo electrónico es obligatorio",
           "email": "Correo electrónico inválido"

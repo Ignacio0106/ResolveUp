@@ -9,6 +9,9 @@ class ValoracionService {
     return axios.get(BASE_URL + '/' + valoracionId);
   }
 
+  getPuntajes() {
+    return axios.get(BASE_URL + '/getPuntajes');
+  }
   // Crear usuario
   createValoracion(valoracionData) {
     return axios.post(BASE_URL, JSON.stringify(valoracionData));
