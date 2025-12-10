@@ -231,8 +231,7 @@ public function createTecnico($objeto)
 public function updateTecnico($objeto) {
     try {
         
-        $usuarioLogueadoId = 1; // Solo se usa para validar rol
-        $sqlRol = "SELECT idRol FROM Usuario WHERE id = $usuarioLogueadoId";
+        $sqlRol = "SELECT idRol FROM Usuario WHERE id = $objeto->usuarioLogueadoId";
         $resRol = $this->enlace->ExecuteSQL($sqlRol);
         if (!$resRol) {
             throw new Exception("Usuario logueado no existe");

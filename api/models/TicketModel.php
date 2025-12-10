@@ -378,7 +378,14 @@ $rol = $rolResultado[0]->nombreRol;
         $sqlTicket = "UPDATE Tickets SET estadoId = $idEstadoNuevo WHERE id = $idTicket;";
         $this->enlace->executeSQL_DML($sqlTicket);
 
-                $sqlNoti =  "INSERT INTO Notificacion 
+        if($idEstadoNuevo == 5){
+            $sqlTecnico = "SELECT a.idTecnico FROM Asignacion a WHERE a.idTicket = $idTicket;";
+            $resTecnico = $this->enlace->executeSQL($sqlTecnico);
+            $sqlUpdTec = "UPDATE Tecnicos SET cargaTrabajo = cargaTrabajo - 1 WHERE id = $resTecnico[0]->idTecnico;";
+            $this->enlace->executeSQL_DML($sqlUpdTec);
+        }
+
+        $sqlNoti =  "INSERT INTO Notificacion 
         (tipo, 
         mensaje, 
         fecha, 

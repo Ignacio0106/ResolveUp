@@ -36,18 +36,16 @@ export function UpdateTicket() {
     const navigate = useNavigate();
     const { id } = useParams();
     const BASE_URL = import.meta.env.VITE_BASE_URL + 'uploads';
-    const [ticket, setTicket] = useState(null);
 
   const [dataEstado, setDataEstado] = useState([]);
 
   const [file, setFile] = useState(null);
   const [fileURL, setFileURL] = useState(null);
   const [error, setError] = useState("");
-  
+
   /*** Esquema de validación Yup ***/
   const ticketSchema = yup.object({
     estado: yup.number().typeError("Seleccione un estado").required("El estado es requerido"),
-    comentario: yup.string().required("El comentario es requerido"),
   });
 
     /*** React Hook Form ***/
@@ -55,6 +53,7 @@ export function UpdateTicket() {
       control,
       handleSubmit,
       reset,
+      watch,
       formState: { errors },
     } = useForm({
       defaultValues: {
@@ -68,6 +67,28 @@ export function UpdateTicket() {
       resolver: yupResolver(ticketSchema),
     });
 
+
+  const [estadoAnterior, setEstadoAnterior] = useState(null);
+  const estadoNuevo = watch("estado");
+
+const reglasRol = {
+  "1": ["5"],
+  "2": ["3", "4"],
+  "3": ["5"],
+};
+
+const puedeCambiar = (rolId, estadoNuevo) => {
+  const permitidos = reglasRol[rolId] || [];
+  return permitidos.includes(String(estadoNuevo));
+};
+
+const disabledGuardar =
+  Number(estadoAnterior) === Number(estadoNuevo) ||
+  !estadoNuevo ||
+  !puedeCambiar(user?.rol.id, estadoNuevo);
+
+
+  
       /*** Manejo de imagen ***/
   const handleChangeImage = (e) => {
     const selectedFile = e.target.files?.[0];
@@ -100,7 +121,7 @@ export function UpdateTicket() {
                         usuario: ticketData.usuarioId,
                         etiquetas: ticketData.etiquetaId,
                     });
-                    setTicket(ticketData);
+                    setEstadoAnterior(ticketData.estadoId);
                     switch (ticketData.estadoId) {
                         case "1":
                             setDataEstado(estadoRes.data.data.filter((estado) => estado.nombre.includes('Pendiente')));
@@ -133,8 +154,6 @@ export function UpdateTicket() {
     const onSubmit = async (dataForm) => {
     try {
       if (ticketSchema.isValid()) {
-  
-        const rutaImagen = file.name; 
 
       const datos = {
         idTicket: Number(id),
@@ -145,12 +164,14 @@ export function UpdateTicket() {
         console.log("Datos a enviar para actualización:", datos);
           const response = await TicketService.updateTicket(datos);
           if (response.data?.success) {
+            if(file){
             console.log("Respuesta de actualización:", response.data.data.data);
             const formData = new FormData();
             formData.append("file", file);
             formData.append("ticket_id", response.data.data.data.ticket.idTicket);
             formData.append("historial_id", response.data.data.data.historial[0].idHistorial);
             await ImageService.createImage(formData);
+          }
       toast.success("Ticket actualizado correctamente", {
         duration: 4000,
         position: "top-center",
@@ -268,7 +289,7 @@ export function UpdateTicket() {
             Regresar
           </Button>
           {/* Botón Guardar */}
-          <Button type="submit" className="flex-1">
+          <Button type="submit" className="flex-1" disabled={disabledGuardar}>
             <Save className="w-4 h-4" />
             Guardar
           </Button>

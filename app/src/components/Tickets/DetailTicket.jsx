@@ -234,12 +234,12 @@ export function DetailTicket() {
                 )}
 
                 {/* Valoraciones */}
-                {ticket.estado === "Cerrado" && (
+                {ticket.estado === "Cerrado" && user?.rol.id == 3 ?(
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-semibold">Valoraciones</h2>
                         <Button type="button" variant="outline" size="icon" onClick={() => setShowNewValoracion(!showNewValoracion)}>+</Button>
                     </div>
-                )}
+                ) : (<h2 className="text-xl font-semibold">Valoraciones</h2>)}
                 {showNewValoracion && (
                     <div className="grid grid-cols-2 gap-2 mb-4 p-3 border rounded-lg bg-muted/30">
                         {/* Combo dinámico de puntajes */}

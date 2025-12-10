@@ -41,20 +41,20 @@ const rutas=createBrowserRouter([
     //Pagina no encontrada o Ruta comodin
     {path:'*', element:<PageNotFound/>},
 
-    { path: "tecnico/table", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <TableTecnico /></RoleRoute> },   // lista peliculas ADMIN 
-    { path: "tecnico/detail/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <DetailTecnico /></RoleRoute> }, // detalle técnico
-    { path: "tecnico/create", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <CreateTecnico /></RoleRoute> },
-      { path: "tecnico/update/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <UpdateTecnico /></RoleRoute> },
+    { path: "tecnico/table", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <TableTecnico /></RoleRoute> },   // lista peliculas ADMIN 
+    { path: "tecnico/detail/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <DetailTecnico /></RoleRoute> }, // detalle técnico
+    { path: "tecnico/create", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <CreateTecnico /></RoleRoute> },
+      { path: "tecnico/update/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <UpdateTecnico /></RoleRoute> },
 
 
-     { path: "categoria/table", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <TableCategorias /></RoleRoute> }, // lista categorías
-      { path: "categoria/detail/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <DetailCategoria /> </RoleRoute> }, // detalle categoría
-      { path: "categoria/create", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <CreateCategoria /> </RoleRoute> },
-      { path: "categoria/update/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <UpdateCategoria /> </RoleRoute> },
+     { path: "categoria/table", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <TableCategorias /></RoleRoute> }, // lista categorías
+      { path: "categoria/detail/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <DetailCategoria /> </RoleRoute> }, // detalle categoría
+      { path: "categoria/create", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <CreateCategoria /> </RoleRoute> },
+      { path: "categoria/update/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <UpdateCategoria /> </RoleRoute> },
 
       { path: "ticket/table", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <TableTicket /></RoleRoute> }, // lista tickets
       { path: "ticket/detail/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <DetailTicket /> </RoleRoute> }, // detalle ticket
-      { path: "ticket/create", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <CreateTicket /> </RoleRoute> },
+      { path: "ticket/create", element: <RoleRoute requiredRoles={["Cliente"]}> <CreateTicket /> </RoleRoute> },
       { path: "ticket/update/:id", element: <RoleRoute requiredRoles={["Administrador", "Técnico", "Cliente"]}> <UpdateTicket /> </RoleRoute> },
 
       { path: "asignacion/table", element: <RoleRoute requiredRoles={["Administrador", "Técnico"]}> <TableAsignacion /></RoleRoute> }, // lista asignaciones

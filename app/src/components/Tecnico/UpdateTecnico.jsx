@@ -14,6 +14,8 @@ import EspecialidadService from "@/services/EspecialidadService";
 import TecnicoService from "@/services/TecnicoService";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { User } from "lucide-react";
+import { useUser } from "@/hooks/useUser";
 
 // Esquema de validación con Yup
 
@@ -22,6 +24,7 @@ export function UpdateTecnico() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useUser();
 
   const [especialidades, setEspecialidades] = useState([]);
   const [error, setError] = useState("");
@@ -91,7 +94,8 @@ export function UpdateTecnico() {
 
   const onSubmit = async (dataForm) => {
     const payload = {
-      id: Number(id),
+      usuarioLogueadoId: user?.id,
+      idTicket: Number(id),
       nombre: dataForm.nombreUsuario,
       correo: dataForm.correoUsuario,
       especialidades: dataForm.especialidades.map(e => ({
@@ -104,6 +108,7 @@ export function UpdateTecnico() {
     if (dataForm.password) payload.password = dataForm.password;
 
     try {
+      console.log("Payload para actualización:", payload);
       const response = await TecnicoService.update(payload);
 
       if (response.data.success) {
@@ -113,7 +118,7 @@ export function UpdateTecnico() {
         toast.error(response.data.message || t("technician.toast.errorUpdate"));
       }
     } catch (err) {
-      console.error("❌ ERROR UPDATE:", err.response?.data || err.message);
+      console.error(err.response?.data || err.message);
       toast.error(t("technician.toast.errorUpdateGeneric") + " " + (err.response?.data?.message || err.message));
     }
   };

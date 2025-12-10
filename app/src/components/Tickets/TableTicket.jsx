@@ -53,9 +53,10 @@ export default function TableTicket() {
   { key: "estado", label: t("ticket.columns.estado") },
   { key: "actions", label: t("ticket.columns.acciones") },
 ];
+
 const mostrarActualizar = (rol, estado) => {
   if (rol === "Administrador") {
-    return ["Resuelto", "Cerrado"].includes(estado);
+    return ["Resuelto"].includes(estado);
   }
 
   if (rol === "Técnico") {
@@ -63,7 +64,7 @@ const mostrarActualizar = (rol, estado) => {
   }
 
   if (rol === "Cliente") {
-    return ["Resuelto", "Cerrado"].includes(estado);
+    return ["Resuelto"].includes(estado);
   }
 
   return false;
@@ -128,7 +129,7 @@ const mostrarActualizar = (rol, estado) => {
         <h1 className="text-2xl font-bold text-foreground mb-2">{t("ticket.listTitle")}</h1>
         <p className="text-muted-foreground">{t("ticket.listSubtitle")}</p>
         </div>
-              <TooltipProvider>
+              {user?.rol.id == 3 && <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button asChild variant="outline" size="icon" className="text-primary">
@@ -139,7 +140,7 @@ const mostrarActualizar = (rol, estado) => {
                         </TooltipTrigger>
                         <TooltipContent>{t("ticket.tooltip.create")}</TooltipContent>
                     </Tooltip>
-                </TooltipProvider>
+                </TooltipProvider>}
       </div>
 
       {/* Tabla Simple */}

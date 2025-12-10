@@ -94,9 +94,9 @@ public function getByCategoria($idCategoria)
 
         $inputJSON = $request->getJSON();
 
-        $ticket = new TicketModel();
+        $tecnico = new TecnicoModel();
 
-        $result = $ticket->update($inputJSON);
+        $result = $tecnico->updateTecnico($inputJSON);
 
         $response->toJSON($result);
         } catch (Exception $e) {

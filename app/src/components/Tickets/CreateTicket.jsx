@@ -27,6 +27,7 @@ import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
 import { CustomInputField } from "../ui/custom/custom-input-field";
 import EstadoService from "@/services/EstadoService";
 import EtiquetaService from "@/services/EtiquetaService";
+import { useUser } from "@/hooks/useUser";
 
 
 
@@ -39,11 +40,9 @@ export function CreateTicket() {
   const [dataEstado, setDataEstado] = useState([]);
   const [dataCategoria, setDataCategoria] = useState([]);
   const [error, setError] = useState("");
+  const { user } = useUser();
 
-  localStorage.setItem('currentUserId', 4);
-
-  const storedUser = localStorage.getItem('currentUserId');
-  const currentUser = storedUser ? JSON.parse(storedUser) : null;
+  const currentUser = user ? user.id : null;
 
 
   /*** Esquema de validación Yup ***/
@@ -83,6 +82,7 @@ export function CreateTicket() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if(!user) return;
         const prioridadRes = await PrioridadService.getAll();
         const etiquetaRes = await EtiquetaService.getAll();
         const usuarioRes = await UsuarioService.getUserById(currentUser);
@@ -106,7 +106,7 @@ export function CreateTicket() {
       }
     };
     fetchData()
-  }, []);
+  }, [user]);
 
 
   useEffect(() => {
