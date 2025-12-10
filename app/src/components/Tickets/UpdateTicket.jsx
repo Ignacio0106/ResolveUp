@@ -169,7 +169,12 @@ const disabledGuardar =
             const formData = new FormData();
             formData.append("file", file);
             formData.append("ticket_id", response.data.data.data.ticket.idTicket);
-            formData.append("historial_id", response.data.data.data.historial[0].idHistorial);
+
+console.log("Historial desde backend:", response.data.data.data.historial);
+
+
+
+
             await ImageService.createImage(formData);
           }
       toast.success("Ticket actualizado correctamente", {

@@ -196,6 +196,7 @@ CREATE TABLE PuntajeValoracion (
  descripcion VARCHAR(50) NOT NULL
 );
  
+
 CREATE TABLE Valoracion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     idPuntaje INT NOT NULL,
@@ -488,36 +489,26 @@ END$$
 /* ============================================================
    3. BEFORE UPDATE — Cálculo SLA + Historial de estados
    ============================================================ */
-CREATE TRIGGER trg_tickets_before_update
-BEFORE UPDATE ON Tickets
+CREATE TRIGGER trg_asignacion_automatica
+AFTER INSERT ON Tickets
 FOR EACH ROW
 BEGIN
-    DECLARE diff INT;
-    DECLARE cumpleResp TINYINT;
-    DECLARE cumpleReso TINYINT;
+    DECLARE prPeso INT;
 
-    -- Si se está cerrando el ticket:
-    IF OLD.fechaCierre IS NULL AND NEW.fechaCierre IS NOT NULL THEN
-        
-        SET diff = TIMESTAMPDIFF(DAY, NEW.fechaCreacion, NEW.fechaCierre);
-        SET NEW.diasResolucion = diff;
+    -- Obtener peso de prioridad
+    SELECT peso INTO prPeso
+    FROM PrioridadTicket
+    WHERE id = NEW.prioridadId;
 
-        SET cumpleResp = IF(NEW.fechaLimiteRespuesta >= NEW.fechaCierre, 1, 0);
-        SET NEW.cumplimientoRespuesta = cumpleResp;
-
-        SET cumpleReso = IF(NEW.fechaLimiteResolucion >= NEW.fechaCierre, 1, 0);
-        SET NEW.cumplimientoResolucion = cumpleReso;
+    -- Solo si la prioridad indica que debe ser asignado automáticamente
+    -- y el ticket está inicialmente en estado Pendiente (1)
+    IF prPeso >= 2 AND NEW.estadoId = 1 THEN
+        UPDATE Tickets
+        SET estadoId = 2   -- Cambiar a Asignado
+        WHERE id = NEW.id;
     END IF;
 
-    -- Registrar historial de estado
-    IF OLD.estadoId <> NEW.estadoId THEN
-        INSERT INTO HistorialEstado(idEstadoAnterior, idEstadoNuevo, fecha, idTicket, idUsuario)
-        VALUES (OLD.estadoId, NEW.estadoId, NOW(), NEW.id, NULL);
-    END IF;
-
-END$$
-
-
+END $$
 
 /* ============================================================
    4. AFTER INSERT — Asignación automática/manual según prioridad
@@ -698,6 +689,23 @@ BEGIN
     END IF;
 END$$
 
+CREATE TRIGGER trg_ticketimagen_before_insert
+BEFORE INSERT ON TicketImagen
+FOR EACH ROW
+BEGIN
+    DECLARE ultimoHistorial INT;
+
+    -- Buscar el último historial insertado para ese ticket
+    SELECT id
+    INTO ultimoHistorial
+    FROM HistorialEstado
+    WHERE idTicket = NEW.idTicket
+    ORDER BY id DESC
+    LIMIT 1;
+
+    -- Usarlo automáticamente
+    SET NEW.idHistorialEstado = ultimoHistorial;
+END$$
 DELIMITER ;
 
 
@@ -732,39 +740,11 @@ VALUES
 
 
 -- ================= INSERTS HISTORIAL =================
-INSERT INTO HistorialEstado (idEstadoAnterior, idEstadoNuevo, fecha, idTicket, idUsuario, observaciones)
-VALUES
-(1, 2, NOW(), 1, 3, 'Ticket asignado a María Técnico'),
-(1, 2, NOW(), 2, 3, 'Ticket asignado a María Técnico'),
-(1, 2, NOW(), 3, 5, 'Ticket asignado a Marcos Pérez'),
-(1, 2, NOW(), 4, 6, 'Ticket asignado a Laura Gómez'),
-(1, 2, NOW(), 5, 7, 'Ticket asignado a Javier Torres'),
-(1, 2, NOW(), 6, 3, 'Ticket asignado a María Técnico'),
-(1, 2, NOW(), 7, 5, 'Ticket asignado a Marcos Pérez'),
-(1, 2, NOW(), 8, 6, 'Ticket asignado a Laura Gómez'),
-(1, 2, NOW(), 9, 7, 'Ticket asignado a Javier Torres'),
-(1, 2, NOW(), 10, 5, 'Ticket asignado a Marcos Pérez'),
-(1, 2, NOW(), 11, 3, 'Ticket asignado a María Técnico');
+
 
 
 
 -- ================= INSERTS VALORACIONES =================
-
-
-
-INSERT INTO TicketImagen (ruta, fechaSubida, idTicket, idHistorialEstado)
-VALUES
-('Problema_con_Usuarios.webp', NOW(), 1, 1),
-('Laptop_no_enciende.webp', NOW(), 2, 2),
-
-('Wifi_intermitente.webp', NOW(), 3, 3),
-('Antivirus_desactualizado.webp', NOW(), 4, 4),
-('Correo_no_funciona.webp', NOW(), 5, 5),
-('Monitor_no_responde.webp', NOW(), 6, 6),
-('VPN_no_conecta.webp', NOW(), 7, 7),
-('Acceso_no_autorizado.webp', NOW(), 8, 8),
-('Proyector_falla.webp', NOW(), 9, 9),
-('Problema_con_Aula_Virtual.jpg', NOW(), 11, 11);
 
 INSERT INTO Tickets (
     titulo, descripcion, fechaCreacion, prioridadId, idUsuario, idCategoria

@@ -17,7 +17,7 @@ class ImageModel
         date_default_timezone_set('America/Costa_Rica');
         $fechaSubida = (new DateTime())->format('Y-m-d H:i:s');
         $ticket_id = $object['ticket_id'];
-        $historial_id = $object['historial_id'];
+
 
         //Obtener la información del archivo
         $fileName = $file['name'];
@@ -39,7 +39,9 @@ class ImageModel
                         //Moverlo a la carpeta del servidor del API
                         if (move_uploaded_file($tempPath, $this->upload_path . $fileName)) {
                             //Guardarlo en la BD
-                            $sql = "INSERT INTO ticketimagen  (ruta, fechaSubida, idTicket, idHistorialEstado) VALUES ('$fileName', '$fechaSubida', $ticket_id, $historial_id)";
+                            $sql = "INSERT INTO ticketimagen (ruta, fechaSubida, idTicket)
+        VALUES ('$fileName', '$fechaSubida', $ticket_id)";
+
                             $vResultado = $this->enlace->executeSQL_DML($sql);
                             if ($vResultado > 0) {
                                 return 'Imagen creada';
